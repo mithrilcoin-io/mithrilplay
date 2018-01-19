@@ -1,0 +1,72 @@
+<resources>
+
+    <string name="app_name">Mithril Play</string>
+
+    <string name="is_rooting_app_end">루팅된 단말입니다.\n개인정보 유출의 위험성이 있으므로,Mithril 서비스를 종료합니다</string>
+
+    <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
+
+    <string name="today_reward">오늘의 리워드</string>
+    <string name="reward_history">오늘의 리워드</string>
+
+    <string name="permission_desc">미스릴 플레이는 다음과 같은 권한에 동의해 주셔야 정상적인 사용이 가능합니다.</string>
+    <string name="agree">동의</string>
+
+    <string name="verify_email">이메일 인증하기</string>
+    <string name="verify_email_desc">입력하신 메일주소로 인증 메시지을 보냈습니다.\n메일함에서 메시지를 확인한 후 아래 인증완료 버튼을 눌러 가입을 완료하세요.\n\n만약 인증 메일을 받지못했다면 인증메일을 다시 발송하세요.</string>
+    <string name="verify_email_resend">인증메일 재발송</string>
+    <string name="verify_ok">인증 완료</string>
+
+    <string name="congrats">축하합니다</string>
+    <string name="signup_ok_desc">미스릴 플레이에 가입되었습니다.\n프로필 정보를 입력하고 보너스 리워드를 받으세요.\n\n지금 원하지 않는다면 나중에 설정할 수 있습니다.</string>
+
+    <string name="more_info">프로필 정보 입력</string>
+    <string name="more_info_btn">지금 프로필 정보를 입력하고\n보너스 리워드 1000 MTP를 받으세요</string>
+
+    <string name="next">다음</string>
+    <string name="skip">건너뛰기</string>
+    <string name="start">시작하기</string>
+
+    <string name="init_info_ing">환경 설정을 진행중입니다.\n잠시만 기다리세요.</string>
+    <string name="init_info_ok">완료되었습니다.\n이제 시작하세요.</string>
+
+    <string name="password">비밀번호</string>
+    <string name="password_null">비밀번호를 입력해주세요</string>
+    <string name="email">이메일</string>
+    <string name="email_null">이메일을 입력해주세요</string>
+    <string name="sign_in">로그인</string>
+    <string name="new_account_desc">계정이 없으신가요? 지금 가입하세요</string>
+    <string name="sign_up">가입하기</string>
+    <string name="member_join">회원가입</string>
+
+
+
+    <string name="male">남자</string>
+    <string name="female">여자</string>
+
+    <string name="more_info_desc">입력한 정보는 수정할수 없습니다. 신중하게 입력하세요.\n그리고 안심하세요. 이 정보는 암호화 되어 블록체인에 등록되며 본인만 확인할 수 있습니다.</string>
+    <string name="more_info_reward">입력완료 및 리워드 받기</string>
+
+    <string name="today_reward_remain">오늘의 리워드가 2회 남았습니다.</string>
+    <string name="today_reward_end">오늘의 리워드를 모두 받았습니다.</string>
+
+    <string name="get_reward_ready">10분 이상 플레이 성공!</string>
+    <string name="get_reward_ok">100 MTP를 받았습니다.</string>
+    <string name="get_reward">100 MTP 받기</string>
+
+    <string name="welcome_slide1_title">JUST PLAY</string>
+    <string name="welcome_slide1_desc">미스릴 플레이에 오신것을 환영합니다.\n폰에 설치된 게임을 마음껏 즐기세요.</string>
+    <string name="welcome_slide2_title">GET REWARD</string>
+    <string name="welcome_slide2_desc">하루 세번, 3개의 게임을\n10분 이상 즐기고 리워드를 받으세요.</string>
+    <string name="welcome_slide3_title">GAMER RESUME</string>
+    <string name="welcome_slide3_desc">나의 게임 플레이 기록이 블록체인에 등록되고\n나만의 게임 이력서가 만들어져요!</string>
+
+    <string name="setting">설정</string>
+    <string name="setting_profile_title">MITHRIL PLAY 계정</string>
+    <string name="sign_out">로그아웃</string>
+
+    <!-- image desc -->
+    <string name="mithril_logo">미스릴 로고</string>
+
+</resources>

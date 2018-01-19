@@ -1,0 +1,72 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorLightGray"
+    tools:context="io.mithrilcoin.mithrilplay.RewardFragment">
+
+    <LinearLayout
+        android:id="@+id/layout_total_mtp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/bg_border_bottom_gray"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_today_reward_info"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorDarkGray"
+            android:paddingStart="0dp"
+            android:paddingEnd="8dp"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:text="@string/today_reward_remain"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/colorPrimary"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_check_circle_18"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/colorGray"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_check_circle_18"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/colorGray"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_check_circle_18"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_today_reward"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_total_mtp"
+        android:paddingBottom="80dp"
+        tools:listitem="@layout/list_item_today_reward"/>
+
+
+    <TextView
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_total_mtp"
+        android:padding="32dp"
+        android:textColor="@color/colorPrimary"
+        android:text="미스릴 플레이를 설치한 다음 플레이한 기록이 없네요.\n\n매일 10분이상 게임을 플레이하고 100MTP 를 얻으세요 최대 3개의 게임에서 리워드를 받을 수 있어요.\n\n3 x 100MTP = 300MTP"/>
+
+</RelativeLayout>

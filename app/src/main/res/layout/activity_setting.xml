@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorLightGray"
+    tools:context="io.mithrilcoin.mithrilplay.SettingActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/toolbar"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="16dp"
+        android:textColor="@color/colorDarkGray"
+        android:textSize="12sp"
+        android:text="@string/setting_profile_title"/>
+    <TextView
+        android:id="@+id/tv_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorBlack"
+        tools:text="zack.cho@mithrilcoin.io"/>
+
+    <TextView
+        android:id="@+id/tv_more_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorBlack"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="4dp"
+        android:textSize="12sp"
+        tools:text="남자 / 1979.12 / 대한민국"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_more_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:elevation="2dp"
+        android:background="@drawable/bg_white_r4">
+
+        <ImageView
+            android:id="@+id/iv_arrow_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:tint="@color/colorDarkGray"
+            android:src="@drawable/ic_chevron_right"
+            android:contentDescription="@string/more_info"/>
+
+        <TextView
+            android:id="@+id/tv_bonus_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/iv_arrow_right"
+            android:padding="8dp"
+            android:textColor="@color/colorBlack"
+            android:textSize="12sp"
+            android:text="@string/more_info_btn" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorGray"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorRed"
+        android:text="@string/sign_out"/>
+
+</LinearLayout>
