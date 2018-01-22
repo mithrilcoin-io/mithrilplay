@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.mithrilcoin.mithrilplay">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -27,14 +30,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.PermissionActivity" />
-        <activity android:name=".view.LoginActivity"  android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".view.WelcomeActivity"  android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".view.VerifyEmailActivity" />
+        <activity android:name=".view.auth.PermissionActivity" />
+        <activity android:name=".view.auth.LoginActivity"  android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".view.auth.WelcomeActivity"  android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".view.auth.VerifyEmailActivity" />
         <activity android:name=".view.HomeActivity" />
-        <activity android:name=".view.SignupActivity" />
-        <activity android:name=".view.SignupOkActivity" />
-        <activity android:name=".view.MoreInfoActivity" />
+        <activity android:name=".view.auth.SignupActivity" />
+        <activity android:name=".view.auth.SignupOkActivity" />
+        <activity android:name=".view.auth.MoreInfoActivity" />
         <activity android:name=".view.SettingActivity"/>
 
 

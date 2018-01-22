@@ -16,8 +16,11 @@ import android.view.inputmethod.InputMethodManager;
 
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
-import io.mithrilcoin.mithrilplay.dialog.PermissionDialog;
-import io.mithrilcoin.mithrilplay.dialog.PermissionDialog.PermissionConfirmListener;
+import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
+import io.mithrilcoin.mithrilplay.dialog.CommonDialog.CommonDialogListener;
+import io.mithrilcoin.mithrilplay.view.auth.SignupActivity;
+import io.mithrilcoin.mithrilplay.view.auth.VerifyEmailActivity;
+import io.mithrilcoin.mithrilplay.view.auth.WelcomeActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,12 +29,12 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class BaseActivity extends AppCompatActivity {
+public class ActivityBase extends AppCompatActivity {
 
     protected final String TAG = this.getClass().getSimpleName() + ": ";
     protected final String CHAR_SET = "UTF-8";
 
-    private Activity mActivity;
+    private Activity mActivity = null;
 
     public static ArrayList<Activity> activityList = new ArrayList<Activity>();
 
@@ -45,17 +48,10 @@ public class BaseActivity extends AppCompatActivity {
         // Obtain the FirebaseAnalytics instance.
 //        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        mActivity = BaseActivity.this;
+        mActivity = ActivityBase.this;
 
         activityList.add(this);
     }
-
-    // 앱접근 권한 안내
-    public void showPermissionDialog(PermissionConfirmListener listener) {
-        PermissionDialog permissionDialog = new PermissionDialog(this, listener);
-        permissionDialog.showDialogOneButton();
-    }
-
 
     public boolean checkNetwork() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -103,15 +99,6 @@ public class BaseActivity extends AppCompatActivity {
         return !TextUtils.isEmpty(mAuthId);
     }
 
-    public void moveWebActivity(String url) {
-//        Intent intent = new Intent(this, WebActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        intent.putExtra(Constant.TAG_URL, url);
-//        startActivityForResult(intent, Constant.REQUEST_CODE_INTRO_LOGIN_ACTIVITY);
-//        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-    }
-
-
     public String getTodayTime(){
 
         String time = "";
@@ -140,7 +127,6 @@ public class BaseActivity extends AppCompatActivity {
         return androidId;
     }
 
-
     private String getLauncherClassName(Context context){
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -161,6 +147,44 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    //********** 화면 이동 ********//
+
+    // 이메일 인증 페이지로 이동
+    public void launchVerifyScreen() {
+        startActivity(new Intent(this, VerifyEmailActivity.class));
+//        finish();
+    }
+
+    // 환영페이지로 이동
+    public void launchWelcomeScreen() {
+        startActivity(new Intent(this, WelcomeActivity.class));
+    }
+
+    // 회원가입으로 이동
+    public void launchSignupScreen() {
+        startActivity(new Intent(this, SignupActivity.class));
+//        finish();
+    }
+
+    // 홈으로 이동
+    public void launchHomeScreen() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+
+    //********** 공통 dialog ********//
+    public void showDialogOneButton(String title, String message, String positiveButtonName, CommonDialogListener listener) {
+        CommonDialog dialog = new CommonDialog(this, listener);
+        dialog.showDialogOneButton(title, message, positiveButtonName);
+    }
+
+    public void showWebViewDialogTwoButton(String title, String message, String negativeButtonName, String positiveButtonName, CommonDialogListener listener) {
+        CommonDialog dialog = new CommonDialog(this, listener);
+        dialog.showDialogTwoButton(title, message, negativeButtonName, positiveButtonName);
+    }
 
 
 }

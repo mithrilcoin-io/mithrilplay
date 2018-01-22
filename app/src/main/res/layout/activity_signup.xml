@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorPrimary"
-    tools:context="io.mithrilcoin.mithrilplay.view.SignupActivity">
+    tools:context="io.mithrilcoin.mithrilplay.view.auth.SignupActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

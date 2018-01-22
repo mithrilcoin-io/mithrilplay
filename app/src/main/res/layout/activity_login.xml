@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context="io.mithrilcoin.mithrilplay.view.LoginActivity">
+    tools:context="io.mithrilcoin.mithrilplay.view.auth.LoginActivity">
 
     <ImageView
         android:layout_width="240dp"
@@ -45,6 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
+                android:text="234234324@mithril.com"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:textColor="@color/colorWhite" />
@@ -65,6 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password"
+                android:text="password"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:textColor="@color/colorWhite" />

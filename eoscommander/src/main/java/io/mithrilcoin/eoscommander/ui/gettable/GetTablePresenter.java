@@ -23,9 +23,15 @@
  */
 package io.mithrilcoin.eoscommander.ui.gettable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.mithrilcoin.eoscommander.data.EoscDataManager;
+import io.mithrilcoin.eoscommander.data.remote.model.abi.EosAbiMain;
+import io.mithrilcoin.eoscommander.data.remote.model.abi.EosAbiTable;
 import io.mithrilcoin.eoscommander.ui.base.BasePresenter;
 import io.mithrilcoin.eoscommander.ui.base.RxCallbackWrapper;
 import io.mithrilcoin.eoscommander.util.StringUtils;
@@ -43,32 +49,47 @@ public class GetTablePresenter extends BasePresenter<GetTableMvpView> {
     public GetTablePresenter(){
     }
 
-    public void onMvpViewShown(){
-        if (! mDataManager.shouldUpdateAccountHistory( mAccountHistoryVersion.data)){
+    private List<String> getTableNames( List<EosAbiTable> abiTables ) {
+        if ( null == abiTables ){
+            return new ArrayList<>();
+        }
+
+        ArrayList<String> names = new ArrayList<>( abiTables.size() );
+        for ( EosAbiTable table : abiTables ){
+            names.add( table.table_name );
+        }
+
+        Collections.sort( names);
+
+        return names;
+    }
+
+    public void onGetTableListClicked( String contract ){
+        if ( StringUtils.isEmpty(contract) ){
             return;
         }
 
-
         getMvpView().showLoading( true );
-        addDisposable(
-                Single.fromCallable( () -> mDataManager.getAllAccountHistory( true, mAccountHistoryVersion ) )
-                        .subscribeOn( getSchedulerProvider().io())
-                        .observeOn( getSchedulerProvider().ui())
-                        .subscribe( list -> {
-                                    if ( ! isViewAttached() ) return;
 
-                                    getMvpView().showLoading( false );
-                                    getMvpView().setupAccountHistory( list );
-                                }
-                                , e -> {
-                                    if ( ! isViewAttached() ) return;
+        addDisposable( mDataManager.getCodeAbi( contract )
+                .map( abi -> {
+                    mDataManager.addAccountHistory( contract);
+                    return getTableNames( abi.tables);
+                })
+                .subscribeOn( getSchedulerProvider().io())
+                .observeOn( getSchedulerProvider().ui())
+                .subscribeWith(new RxCallbackWrapper<List<String>>( this) {
+                                   @Override
+                                   public void onNext(List<String> result) {
+                                       if (!isViewAttached()) return;
 
-                                    notifyErrorToMvpView( e );
-                                } )
+                                       getMvpView().showLoading(false);
+                                       getMvpView().showTableList( result);
+                                   }
+                               }
+                )
         );
     }
-
-
 
     public void getTable(String accountName, String contract, String table ) {
         addDisposable(

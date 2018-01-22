@@ -1,14 +1,15 @@
-package io.mithrilcoin.mithrilplay.view;
+package io.mithrilcoin.mithrilplay.view.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
-public class SignupOkActivity extends AppCompatActivity {
+// 회원가입 완료
+public class SignupOkActivity extends ActivityBase {
 
     private Button btnMoreInfo, btnSkip;
 
@@ -38,7 +39,7 @@ public class SignupOkActivity extends AppCompatActivity {
     private void launchMoreInfoScreen() {
         //prefManager.setFirstTimeLaunch(false);
         startActivity(new Intent(SignupOkActivity.this, MoreInfoActivity.class));
-        finish();
+//        finish();
     }
 
     private void launchLoginScreen() {

@@ -1,33 +1,26 @@
-package io.mithrilcoin.mithrilplay.view;
+package io.mithrilcoin.mithrilplay.view.auth;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.HashMap;
-
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.network.RequestMemberJoin;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinResponse;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
-public class SignupActivity extends BaseActivity implements View.OnClickListener {
+public class SignupActivity extends ActivityBase implements View.OnClickListener {
 
     private Activity mActivity = null;
 
@@ -71,12 +64,6 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
         btnDoSignup = (Button) findViewById(R.id.btn_do_signup);
         btnDoSignup.setOnClickListener(this);
 
-    }
-
-    private void launchVerifyScreen() {
-        //prefManager.setFirstTimeLaunch(false);
-        startActivity(new Intent(SignupActivity.this, VerifyEmailActivity.class));
-        finish();
     }
 
     @Override
@@ -139,20 +126,20 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
             public void onSuccess(MemberJoinResponse item) {
 
                 if(item == null || item.getUserInfo() == null){
-                    Toast.makeText(mActivity, item.getBody(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if(item.getUserInfo().getState().equals("M001001")){ // 미인증
+                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // 미인증
 
-                    Toast.makeText(mActivity, item.getBody(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
 
                     // 이메일 인증으로 이동
                     launchVerifyScreen();
 
 
-                }else if(item.getUserInfo().getState().equals("M001002")){  // 정상
-                    Toast.makeText(mActivity, item.getBody(), Toast.LENGTH_SHORT).show();
+                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
+                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
 
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
 

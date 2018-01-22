@@ -31,7 +31,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,7 +38,6 @@ import io.mithrilcoin.eoscommander.R;
 import io.mithrilcoin.eoscommander.di.component.ActivityComponent;
 import io.mithrilcoin.eoscommander.ui.base.BaseFragment;
 import io.mithrilcoin.eoscommander.util.UiUtils;
-import timber.log.Timber;
 
 public class TransferFragment extends BaseFragment implements TransferMvpView{
 
@@ -91,31 +89,13 @@ public class TransferFragment extends BaseFragment implements TransferMvpView{
 
             return false;
         });
+
+
+        UiUtils.setupAccountHistory( mEtFrom, mEtTo );
     }
 
     private void onSend() {
         mPresenter.transfer(mEtFrom.getText().toString(), mEtTo.getText().toString(), mEtAmount.getText().toString());
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // notify to presenter
-        mPresenter.onMvpViewShown();
-    }
-
-    @Override
-    public void onSelected() {
-        if ( null != mPresenter ) {
-            mPresenter.onMvpViewShown();
-        }
-    }
-
-    @Override
-    public void setupAccountHistory(List<String> recentAccounts){
-        UiUtils.setupRecentAccountSuggest( mEtFrom, recentAccounts );
-        UiUtils.setupRecentAccountSuggest( mEtTo, recentAccounts );
     }
 
     @Override

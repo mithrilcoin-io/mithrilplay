@@ -1,13 +1,11 @@
-package io.mithrilcoin.mithrilplay.view;
+package io.mithrilcoin.mithrilplay.view.auth;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class WelcomeActivity extends ActivityBase {
 
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
@@ -128,12 +127,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private int getItem(int i) {
         return viewPager.getCurrentItem() + i;
-    }
-
-    private void launchHomeScreen() {
-        //prefManager.setFirstTimeLaunch(false);
-        startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
-        finish();
     }
 
     //  viewpager change listener

@@ -1,17 +1,21 @@
 package io.mithrilcoin.mithrilplay.view;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends ActivityBase {
+
+    private Activity mActivity = null;
+
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -21,11 +25,39 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        mActivity = HomeActivity.this;
+
         // Adding Toolbar to the activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setLogo(R.drawable.ic_logo);
+
+        viewInit();
+
+        // 앱 첫 시작시 환영 페이지로 이동
+        boolean isLoaded = MithrilPreferences.getBoolean(mActivity, MithrilPreferences.TAG_INTRO_SLIDE);
+        if(!isLoaded){
+
+            launchWelcomeScreen();
+
+
+        }else{
+
+
+
+        }
+
+
+
+
+
+
+
+    }
+
+
+    private void viewInit(){
 
         // Initializing the TabLayout
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -58,7 +90,9 @@ public class HomeActivity extends BaseActivity {
 
             }
         });
+
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

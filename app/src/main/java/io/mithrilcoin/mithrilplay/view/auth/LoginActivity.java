@@ -1,7 +1,6 @@
-package io.mithrilcoin.mithrilplay.view;
+package io.mithrilcoin.mithrilplay.view.auth;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,14 +16,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.network.RequestLogin;
-import io.mithrilcoin.mithrilplay.network.RequestMemberJoin;
 import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
-import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
-import io.mithrilcoin.mithrilplay.network.vo.MemberJoinResponse;
+import io.mithrilcoin.mithrilplay.network.vo.LoginResponse;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener {
+public class LoginActivity extends ActivityBase implements View.OnClickListener {
 
     private Activity mActivity = null;
 
@@ -127,11 +126,30 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         RequestLogin requestLogin = new RequestLogin(mActivity,loginRequest);
         requestLogin.post(new RequestLogin.ApiLoginResultListener() {
             @Override
-            public void onSuccess(MemberJoinResponse item) {
+            public void onSuccess(LoginResponse item) {
 
                 if(item == null || item.getUserInfo() == null){
-                    Toast.makeText(mActivity, item.getBody(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
                     return;
+                }
+
+                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // 미인증
+
+                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
+
+                    // 이메일 인증으로 이동
+                    launchVerifyScreen();
+
+
+                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
+                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
+                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
+
+                    launchHomeScreen();
+
+                }else{
+
+
                 }
 
 
@@ -154,15 +172,4 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
-    private void launchWelcomeScreen() {
-        //prefManager.setFirstTimeLaunch(false);
-        startActivity(new Intent(LoginActivity.this, WelcomeActivity.class));
-        finish();
-    }
-
-    private void launchSignupScreen() {
-        //prefManager.setFirstTimeLaunch(false);
-        startActivity(new Intent(LoginActivity.this, SignupActivity.class));
-//        finish();
-    }
 }

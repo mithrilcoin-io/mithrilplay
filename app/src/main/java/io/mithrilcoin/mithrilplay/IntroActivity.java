@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -18,13 +17,11 @@ import java.util.List;
 
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
-import io.mithrilcoin.mithrilplay.dialog.PermissionDialog;
-import io.mithrilcoin.mithrilplay.view.BaseActivity;
-import io.mithrilcoin.mithrilplay.view.HomeActivity;
-import io.mithrilcoin.mithrilplay.view.LoginActivity;
-import io.mithrilcoin.mithrilplay.view.PermissionActivity;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
+import io.mithrilcoin.mithrilplay.view.auth.LoginActivity;
+import io.mithrilcoin.mithrilplay.view.auth.PermissionActivity;
 
-public class IntroActivity extends BaseActivity {
+public class IntroActivity extends ActivityBase {
 
 	private Activity mActivity = null;
 
@@ -111,10 +108,7 @@ public class IntroActivity extends BaseActivity {
 			}else{
 
 				if(isLogin()){
-					Intent intent = new Intent(this, HomeActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-					startActivity(intent);
-					finish();
+					launchHomeScreen();
 				}else{
 					Intent intent = new Intent(this, LoginActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -190,7 +184,7 @@ public class IntroActivity extends BaseActivity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d("jhs", ": ************ intro onActivityResult");
+        Log.d("mithril", ": ************ intro onActivityResult");
 
 		if (resultCode != RESULT_OK) {
             finish();

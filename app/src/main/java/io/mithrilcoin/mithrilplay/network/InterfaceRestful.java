@@ -2,6 +2,7 @@ package io.mithrilcoin.mithrilplay.network;
 
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
 import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
+import io.mithrilcoin.mithrilplay.network.vo.LoginResponse;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinResponse;
 import retrofit2.Call;
@@ -19,6 +20,6 @@ public interface InterfaceRestful {
     // 로그인
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_LOGIN)
-    Call<MemberJoinResponse> setLogin(@Body LoginRequest loginRequest);
+    Call<LoginResponse> setLogin(@Body LoginRequest loginRequest);
 
 }

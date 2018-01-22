@@ -10,7 +10,7 @@ public class MemberJoinResponse {
     private UserInfo userInfo;
     @SerializedName("body")
     @Expose
-    private String body;
+    private Body body;
 
     public UserInfo getUserInfo() {
         return userInfo;
@@ -20,12 +20,50 @@ public class MemberJoinResponse {
         this.userInfo = userInfo;
     }
 
-    public String getBody() {
+    public Body getBody() {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(Body body) {
         this.body = body;
+    }
+
+    public class Body {
+
+        @SerializedName("code")
+        @Expose
+        private String code;
+        @SerializedName("requestDate")
+        @Expose
+        private String requestDate;
+        @SerializedName("responseDate")
+        @Expose
+        private String responseDate;
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public String getRequestDate() {
+            return requestDate;
+        }
+
+        public void setRequestDate(String requestDate) {
+            this.requestDate = requestDate;
+        }
+
+        public String getResponseDate() {
+            return responseDate;
+        }
+
+        public void setResponseDate(String responseDate) {
+            this.responseDate = responseDate;
+        }
+
     }
 
 }

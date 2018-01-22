@@ -25,6 +25,7 @@ import io.mithrilcoin.eoscommander.di.ApplicationContext;
 import io.mithrilcoin.eoscommander.util.RefValue;
 import io.mithrilcoin.eoscommander.util.StringUtils;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -56,7 +57,6 @@ public class AppModule {
     @Provides
     @Singleton
     OkHttpClient providesOkHttpClient(HostInterceptor interceptor) {
-
         return new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .build();

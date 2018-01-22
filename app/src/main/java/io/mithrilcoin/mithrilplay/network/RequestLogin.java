@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
 import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
+import io.mithrilcoin.mithrilplay.network.vo.LoginResponse;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinResponse;
 import okhttp3.OkHttpClient;
@@ -41,21 +42,21 @@ public class RequestLogin {
 				.build();
 
 		InterfaceRestful service = retrofit.create(InterfaceRestful.class);
-		Call<MemberJoinResponse> call = service.setLogin(mLoginRequest);
-		call.enqueue(new Callback<MemberJoinResponse>() {
+		Call<LoginResponse> call = service.setLogin(mLoginRequest);
+		call.enqueue(new Callback<LoginResponse>() {
 
 			@Override
-			public void onResponse(Call<MemberJoinResponse> call, Response<MemberJoinResponse> response) {
+			public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
 				if (!response.isSuccessful()) {
 					return;
 				}
-				MemberJoinResponse resultChargeCall = response.body();
-				listener.onSuccess(resultChargeCall);
+				LoginResponse loginResponse = response.body();
+				listener.onSuccess(loginResponse);
 			}
 
 			@Override
-			public void onFailure(Call<MemberJoinResponse> call, Throwable t) {
+			public void onFailure(Call<LoginResponse> call, Throwable t) {
 				Log.v("mithril", "onFailure");
 
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -78,7 +79,7 @@ public class RequestLogin {
 	}
 
 	public interface ApiLoginResultListener {
-		void onSuccess(MemberJoinResponse item);
+		void onSuccess(LoginResponse item);
 		void onFail();
 	}
 

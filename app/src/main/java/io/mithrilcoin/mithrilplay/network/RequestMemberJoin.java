@@ -50,8 +50,8 @@ public class RequestMemberJoin {
 				if (!response.isSuccessful()) {
 					return;
 				}
-				MemberJoinResponse resultChargeCall = response.body();
-				listener.onSuccess(resultChargeCall);
+				MemberJoinResponse memberJoinResponse = response.body();
+				listener.onSuccess(memberJoinResponse);
 			}
 
 			@Override

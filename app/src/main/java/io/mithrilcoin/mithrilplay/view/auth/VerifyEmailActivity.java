@@ -1,4 +1,4 @@
-package io.mithrilcoin.mithrilplay.view;
+package io.mithrilcoin.mithrilplay.view.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,8 +6,9 @@ import android.view.View;
 import android.widget.Button;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
-public class VerifyEmailActivity extends BaseActivity {
+public class VerifyEmailActivity extends ActivityBase {
 
     private Button btnCheckVerify, btnResend;
 

@@ -1,16 +1,16 @@
-package io.mithrilcoin.mithrilplay.view;
+package io.mithrilcoin.mithrilplay.view.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
 
-public class PermissionActivity extends BaseActivity {
+public class PermissionActivity extends ActivityBase {
 
     private Button btnPermissionOk;
 
@@ -24,7 +24,8 @@ public class PermissionActivity extends BaseActivity {
         btnPermissionOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MithrilPreferences.putBoolean(PermissionActivity.this, MithrilPreferences.TAG_PERMISSION, true);
+                // 임시 허용
+//                MithrilPreferences.putBoolean(PermissionActivity.this, MithrilPreferences.TAG_PERMISSION, true);
                 launchLoginScreen();
             }
         });

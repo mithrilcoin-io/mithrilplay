@@ -7,9 +7,9 @@ public class MithrilPreferences {
 	public static final String PREF_KEY			= "key";
 	public static final String TAG_PREFERENCES	= "ProjectMithrilPlay";
 
-	public static final String TAG_PERMISSION = "permission"; 	// boolean, 안드로이드 권한 정보 팝업 앱실행시 한번
+	public static final String TAG_PERMISSION = "permission"; 		// boolean, 안드로이드 권한 정보 팝업 앱실행시 한번
+	public static final String TAG_INTRO_SLIDE = "intro_slide"; 	// boolean, 환영페이지, 앱실행시 회원가입이나 로그인이후 홈화면 진입시에 한번
 	public static final String TAG_AUTH_ID = "auth_id"; 		// string, 회원가입이나 로그인시 서버에서 내려주는 ID (유무로 로그인 체크)
-	public static final String TAG_INTRO_SLIDE = "intro_slide"; 		// boolean, 인트로 슬라이드 앱실행시 회원가입이나 로그인이후에 한번
 
 	public static final String TAG_ANDROD_ID = "android"; 		// string, android ID
 	public static final String TAG_MODEL = "model"; 		// string, 핸드폰 모델

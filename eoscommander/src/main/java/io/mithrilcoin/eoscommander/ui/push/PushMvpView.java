@@ -23,7 +23,7 @@
  */
 package io.mithrilcoin.eoscommander.ui.push;
 
-import java.util.List;
+import io.mithrilcoin.eoscommander.data.remote.model.abi.EosAbiMain;
 import io.mithrilcoin.eoscommander.ui.base.MvpView;
 
 /**
@@ -35,5 +35,7 @@ public interface PushMvpView extends MvpView {
 
     void showContractMessage( String msg);
 
-    void setupAccountHistory(List<String> recentAccounts);
+    void buildContractView(EosAbiMain abi);
+
+    void openDynInputFromAbi(String key, String actionName);
 }
