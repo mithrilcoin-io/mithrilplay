@@ -31,11 +31,11 @@ public class HomeActivity extends ActivityBase {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setLogo(R.drawable.ic_logo);
+        getSupportActionBar().setLogo(R.drawable.ic_mithrilplay_logo);
 
         viewInit();
 
-        // ¾Û Ã¹ ½ÃÀÛ½Ã È¯¿µ ÆäÀÌÁö·Î ÀÌµ¿
+        // ì•± ì²« ì‹œì‘ì‹œ í™˜ì˜ í˜ì´ì§€ë¡œ ì´ë™
         boolean isLoaded = MithrilPreferences.getBoolean(mActivity, MithrilPreferences.TAG_INTRO_SLIDE);
         if(!isLoaded){
 
