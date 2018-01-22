@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.view.adapter.TabPagerAdapter;
 
 public class HomeActivity extends ActivityBase {
 
@@ -105,6 +106,9 @@ public class HomeActivity extends ActivityBase {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
+
+                launchSettingScreen();
+
                 return true;
 
             default:

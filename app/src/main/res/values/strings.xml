@@ -6,9 +6,10 @@
 
     <string name="confirm">확인</string>
     <string name="cancel">취소</string>
+    <string name="ok">OK</string>
 
     <string name="today_reward">오늘의 리워드</string>
-    <string name="reward_history">오늘의 리워드</string>
+    <string name="reward_history">리워드 기록</string>
 
     <string name="permission_desc">미스릴 플레이는 다음과 같은 권한에 동의해 주셔야 정상적인 사용이 가능합니다.</string>
     <string name="agree">동의</string>
@@ -51,8 +52,11 @@
     <string name="more_info_desc">입력한 정보는 수정할수 없습니다. 신중하게 입력하세요.\n그리고 안심하세요. 이 정보는 암호화 되어 블록체인에 등록되며 본인만 확인할 수 있습니다.</string>
     <string name="more_info_reward">입력완료 및 리워드 받기</string>
 
-    <string name="today_reward_remain">오늘의 리워드가 2회 남았습니다.</string>
+    <string name="today_reward_remain">오늘의 리워드가 %s회 남았습니다.</string>
     <string name="today_reward_end">오늘의 리워드를 모두 받았습니다.</string>
+
+    <string name="reward_detail">리워드 상세</string>
+    <string name="reward_detail_comment">%s\n%s\n\n총%s분 플레이\n%sMTP 지급완료</string>
 
     <string name="get_reward_ready">10분 이상 플레이 성공!</string>
     <string name="get_reward_ok">100 MTP를 받았습니다.</string>

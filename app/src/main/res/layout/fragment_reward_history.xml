@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorLightGray"
-    tools:context="io.mithrilcoin.mithrilplay.RewardHistoryFragment">
+    tools:context="io.mithrilcoin.mithrilplay.view.RewardHistoryFragment">
 
     <LinearLayout
         android:id="@+id/layout_total_mtp"
@@ -26,6 +26,7 @@
             android:text="Total reward"/>
 
         <TextView
+            android:id="@+id/total_mtp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical|end"
@@ -42,8 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_total_mtp"
-        android:paddingBottom="80dp"
-        tools:listitem="@layout/list_item_reward_history"/>
+        tools:listitem="@layout/list_item_reward_history_data"/>
 
 
 

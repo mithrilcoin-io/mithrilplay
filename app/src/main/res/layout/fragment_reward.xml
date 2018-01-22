@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorLightGray"
-    tools:context="io.mithrilcoin.mithrilplay.RewardFragment">
+    tools:context="io.mithrilcoin.mithrilplay.view.RewardFragment">
 
     <LinearLayout
         android:id="@+id/layout_total_mtp"
@@ -29,6 +29,7 @@
             android:text="@string/today_reward_remain"/>
 
         <ImageView
+            android:id="@+id/tv_today_reward_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tint="@color/colorPrimary"
@@ -36,6 +37,7 @@
             android:src="@drawable/ic_check_circle_18"/>
 
         <ImageView
+            android:id="@+id/tv_today_reward_two"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tint="@color/colorGray"
@@ -43,6 +45,7 @@
             android:src="@drawable/ic_check_circle_18"/>
 
         <ImageView
+            android:id="@+id/tv_today_reward_three"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tint="@color/colorGray"
@@ -56,11 +59,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_total_mtp"
-        android:paddingBottom="80dp"
         tools:listitem="@layout/list_item_today_reward"/>
 
 
     <TextView
+        android:id="@+id/empty_data"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

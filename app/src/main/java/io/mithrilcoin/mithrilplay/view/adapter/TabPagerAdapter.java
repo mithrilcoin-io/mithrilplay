@@ -1,8 +1,11 @@
-package io.mithrilcoin.mithrilplay.view;
+package io.mithrilcoin.mithrilplay.view.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import io.mithrilcoin.mithrilplay.view.RewardFragment;
+import io.mithrilcoin.mithrilplay.view.RewardHistoryFragment;
 
 public class TabPagerAdapter extends FragmentStatePagerAdapter {
 

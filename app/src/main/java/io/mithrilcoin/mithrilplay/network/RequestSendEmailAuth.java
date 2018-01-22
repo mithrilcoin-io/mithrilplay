@@ -4,12 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.util.concurrent.TimeUnit;
-
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
-import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
-import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -17,20 +13,21 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
 /**
- * 로그인
+ *	회원인증 이메일 전송 요청
  */
-public class RequestLogin extends RequestCommon {
+public class RequestSendEmailAuth extends RequestCommon {
 
 	public Context context;
-	private LoginRequest mLoginRequest;
+	public String mId;
 
-	public RequestLogin(Context context, LoginRequest loginRequest){
+	public RequestSendEmailAuth(Context context, String id){
 		this.context = context;
-		this.mLoginRequest = loginRequest;
+		this.mId = id;
 	}
 
-	public void post(final ApiLoginResultListener listener){
+	public void post(final ApiLogoutResultListener listener){
 
 		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -42,7 +39,7 @@ public class RequestLogin extends RequestCommon {
 				.build();
 
 		InterfaceRestful service = retrofit.create(InterfaceRestful.class);
-		Call<MemberResponse> call = service.setLogin(mLoginRequest);
+		Call<MemberResponse> call = service.setEmailAuth(mId);
 		call.enqueue(new Callback<MemberResponse>() {
 
 			@Override
@@ -51,8 +48,8 @@ public class RequestLogin extends RequestCommon {
 				if (!response.isSuccessful()) {
 					return;
 				}
-				MemberResponse loginResponse = response.body();
-				listener.onSuccess(loginResponse);
+				MemberResponse memberJoinResponse = response.body();
+				listener.onSuccess(memberJoinResponse);
 			}
 
 			@Override
@@ -65,7 +62,8 @@ public class RequestLogin extends RequestCommon {
 		});
 	}
 
-	public interface ApiLoginResultListener {
+
+	public interface ApiLogoutResultListener {
 		void onSuccess(MemberResponse item);
 		void onFail();
 	}

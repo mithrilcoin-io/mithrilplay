@@ -14,11 +14,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog.CommonDialogListener;
 import io.mithrilcoin.mithrilplay.view.auth.SignupActivity;
+import io.mithrilcoin.mithrilplay.view.auth.SignupOkActivity;
 import io.mithrilcoin.mithrilplay.view.auth.VerifyEmailActivity;
 import io.mithrilcoin.mithrilplay.view.auth.WelcomeActivity;
 
@@ -93,10 +95,11 @@ public class ActivityBase extends AppCompatActivity {
         super.onDestroy();
     }
 
-
+    // email 인증을 받고 id가 있을 경우
     public boolean isLogin() {
         String mAuthId = MithrilPreferences.getString(this, MithrilPreferences.TAG_AUTH_ID);
-        return !TextUtils.isEmpty(mAuthId);
+        boolean mEmailAuth = MithrilPreferences.getBoolean(this, MithrilPreferences.TAG_EMAIL_AUTH);
+        return (mEmailAuth && !TextUtils.isEmpty(mAuthId));
     }
 
     public String getTodayTime(){
@@ -150,9 +153,11 @@ public class ActivityBase extends AppCompatActivity {
     //********** 화면 이동 ********//
 
     // 이메일 인증 페이지로 이동
-    public void launchVerifyScreen() {
-        startActivity(new Intent(this, VerifyEmailActivity.class));
-//        finish();
+    public void launchVerifyScreen(String authId) {
+        Intent intent = new Intent(this, VerifyEmailActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra(Constant.TAG_AUTH_EMAIL_ID, authId);
+        startActivity(intent);
     }
 
     // 환영페이지로 이동
@@ -166,12 +171,27 @@ public class ActivityBase extends AppCompatActivity {
 //        finish();
     }
 
+    // 회원가입완료로 이동
+    public void launchSignupOkScreen() {
+        Intent intent = new Intent(this, SignupOkActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+    }
+
     // 홈으로 이동
     public void launchHomeScreen() {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();
+    }
+
+    // 셋팅으로 이동
+    public void launchSettingScreen() {
+        Intent intent = new Intent(this, SettingActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
     }
 
 

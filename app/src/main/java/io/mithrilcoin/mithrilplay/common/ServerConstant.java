@@ -26,6 +26,9 @@ public class ServerConstant {
     // API Address
     public static final String APP_MEMBER_JOIN  = "/member/signup";            // 회원가입
     public static final String APP_LOGIN        = "/member/signin/";           // 로그인
-    public static final String APP_LOGOUT       = "/member/signout/";          // 로그아웃
+    public static final String APP_LOGOUT       = "/member/signout/{id}";          // 로그아웃
+    public static final String APP_SEND_EMAIL_ORDER       = "/member/sendmail/auth/{id}";         // 회원인증 이메일 전송요청
+    public static final String APP_USER_INFO       = "/member/select/userInfo";         // 로그인 사용자 정보 조회
+    public static final String APP_MEMBER_UPDATE       = "/update/memberDetail/{id}";         // 사용자 추가 정보 업데이트
 
 }

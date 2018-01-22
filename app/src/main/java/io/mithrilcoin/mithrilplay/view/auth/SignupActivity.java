@@ -17,7 +17,7 @@ import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.network.RequestMemberJoin;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
-import io.mithrilcoin.mithrilplay.network.vo.MemberJoinResponse;
+import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
 public class SignupActivity extends ActivityBase implements View.OnClickListener {
@@ -123,7 +123,7 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
         RequestMemberJoin requestMemberJoin = new RequestMemberJoin(mActivity,memberJoinRequest);
         requestMemberJoin.post(new RequestMemberJoin.ApiMemberJoinResultListener() {
             @Override
-            public void onSuccess(MemberJoinResponse item) {
+            public void onSuccess(MemberResponse item) {
 
                 if(item == null || item.getUserInfo() == null){
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
@@ -133,15 +133,22 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
                 if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // 미인증
 
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
+                    if(!TextUtils.isEmpty(item.getUserInfo().getId())){
+                        MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
+                        MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, false);
 
-                    // 이메일 인증으로 이동
-                    launchVerifyScreen();
-
+                        // 이메일 인증으로 이동
+                        launchVerifyScreen(item.getUserInfo().getId());
+                    }
 
                 }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
 
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
+                    MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
+
+                    // 회원가입 완료 페이지로 이동
+                    launchSignupOkScreen();
 
                 }else{
 

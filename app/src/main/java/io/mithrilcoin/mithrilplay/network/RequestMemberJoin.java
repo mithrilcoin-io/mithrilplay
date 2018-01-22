@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
-import io.mithrilcoin.mithrilplay.network.vo.MemberJoinResponse;
+import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -18,8 +18,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-// 회원가입
-public class RequestMemberJoin {
+/**
+ * 회원가입
+ */
+public class RequestMemberJoin extends RequestCommon {
 
 	public Context context;
 	private MemberJoinRequest mMemberJoinRequest;
@@ -41,21 +43,21 @@ public class RequestMemberJoin {
 				.build();
 
 		InterfaceRestful service = retrofit.create(InterfaceRestful.class);
-		Call<MemberJoinResponse> call = service.setMemberJoin(mMemberJoinRequest);
-		call.enqueue(new Callback<MemberJoinResponse>() {
+		Call<MemberResponse> call = service.setMemberJoin(mMemberJoinRequest);
+		call.enqueue(new Callback<MemberResponse>() {
 
 			@Override
-			public void onResponse(Call<MemberJoinResponse> call, Response<MemberJoinResponse> response) {
+			public void onResponse(Call<MemberResponse> call, Response<MemberResponse> response) {
 
 				if (!response.isSuccessful()) {
 					return;
 				}
-				MemberJoinResponse memberJoinResponse = response.body();
+				MemberResponse memberJoinResponse = response.body();
 				listener.onSuccess(memberJoinResponse);
 			}
 
 			@Override
-			public void onFailure(Call<MemberJoinResponse> call, Throwable t) {
+			public void onFailure(Call<MemberResponse> call, Throwable t) {
 				Log.v("mithril", "onFailure");
 
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -64,21 +66,8 @@ public class RequestMemberJoin {
 		});
 	}
 
-	// 통신과정 로그확인
-	private static OkHttpClient createOkHttpClient() {
-		OkHttpClient.Builder builder = new OkHttpClient.Builder();
-		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-		builder.addInterceptor(interceptor);
-
-		builder.connectTimeout(30, TimeUnit.SECONDS);
-		builder.readTimeout(30, TimeUnit.SECONDS);
-
-		return builder.build();
-	}
-
 	public interface ApiMemberJoinResultListener {
-		void onSuccess(MemberJoinResponse item);
+		void onSuccess(MemberResponse item);
 		void onFail();
 	}
 

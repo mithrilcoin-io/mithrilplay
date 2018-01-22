@@ -41,9 +41,6 @@ public class IntroActivity extends ActivityBase {
 			ROOT_PATH + ROOTING_PATH_4
 	};
 
-	private PackageManager pm;
-	private List<ApplicationInfo> mAppList = null;
-
 	@SuppressLint("WrongConstant")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +50,6 @@ public class IntroActivity extends ActivityBase {
 		mActivity = IntroActivity.this;
 
 		intro = (ImageView) findViewById(R.id.intro);
-
-		// 설치된 어플리케이션 목록 가져오기
-		pm = IntroActivity.this.getPackageManager();
-		mAppList = pm.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES | PackageManager.GET_DISABLED_COMPONENTS);
-		Log.d("mithril", "mAppList.size() = " + mAppList.size());
-		for(ApplicationInfo app : mAppList){
-//			Log.d("mithril", "packageName = " + app.packageName);
-		}
 
 		// 초기 기본 정보 셋팅
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_ANDROD_ID, getAndroidID());

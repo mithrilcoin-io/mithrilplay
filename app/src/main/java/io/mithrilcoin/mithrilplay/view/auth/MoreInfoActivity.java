@@ -5,21 +5,31 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Set;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
-// 추가정보 입력
+/**
+ * 추가정보 입력
+ */
 public class MoreInfoActivity extends ActivityBase implements View.OnClickListener {
 
     private Activity mActivity;
@@ -76,6 +86,23 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         ArrayAdapter<String> yearAdapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_item, years);
         yearAdapter.setDropDownViewResource(R.layout.spinner_item);
         sp_birth_year.setAdapter(yearAdapter);
+        sp_birth_year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    mBirthYear = "";
+                }else{
+                    mBirthYear = parent.getItemAtPosition(position) + "";
+                    mBirthYear = mBirthYear.replace("년","");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         // 태어난 달
         ArrayList<String> months = new ArrayList<String>();
@@ -86,27 +113,67 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         ArrayAdapter<String> monthAdapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_item, months);
         monthAdapter.setDropDownViewResource(R.layout.spinner_item);
         sp_birth_month.setAdapter(monthAdapter);
+        sp_birth_month.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    mBirthMonth = "";
+                }else{
+                    mBirthMonth = parent.getItemAtPosition(position) + "";
+                    mBirthMonth = mBirthMonth.replace("월","");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
         // 국가정보
+        LinkedHashMap<String, Locale> mLocaleList = new LinkedHashMap<String, Locale>();
         ArrayList<String> nations = new ArrayList<String>();
-        nations.add(getString(R.string.nation_sel));
-//        Locale[] locales = Locale.getAvailableLocales();
-//        for( int i=0; i < locales.length; i++ ){
-////            Log.d(TAG, locales[i].getDisplayCountry() );
-//            nations.add(locales[i].getDisplayCountry());
-//        }
 
-        String[] isoCodes = Locale.getISOCountries();
-        for( int i=0; i < isoCodes.length; i++ ){
-            Locale locale = new Locale( "ko", isoCodes[ i ] );
-//            Log.d( TAG, locale.getDisplayName() );
-            nations.add(locale.getDisplayName());
+        Locale[] availableLocales = Locale.getAvailableLocales();
+
+        for(Locale locale : availableLocales){
+            String code = locale.getCountry();
+            String name = locale.getDisplayCountry();
+            String ename = locale.getDisplayCountry(Locale.ENGLISH);
+            if(!TextUtils.isEmpty(code) && !TextUtils.isEmpty(name) && !mLocaleList.containsKey(name)){
+                mLocaleList.put(name, locale);
+                Log.d("mithril", code + "," + name + "," + ename);
+            }
         }
+
+        Iterator<String> iterator = mLocaleList.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = (String) iterator.next();
+            nations.add(key);
+        }
+        Collections.sort(nations, new Sortk());
+        nations.add(0, getString(R.string.nation_sel));
 
         ArrayAdapter<String> nationAdapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_item, nations);
         nationAdapter.setDropDownViewResource(R.layout.spinner_item);
         sp_nation.setAdapter(nationAdapter);
+        sp_nation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    mNation = "";
+                }else{
+                    mNation = parent.getItemAtPosition(position) + "";
+                    Log.d("mithril", "mNation =" + mNation + ", mNation.code =" + mLocaleList.get(mNation).getCountry());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
         btnGetBonusReward = (Button) findViewById(R.id.btn_get_bonus);
@@ -136,12 +203,35 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
             case R.id.btn_get_bonus:
 
+                if(TextUtils.isEmpty(mGender) || TextUtils.isEmpty(mBirthYear) || TextUtils.isEmpty(mBirthMonth) || TextUtils.isEmpty(mNation)) {
+                    showNotInputValueDialog();
+                    break;
+                }
+
+
                 showRewardDoneDialog();
 
 
                 break;
 
         }
+    }
+
+    private void showNotInputValueDialog(){
+
+        showDialogOneButton("","프로필 정보를 모두 선택하신 후 다시 시도하세요.", getString(R.string.confirm) , new CommonDialog.CommonDialogListener() {
+            @Override
+            public void onConfirm() {
+
+
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
+
     }
 
     private void showRewardDoneDialog(){
@@ -168,5 +258,12 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    class Sortk implements Comparator<String>{
+        @Override
+        public int compare(String lhs, String rhs) {
+            return lhs.compareTo(rhs);
+        }
     }
 }

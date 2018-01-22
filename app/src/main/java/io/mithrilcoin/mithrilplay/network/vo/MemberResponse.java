@@ -3,7 +3,7 @@ package io.mithrilcoin.mithrilplay.network.vo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class LoginResponse {
+public class MemberResponse {
 
     @SerializedName("userInfo")
     @Expose
@@ -27,7 +27,6 @@ public class LoginResponse {
     public void setBody(Body body) {
         this.body = body;
     }
-
 
     public class Body {
 

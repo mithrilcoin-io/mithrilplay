@@ -16,7 +16,7 @@ public class UserInfo {
     private String state;
     @SerializedName("memberDetail")
     @Expose
-    private Object memberDetail;
+    private MemberDetail memberDetail;
     @SerializedName("recentLoginTime")
     @Expose
     private String recentLoginTime;
@@ -45,11 +45,11 @@ public class UserInfo {
         this.state = state;
     }
 
-    public Object getMemberDetail() {
+    public MemberDetail getMemberDetail() {
         return memberDetail;
     }
 
-    public void setMemberDetail(Object memberDetail) {
+    public void setMemberDetail(MemberDetail memberDetail) {
         this.memberDetail = memberDetail;
     }
 
