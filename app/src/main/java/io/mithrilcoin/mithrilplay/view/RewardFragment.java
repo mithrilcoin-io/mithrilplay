@@ -125,7 +125,7 @@ public class RewardFragment extends Fragment {
 
         // Total time
         long lTime = endTime - startTime;
-        Log.e("mithril", "TIME : " + lTime + "(ms)");
+        Log.e("mithril", "today reward TIME : " + lTime + "(ms)");
 
     }
 
@@ -295,8 +295,11 @@ public class RewardFragment extends Fragment {
             public void onSuccess(AppGameListResponse item) {
 
                 if(item.getBody() == null || item.getBody().size() == 0){
-                    Toast.makeText(mActivity, getString(R.string.not_install_game), Toast.LENGTH_SHORT).show();
+                    mRecyclerView.setVisibility(View.GONE);
+                    empty_data.setVisibility(View.VISIBLE);
                 }else{
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    empty_data.setVisibility(View.GONE);
                     List<AppGameBody> installGames = item.getBody();
                     gameAppFilltering(installGames);
                 }
@@ -330,11 +333,13 @@ public class RewardFragment extends Fragment {
         Log.d("mithril", "isGetRewardCnt = " + isGetRewardCnt );
 
         if(mGameList.size() > 0){
+            mRecyclerView.setVisibility(View.VISIBLE);
+            empty_data.setVisibility(View.GONE);
             mAdapter.setItemData(mGameList);
             mAdapter.notifyDataSetChanged();
         }else{
-            // 데이터 없음
-            Toast.makeText(mActivity, getString(R.string.not_play_game), Toast.LENGTH_SHORT).show();
+            mRecyclerView.setVisibility(View.GONE);
+            empty_data.setVisibility(View.VISIBLE);
         }
 
         try{

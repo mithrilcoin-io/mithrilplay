@@ -62,7 +62,7 @@
     <string name="reward_detail_comment">%s\n%s\n\n총%s 플레이\n%sMTP 지급완료</string>
 
     <string name="get_reward_ready">1분 이상 플레이 성공!</string>
-    <string name="get_reward_ok">100 MTP를 받았습니다.</string>
+    <string name="get_reward_ok">%s MTP를 받았습니다.</string>
     <string name="get_reward">100 MTP 받기</string>
     <string name="not_install_game">설치된 게임이 없습니다.</string>
     <string name="not_play_game">오늘 실행한 게임이 없습니다.</string>

@@ -141,8 +141,9 @@ public class RewardHistoryFragment extends Fragment {
             public void onSuccess(GameRewardTotalListResponse item) {
 
                 if(item.getBody() == null || item.getBody().size() == 0){
-                    Toast.makeText(mActivity, getString(R.string.not_reward_list), Toast.LENGTH_SHORT).show();
-                    total_mtp.setVisibility(View.INVISIBLE);
+                    if(item.getUserInfo() != null && item.getUserInfo().getMtptotal() != null){
+                        total_mtp.setText(String.format(getString(R.string.total_mtp), item.getUserInfo().getMtptotal().getIncomeamount()));
+                    }
                 }else{
 
                     List<GameRewardGet> gameRewardGets = item.getBody();

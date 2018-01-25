@@ -92,7 +92,8 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
 
         if(!Value.getReward().equals("0")){
             // 리워드 받음
-            holder.tv_today_reward.setVisibility(View.INVISIBLE);
+            holder.tv_today_reward.setVisibility(View.VISIBLE);
+            holder.tv_today_reward.setText(String.format(mActivity.getString(R.string.get_reward_ok), Value.getReward()));
             holder.btn_reward_mtp.setVisibility(View.GONE);
             holder.iv_rewarded.setVisibility(View.VISIBLE);
 

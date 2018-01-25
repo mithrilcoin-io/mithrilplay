@@ -44,8 +44,6 @@
                 <data android:scheme="mithrilplay" android:host="emailcheck"/>
             </intent-filter>
 
-
-
         </activity>
 
         <activity android:name=".view.HomeActivity" />

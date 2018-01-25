@@ -37,6 +37,10 @@ public class VerifyEmailActivity extends ActivityBase {
         Intent intent = getIntent();
         mAuthId = intent.getStringExtra(Constant.TAG_AUTH_EMAIL_ID);
 
+        if(intent != null){
+            Log.e("mithril", "[VerifyEmailActivity] launch_uri=[" + intent.getDataString() + "]");
+        }
+
         if(!TextUtils.isEmpty(mAuthId)){
             Log.d("mithril", "mAuthId =" + mAuthId );
             sendEmailCall(mAuthId);
@@ -72,6 +76,12 @@ public class VerifyEmailActivity extends ActivityBase {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("mithril", "VerifyEmailActivity onResume");
+    }
+
     private void sendEmailCall(String mId){
 
         RequestSendEmailAuth requestSendEmailAuth = new RequestSendEmailAuth(mActivity, mId);
@@ -84,7 +94,7 @@ public class VerifyEmailActivity extends ActivityBase {
                     return;
                 }
 
-                Toast.makeText(mActivity, getString(R.string.verify_email_resend), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mActivity, getString(R.string.verify_email_resend), Toast.LENGTH_SHORT).show();
 
             }
 
