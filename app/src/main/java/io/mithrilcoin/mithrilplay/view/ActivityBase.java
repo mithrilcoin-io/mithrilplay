@@ -19,6 +19,7 @@ import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog.CommonDialogListener;
+import io.mithrilcoin.mithrilplay.view.auth.LoginActivity;
 import io.mithrilcoin.mithrilplay.view.auth.SignupActivity;
 import io.mithrilcoin.mithrilplay.view.auth.SignupOkActivity;
 import io.mithrilcoin.mithrilplay.view.auth.VerifyEmailActivity;
@@ -34,7 +35,6 @@ import java.util.Locale;
 public class ActivityBase extends AppCompatActivity {
 
     protected final String TAG = this.getClass().getSimpleName() + ": ";
-    protected final String CHAR_SET = "UTF-8";
 
     private Activity mActivity = null;
 
@@ -95,11 +95,22 @@ public class ActivityBase extends AppCompatActivity {
         super.onDestroy();
     }
 
-    // email 인증을 받고 id가 있을 경우
+    // 회원가입후 id가 있을 경우
     public boolean isLogin() {
         String mAuthId = MithrilPreferences.getString(this, MithrilPreferences.TAG_AUTH_ID);
+        return !TextUtils.isEmpty(mAuthId);
+    }
+
+    // email 인증 여부
+    public boolean isEmailAuth() {
         boolean mEmailAuth = MithrilPreferences.getBoolean(this, MithrilPreferences.TAG_EMAIL_AUTH);
-        return (mEmailAuth && !TextUtils.isEmpty(mAuthId));
+        return mEmailAuth;
+    }
+
+    public void logout(){
+        MithrilPreferences.putString(this, MithrilPreferences.TAG_AUTH_ID, "");
+        MithrilPreferences.putBoolean(this, MithrilPreferences.TAG_EMAIL_AUTH, false);
+        MithrilPreferences.putString(this, MithrilPreferences.TAG_EMAIL, "");
     }
 
     public String getTodayTime(){
@@ -192,6 +203,14 @@ public class ActivityBase extends AppCompatActivity {
         Intent intent = new Intent(this, SettingActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
+    }
+
+    // 로그인 화면으로 이동
+    public void launchLoginScreen() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 
 

@@ -12,10 +12,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.Log;
+import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
+import io.mithrilcoin.mithrilplay.network.RequestGameRewardOrder;
+import io.mithrilcoin.mithrilplay.network.RequestTotalRewardGetList;
+import io.mithrilcoin.mithrilplay.network.vo.AppGamePackageBody;
+import io.mithrilcoin.mithrilplay.network.vo.GameRewardGet;
+import io.mithrilcoin.mithrilplay.network.vo.GameRewardTotalListResponse;
 import io.mithrilcoin.mithrilplay.view.adapter.RewardAdapter;
 import io.mithrilcoin.mithrilplay.view.adapter.RewardHistoryAdapter;
 import io.mithrilcoin.mithrilplay.view.adapter.RewardHistoryData;
@@ -26,6 +37,8 @@ public class RewardHistoryFragment extends Fragment {
     public RewardHistoryFragment() {
     }
 
+    public static RewardHistoryFragment instance = null;
+
     private HomeActivity mActivity = null;
     private RewardHistoryAdapter mAdapter = null;
     private LinearLayoutManager mLayoutManager = null;
@@ -34,16 +47,21 @@ public class RewardHistoryFragment extends Fragment {
     private RecyclerView mRecyclerView = null;
 
     private ArrayList<RewardHistoryData> historyDataList = new ArrayList<RewardHistoryData>();
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_reward_history, container, false);
 
+        instance = RewardHistoryFragment.this;
+
         mActivity = (HomeActivity) getActivity();
 
         setLayout(rootView);
 
-        getData();
+        Log.d("mithril", "RewardHistoryFragment onCreateView");
+
+//        getData();
 
         return rootView;
     }
@@ -55,47 +73,37 @@ public class RewardHistoryFragment extends Fragment {
         mRecyclerView = (RecyclerView) v.findViewById(R.id.rv_reward_history);
         mRecyclerView.setHasFixedSize(true);
 
-    }
-
-
-    // ¿”Ω√ µ•¿Ã≈Õ ª˝º∫
-    private void getData(){
-        historyDataList.clear();
-
-        historyDataList.add(new RewardHistoryData("∂Û¿Ã¥ı", "100", 2018, 1, 2));
-        historyDataList.add(new RewardHistoryData("ƒÌ≈∞∑±", "500", 2018, 1, 2));
-        historyDataList.add(new RewardHistoryData("∂Û¿Ã¥ı", "200", 2018, 1, 2));
-        historyDataList.add(new RewardHistoryData("ƒÌ≈∞∑±", "999", 2017, 12, 5));
-        historyDataList.add(new RewardHistoryData("∏Æ¥œ¡ˆ", "10", 2017, 12, 5));
-        historyDataList.add(new RewardHistoryData("gta", "102", 2017, 11, 2));
-        historyDataList.add(new RewardHistoryData("∏µŒ¿« ∏∂∫Ì", "130", 2017, 10, 6));
-        historyDataList.add(new RewardHistoryData("¥Ÿ«‘≤≤ ¬˜¬˜¬˜", "30", 2017, 9, 16));
-        historyDataList.add(new RewardHistoryData("∂Û¿Ã¥ı", "100", 2017, 8, 10));
-        historyDataList.add(new RewardHistoryData("ƒÌ≈∞∑±", "500", 2017, 8, 10));
-        historyDataList.add(new RewardHistoryData("∂Û¿Ã¥ı", "200", 2017, 8, 10));
-        historyDataList.add(new RewardHistoryData("ƒÌ≈∞∑±", "999", 2017, 7, 19));
-        historyDataList.add(new RewardHistoryData("∏Æ¥œ¡ˆ", "10", 2017, 6, 18));
-        historyDataList.add(new RewardHistoryData("gta", "102", 2017, 5, 10));
-        historyDataList.add(new RewardHistoryData("∏µŒ¿« ∏∂∫Ì", "130", 2017, 5, 10));
-        historyDataList.add(new RewardHistoryData("¥Ÿ«‘≤≤ ¬˜¬˜¬˜", "30", 2017, 4, 5));
-
         setAdapter();
 
-        total_mtp.setText("1350 MTP");
+    }
+
+    public void onResume() {
+        super.onResume();
+
+        // Start time
+        long startTime = System.currentTimeMillis();
+
+        getGameRewardTotalList();
+
+        long endTime = System.currentTimeMillis();
+
+        // Total time
+        long lTime = endTime - startTime;
+        Log.e("mithril", "Total reward list TIME : " + lTime + "(ms)");
 
     }
 
     private void setAdapter(){
 
         mLayoutManager = new LinearLayoutManager(mActivity);
-        mAdapter = new RewardHistoryAdapter(historyDataList);
+        mAdapter = new RewardHistoryAdapter(mActivity, historyDataList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new RewardHistoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 showNotInputValueDialog(mAdapter.getItem(position).getAppName(), mAdapter.getItem(position).getTimeToString() + ""
-                        , "11", mAdapter.getItem(position).getRewardMtp());
+                        , (getTime(Long.parseLong(mAdapter.getItem(position).getPlayTime()))), mAdapter.getItem(position).getRewardMtp());
 
             }
         });
@@ -123,7 +131,66 @@ public class RewardHistoryFragment extends Fragment {
 
     }
 
+    // Í≤åÏûÑ Î¶¨ÏõåÎìú Î∞õÏùÄ Ï†ÑÏ≤¥ Í∏∞Î°ù Í∞ÄÏ†∏Ïò§Í∏∞
+    private void getGameRewardTotalList(){
 
+        String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
+        RequestTotalRewardGetList requestTotalRewardGetList = new RequestTotalRewardGetList(mActivity, mId);
+        requestTotalRewardGetList.post(new RequestTotalRewardGetList.ApiGameRewardTotalListener() {
+            @Override
+            public void onSuccess(GameRewardTotalListResponse item) {
+
+                if(item.getBody() == null || item.getBody().size() == 0){
+                    Toast.makeText(mActivity, getString(R.string.not_reward_list), Toast.LENGTH_SHORT).show();
+                    total_mtp.setVisibility(View.INVISIBLE);
+                }else{
+
+                    List<GameRewardGet> gameRewardGets = item.getBody();
+                    Log.d("mithril", "gameRewardGets =" + gameRewardGets.size() );
+
+                    historyDataList.clear();
+                    for(GameRewardGet rewardGet : gameRewardGets ){
+                        try {
+                            long rTime = dateFormat.parse(rewardGet.getRegistdate()).getTime();
+                            historyDataList.add(new RewardHistoryData(rewardGet.getPackagename(), rewardGet.getTitle(),  rewardGet.getReward(), rewardGet.getPlaytime(), rTime));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mAdapter.setItemData(historyDataList);
+                    mAdapter.notifyDataSetChanged();
+                    total_mtp.setText(String.format(getString(R.string.total_mtp), item.getUserInfo().getMtptotal().getIncomeamount()));
+                }
+
+            }
+
+            @Override
+            public void onFail() {
+
+            }
+        });
+
+    }
+
+    private String getTime(long sTime){
+        String time = "";
+        int hours   = (int) ((sTime / (1000*60*60)) % 24);  //Ïãú
+        int minutes = (int) ((sTime / (1000*60)) % 60);     //Î∂Ñ
+        int seconds = (int) (sTime / 1000) % 60 ;           //Ï¥à
+
+        if(hours != 0){
+            time += hours + "ÏãúÍ∞Ñ ";
+        }
+        if(minutes != 0){
+            time += minutes + "Î∂Ñ ";
+        }
+        if(seconds != 0){
+            time += seconds + "Ï¥à";
+        }
+//        Log.d("mithril", "Í≤åÏûÑÏãúÍ∞Ñ :" + time);
+        return time;
+    }
 
 
 }

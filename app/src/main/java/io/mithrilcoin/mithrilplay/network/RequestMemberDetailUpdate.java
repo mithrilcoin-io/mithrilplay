@@ -5,6 +5,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
+import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateRequest;
+import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateResponse;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -15,19 +17,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *	회원인증 이메일 전송 요청
+ * 사용자 추가 정보 업데이트
  */
-public class RequestSendEmailAuth extends RequestCommon {
+public class RequestMemberDetailUpdate extends RequestCommon {
 
 	public Context context;
-	public String mId;
+	private String mId;
+	private MemberUpdateRequest memberUpdateRequest;
 
-	public RequestSendEmailAuth(Context context, String id){
+	public RequestMemberDetailUpdate(Context context, String id, MemberUpdateRequest memberDetailRequest){
 		this.context = context;
 		this.mId = id;
+		this.memberUpdateRequest = memberDetailRequest;
 	}
 
-	public void post(final ApiSendEmailAuthtListener listener){
+	public void post(final ApiMemberDetailUpdateListener listener){
 
 		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -39,21 +43,21 @@ public class RequestSendEmailAuth extends RequestCommon {
 				.build();
 
 		InterfaceRestful service = retrofit.create(InterfaceRestful.class);
-		Call<MemberResponse> call = service.setEmailAuth(mId);
-		call.enqueue(new Callback<MemberResponse>() {
+		Call<MemberUpdateResponse> call = service.setMenberDetailUpdate(mId, memberUpdateRequest);
+		call.enqueue(new Callback<MemberUpdateResponse>() {
 
 			@Override
-			public void onResponse(Call<MemberResponse> call, Response<MemberResponse> response) {
+			public void onResponse(Call<MemberUpdateResponse> call, Response<MemberUpdateResponse> response) {
 
 				if (!response.isSuccessful()) {
 					return;
 				}
-				MemberResponse memberJoinResponse = response.body();
-				listener.onSuccess(memberJoinResponse);
+				MemberUpdateResponse memberUpdateResponse = response.body();
+				listener.onSuccess(memberUpdateResponse);
 			}
 
 			@Override
-			public void onFailure(Call<MemberResponse> call, Throwable t) {
+			public void onFailure(Call<MemberUpdateResponse> call, Throwable t) {
 				Log.v("mithril", "onFailure");
 
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -62,9 +66,8 @@ public class RequestSendEmailAuth extends RequestCommon {
 		});
 	}
 
-
-	public interface ApiSendEmailAuthtListener {
-		void onSuccess(MemberResponse item);
+	public interface ApiMemberDetailUpdateListener {
+		void onSuccess(MemberUpdateResponse item);
 		void onFail();
 	}
 

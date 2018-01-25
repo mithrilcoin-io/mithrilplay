@@ -1,5 +1,6 @@
 package io.mithrilcoin.mithrilplay.view.adapter;
 
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +10,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.Log;
 
 /**
  */
 public class RewardHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ArrayList<RewardHistoryItem> itemList;
 
+    private Activity mActivity;
+    private ArrayList<RewardHistoryItem> itemList;
     private OnItemClickListener listener;
 
     public static class TimeViewHolder extends RecyclerView.ViewHolder {
@@ -51,11 +54,13 @@ public class RewardHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    public RewardHistoryAdapter(ArrayList<RewardHistoryData> dataset) {
-        itemList = initItemList(dataset);
+    public RewardHistoryAdapter(Activity activity, ArrayList<RewardHistoryData> dataset) {
+        this.mActivity = activity;
+        this.itemList = initItemList(dataset);
     }
 
     private ArrayList<RewardHistoryItem> initItemList(ArrayList<RewardHistoryData> dataset) {
+
         ArrayList<RewardHistoryItem> result = new ArrayList<>();
 
         int year = 0, month = 0, dayOfMonth = 0;
@@ -68,6 +73,7 @@ public class RewardHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
             result.add(data);
         }
+
         return result;
     }
 
@@ -90,6 +96,10 @@ public class RewardHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemViewType(int position) {
         return itemList.get(position).getType();
+    }
+
+    public void setItemData(ArrayList<RewardHistoryData> item){
+        this.itemList = initItemList(item);
     }
 
     @Override
@@ -121,7 +131,7 @@ public class RewardHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         } else {
             DataViewHolder dHolder = (DataViewHolder) holder;
             dHolder.tv_reward_title.setText(((RewardHistoryData)itemList.get(position)).getAppName());
-            dHolder.tv_reward_mtp.setText(((RewardHistoryData)itemList.get(position)).getRewardMtp());
+            dHolder.tv_reward_mtp.setText( String.format(mActivity.getString(R.string.total_mtp), ((RewardHistoryData)itemList.get(position)).getRewardMtp()) );
         }
     }
 

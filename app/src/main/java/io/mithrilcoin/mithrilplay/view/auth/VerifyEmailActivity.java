@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
+import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.network.RequestCommon;
 import io.mithrilcoin.mithrilplay.network.RequestSendEmailAuth;
+import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
@@ -45,7 +48,13 @@ public class VerifyEmailActivity extends ActivityBase {
         btnCheckVerify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchSignupOkScreen();
+
+                if(TextUtils.isEmpty(mAuthId)){
+                    String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
+                    mAuthId = mId;
+                }
+                getUserinfo(mAuthId);
+
             }
         });
 
@@ -53,10 +62,11 @@ public class VerifyEmailActivity extends ActivityBase {
             @Override
             public void onClick(View v) {
                 //TODO HENRY 인증메일을 재발송 합니다~
-
+                if(TextUtils.isEmpty(mAuthId)){
+                    String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
+                    mAuthId = mId;
+                }
                 sendEmailCall(mAuthId);
-
-
             }
         });
 
@@ -65,13 +75,16 @@ public class VerifyEmailActivity extends ActivityBase {
     private void sendEmailCall(String mId){
 
         RequestSendEmailAuth requestSendEmailAuth = new RequestSendEmailAuth(mActivity, mId);
-        requestSendEmailAuth.post(new RequestSendEmailAuth.ApiLogoutResultListener() {
+        requestSendEmailAuth.post(new RequestSendEmailAuth.ApiSendEmailAuthtListener() {
             @Override
             public void onSuccess(MemberResponse item) {
 
+                if(item == null || item.getUserInfo() == null){
+                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-
-
+                Toast.makeText(mActivity, getString(R.string.verify_email_resend), Toast.LENGTH_SHORT).show();
 
             }
 
@@ -82,6 +95,46 @@ public class VerifyEmailActivity extends ActivityBase {
         });
 
     }
+
+    private void getUserinfo(String mId){
+
+        RequestUserInfo requestUserInfo = new RequestUserInfo(mActivity, mId);
+        requestUserInfo.post(new RequestUserInfo.ApiGetUserinfoListener() {
+            @Override
+            public void onSuccess(MemberResponse item) {
+
+                if(item == null || item.getUserInfo() == null){
+                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // 미인증
+
+                    //TODO 인증 미완료시 문구 확인
+                    Toast.makeText(mActivity, getString(R.string.verify_fail), Toast.LENGTH_SHORT).show();
+
+                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
+//                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
+                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
+                    MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
+
+                    launchSignupOkScreen();
+
+                }else{
+
+
+                }
+
+            }
+
+            @Override
+            public void onFail() {
+
+            }
+        });
+
+    }
+
 
 
 }

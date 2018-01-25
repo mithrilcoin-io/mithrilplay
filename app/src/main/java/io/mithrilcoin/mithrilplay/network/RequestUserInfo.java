@@ -15,19 +15,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *	회원인증 이메일 전송 요청
+ *	로그인 사용자 정보조회
  */
-public class RequestSendEmailAuth extends RequestCommon {
+public class RequestUserInfo extends RequestCommon {
 
 	public Context context;
 	public String mId;
 
-	public RequestSendEmailAuth(Context context, String id){
+	public RequestUserInfo(Context context, String id){
 		this.context = context;
 		this.mId = id;
 	}
 
-	public void post(final ApiSendEmailAuthtListener listener){
+	public void post(final ApiGetUserinfoListener listener){
 
 		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -39,7 +39,7 @@ public class RequestSendEmailAuth extends RequestCommon {
 				.build();
 
 		InterfaceRestful service = retrofit.create(InterfaceRestful.class);
-		Call<MemberResponse> call = service.setEmailAuth(mId);
+		Call<MemberResponse> call = service.getUserInfo(mId);
 		call.enqueue(new Callback<MemberResponse>() {
 
 			@Override
@@ -63,7 +63,7 @@ public class RequestSendEmailAuth extends RequestCommon {
 	}
 
 
-	public interface ApiSendEmailAuthtListener {
+	public interface ApiGetUserinfoListener {
 		void onSuccess(MemberResponse item);
 		void onFail();
 	}

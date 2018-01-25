@@ -135,24 +135,31 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
 
                 if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // 미인증
 
-                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, false);
 
                     // 이메일 인증으로 이동
                     launchVerifyScreen(item.getUserInfo().getId());
 
-                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
+                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 이메일 인증까지 완료
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
 
+                    // 메인으로 이동
                     launchHomeScreen();
 
-                }else{
+                }else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){  // 추가정보 입력완료
+                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
+                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
+                    MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
 
-
+                    // 메인으로 이동
+                    launchHomeScreen();
                 }
+
+                // 이메일 임시 저장
+                MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_EMAIL, mId);
 
 
             }

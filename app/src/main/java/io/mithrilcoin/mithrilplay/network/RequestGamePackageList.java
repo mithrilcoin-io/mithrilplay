@@ -4,8 +4,11 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.List;
+
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
-import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
+import io.mithrilcoin.mithrilplay.network.vo.AppBody;
+import io.mithrilcoin.mithrilplay.network.vo.AppGamePackageListResponse;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -15,19 +18,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *	회원인증 이메일 전송 요청
+ *  APP 필터링 (게임APP만)
  */
-public class RequestSendEmailAuth extends RequestCommon {
+public class RequestGamePackageList extends RequestCommon {
 
 	public Context context;
-	public String mId;
+	private String mId;
+	private List<AppBody> appBodies;
 
-	public RequestSendEmailAuth(Context context, String id){
+	public RequestGamePackageList(Context context, String id, List<AppBody> appList){
 		this.context = context;
 		this.mId = id;
+		this.appBodies = appList;
 	}
 
-	public void post(final ApiSendEmailAuthtListener listener){
+	public void post(final ApiGamePackageListListener listener){
 
 		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -39,21 +44,21 @@ public class RequestSendEmailAuth extends RequestCommon {
 				.build();
 
 		InterfaceRestful service = retrofit.create(InterfaceRestful.class);
-		Call<MemberResponse> call = service.setEmailAuth(mId);
-		call.enqueue(new Callback<MemberResponse>() {
+		Call<AppGamePackageListResponse> call = service.getGameAppPackage(mId, appBodies);
+		call.enqueue(new Callback<AppGamePackageListResponse>() {
 
 			@Override
-			public void onResponse(Call<MemberResponse> call, Response<MemberResponse> response) {
+			public void onResponse(Call<AppGamePackageListResponse> call, Response<AppGamePackageListResponse> response) {
 
 				if (!response.isSuccessful()) {
 					return;
 				}
-				MemberResponse memberJoinResponse = response.body();
-				listener.onSuccess(memberJoinResponse);
+				AppGamePackageListResponse appRequests = response.body();
+				listener.onSuccess(appRequests);
 			}
 
 			@Override
-			public void onFailure(Call<MemberResponse> call, Throwable t) {
+			public void onFailure(Call<AppGamePackageListResponse> call, Throwable t) {
 				Log.v("mithril", "onFailure");
 
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -62,9 +67,8 @@ public class RequestSendEmailAuth extends RequestCommon {
 		});
 	}
 
-
-	public interface ApiSendEmailAuthtListener {
-		void onSuccess(MemberResponse item);
+	public interface ApiGamePackageListListener {
+		void onSuccess(AppGamePackageListResponse item);
 		void onFail();
 	}
 

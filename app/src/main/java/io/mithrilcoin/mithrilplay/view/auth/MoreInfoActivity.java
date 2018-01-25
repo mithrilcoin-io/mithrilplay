@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,8 +24,15 @@ import java.util.Locale;
 import java.util.Set;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
+import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
+import io.mithrilcoin.mithrilplay.network.RequestMemberDetailUpdate;
+import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
+import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
+import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateRequest;
+import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
 /**
@@ -143,7 +151,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
             String ename = locale.getDisplayCountry(Locale.ENGLISH);
             if(!TextUtils.isEmpty(code) && !TextUtils.isEmpty(name) && !mLocaleList.containsKey(name)){
                 mLocaleList.put(name, locale);
-                Log.d("mithril", code + "," + name + "," + ename);
+//                Log.d("mithril", code + "," + name + "," + ename);
             }
         }
 
@@ -164,8 +172,9 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
                 if(position == 0){
                     mNation = "";
                 }else{
-                    mNation = parent.getItemAtPosition(position) + "";
-                    Log.d("mithril", "mNation =" + mNation + ", mNation.code =" + mLocaleList.get(mNation).getCountry());
+                    mNation = parent.getItemAtPosition(position).toString();
+                    mNation += "-" + mLocaleList.get(mNation).getCountry();
+                    Log.d("mithril", "mNation =" + mNation);
                 }
             }
 
@@ -208,9 +217,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
                     break;
                 }
 
-
-                showRewardDoneDialog();
-
+                setMemberDetailUpdate();
 
                 break;
 
@@ -236,11 +243,11 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
     private void showRewardDoneDialog(){
 
-        showDialogOneButton(getString(R.string.congrats), getString(R.string.bonus), getString(R.string.login_go), new CommonDialog.CommonDialogListener() {
+        showDialogOneButton(getString(R.string.congrats), getString(R.string.bonus), getString(R.string.ok), new CommonDialog.CommonDialogListener() {
             @Override
             public void onConfirm() {
-
-
+                setResult(RESULT_OK);
+                finish();
             }
 
             @Override
@@ -250,9 +257,6 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         });
 
     }
-
-
-
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -266,4 +270,35 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
             return lhs.compareTo(rhs);
         }
     }
+
+
+    private void setMemberDetailUpdate(){
+
+        //TODO city정보 없음 확인해야함
+
+        String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(mGender, mBirthYear, mBirthMonth, mNation, "");
+
+        RequestMemberDetailUpdate requestMemberDetailUpdate = new RequestMemberDetailUpdate(mActivity, mId, memberUpdateRequest);
+        requestMemberDetailUpdate.post(new RequestMemberDetailUpdate.ApiMemberDetailUpdateListener() {
+            @Override
+            public void onSuccess(MemberUpdateResponse item) {
+
+                if(item.getBody().getCode().equals("SUCCESS")){
+                    Log.d("mithril","사용자 정보 업데이트" );
+                    showRewardDoneDialog();
+                }
+
+            }
+
+            @Override
+            public void onFail() {
+
+            }
+        });
+
+    }
+
+
+
 }

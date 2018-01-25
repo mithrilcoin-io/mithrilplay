@@ -1,5 +1,6 @@
 package io.mithrilcoin.mithrilplay.view.auth;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -17,9 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
 public class WelcomeActivity extends ActivityBase {
+
+    private Activity mActivity = null;
 
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
@@ -48,6 +52,8 @@ public class WelcomeActivity extends ActivityBase {
         }
 
         setContentView(R.layout.activity_welcome);
+
+        mActivity = WelcomeActivity.this;
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
@@ -100,8 +106,10 @@ public class WelcomeActivity extends ActivityBase {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchHomeScreen();
+                // launchHomeScreen();
                 //viewPager.setCurrentItem(layouts.length);
+                MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_INTRO_SLIDE, true);
+                finish();
             }
         });
     }

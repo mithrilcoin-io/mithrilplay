@@ -17,6 +17,9 @@ public class UserInfo {
     @SerializedName("memberDetail")
     @Expose
     private MemberDetail memberDetail;
+    @SerializedName("mtptotal")
+    @Expose
+    private Mtptotal mtptotal;
     @SerializedName("recentLoginTime")
     @Expose
     private String recentLoginTime;
@@ -51,6 +54,14 @@ public class UserInfo {
 
     public void setMemberDetail(MemberDetail memberDetail) {
         this.memberDetail = memberDetail;
+    }
+
+    public Mtptotal getMtptotal() {
+        return mtptotal;
+    }
+
+    public void setMtptotal(Mtptotal mtptotal) {
+        this.mtptotal = mtptotal;
     }
 
     public String getRecentLoginTime() {

@@ -78,6 +78,8 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
 
             case R.id.btn_do_signup:
 
+                //TODO 비밀번호 정책 추가 해야함
+
                 hideKeyboard();
 
                 layout_signup_id.setErrorEnabled(true);
@@ -154,6 +156,9 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
 
 
                 }
+
+                // 이메일 임시 저장
+                MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_EMAIL, mId);
 
             }
 

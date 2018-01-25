@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
+import io.mithrilcoin.mithrilplay.network.vo.GameRewardTotalListResponse;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -15,19 +16,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *	회원인증 이메일 전송 요청
+ *	전체 게임 데이터 조회(no paging)
  */
-public class RequestSendEmailAuth extends RequestCommon {
+public class RequestTotalRewardGetList extends RequestCommon {
 
 	public Context context;
 	public String mId;
 
-	public RequestSendEmailAuth(Context context, String id){
+	public RequestTotalRewardGetList(Context context, String id){
 		this.context = context;
 		this.mId = id;
 	}
 
-	public void post(final ApiSendEmailAuthtListener listener){
+	public void post(final ApiGameRewardTotalListener listener){
 
 		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -39,21 +40,21 @@ public class RequestSendEmailAuth extends RequestCommon {
 				.build();
 
 		InterfaceRestful service = retrofit.create(InterfaceRestful.class);
-		Call<MemberResponse> call = service.setEmailAuth(mId);
-		call.enqueue(new Callback<MemberResponse>() {
+		Call<GameRewardTotalListResponse> call = service.getGameRewardAllListGet(mId);
+		call.enqueue(new Callback<GameRewardTotalListResponse>() {
 
 			@Override
-			public void onResponse(Call<MemberResponse> call, Response<MemberResponse> response) {
+			public void onResponse(Call<GameRewardTotalListResponse> call, Response<GameRewardTotalListResponse> response) {
 
 				if (!response.isSuccessful()) {
 					return;
 				}
-				MemberResponse memberJoinResponse = response.body();
-				listener.onSuccess(memberJoinResponse);
+				GameRewardTotalListResponse gameRewardTotalListResponse = response.body();
+				listener.onSuccess(gameRewardTotalListResponse);
 			}
 
 			@Override
-			public void onFailure(Call<MemberResponse> call, Throwable t) {
+			public void onFailure(Call<GameRewardTotalListResponse> call, Throwable t) {
 				Log.v("mithril", "onFailure");
 
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -63,8 +64,8 @@ public class RequestSendEmailAuth extends RequestCommon {
 	}
 
 
-	public interface ApiSendEmailAuthtListener {
-		void onSuccess(MemberResponse item);
+	public interface ApiGameRewardTotalListener {
+		void onSuccess(GameRewardTotalListResponse item);
 		void onFail();
 	}
 

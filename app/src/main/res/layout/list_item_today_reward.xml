@@ -61,6 +61,7 @@
             android:text="@string/get_reward"
             android:textColor="@color/colorPrimary"
             android:textSize="14sp"
+            android:visibility="gone"
             android:textStyle="bold" />
 
         <TextView
@@ -73,6 +74,7 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:paddingTop="8dp"
+            android:visibility="invisible"
             android:textColor="@color/colorDarkGray"
             android:textSize="14sp"
             android:text="@string/get_reward_ready" />
@@ -88,6 +90,16 @@
             android:src="@drawable/ic_check"/>
 
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_game_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_play_circle" />
 
 
 

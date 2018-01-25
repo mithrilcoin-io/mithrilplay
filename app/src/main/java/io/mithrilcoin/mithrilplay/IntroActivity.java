@@ -10,16 +10,23 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
 
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
+import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 import io.mithrilcoin.mithrilplay.view.auth.LoginActivity;
 import io.mithrilcoin.mithrilplay.view.auth.PermissionActivity;
+import io.mithrilcoin.mithrilplay.view.auth.VerifyEmailActivity;
 
 public class IntroActivity extends ActivityBase {
 
@@ -91,13 +98,16 @@ public class IntroActivity extends ActivityBase {
 
 				Intent intent = new Intent(this, PermissionActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-				startActivity(intent);
-				finish();
+				startActivityForResult(intent, Constant.REQUEST_CODE_INTRO_PERMISSION);
 
 			}else{
-
 				if(isLogin()){
-					launchHomeScreen();
+					if(isEmailAuth()){
+						launchHomeScreen();
+					}else{
+						String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
+						getUserinfo(mId);
+					}
 				}else{
 					Intent intent = new Intent(this, LoginActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -106,7 +116,6 @@ public class IntroActivity extends ActivityBase {
 				}
 
 			}
-
 
 		}
 
@@ -131,7 +140,7 @@ public class IntroActivity extends ActivityBase {
 	public void checkIntent(){
 
 		if (getIntent().getData() != null) {
-//            if(getIntent().getData().toString().startsWith("ssocioweshare")) {
+//            if(getIntent().getData().toString().startsWith("mithril")) {
 //                checkWebIntent(getIntent().getData().toString());
 //            }else{
 //                networkCheckIntro();
@@ -169,14 +178,80 @@ public class IntroActivity extends ActivityBase {
 		return result;
 	}
 
+	private void getUserinfo(String mId){
+
+		RequestUserInfo requestUserInfo = new RequestUserInfo(mActivity, mId);
+		requestUserInfo.post(new RequestUserInfo.ApiGetUserinfoListener() {
+			@Override
+			public void onSuccess(MemberResponse item) {
+
+				if(item == null || item.getUserInfo() == null){
+					Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
+					return;
+				}
+
+				if(!item.getBody().getCode().equals("SUCCESS")){
+					return;
+				}
+
+				if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // 미인증
+					Log.d("mithril", "이메일 미인증");
+					Intent intent = new Intent(mActivity, VerifyEmailActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+					startActivityForResult(intent, Constant.REQUEST_INTRO_EMAILAUTH);
+
+				}else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
+					Log.d("mithril", "이메인 인증까지 완료");
+					MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
+					launchHomeScreen();
+				}else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){  // 추가정보 입력완료
+					Log.d("mithril", "추가정보 입력완료");
+					MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
+					launchHomeScreen();
+				}else{
+
+
+				}
+
+
+			}
+
+			@Override
+			public void onFail() {
+
+			}
+		});
+
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d("mithril", ": ************ intro onActivityResult");
+        Log.d("mithril", ": intro onActivityResult");
 
 		if (resultCode != RESULT_OK) {
             finish();
+			return;
+		}
+
+		if(requestCode == Constant.REQUEST_CODE_INTRO_PERMISSION){
+			Log.d("mithril", ": REQUEST_CODE_INTRO_PERMISSION");
+
+			if(isLogin()){
+				launchHomeScreen();
+			}else{
+				Intent intent = new Intent(this, LoginActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				startActivity(intent);
+				finish();
+			}
+
+			return;
+		}else if(requestCode == Constant.REQUEST_INTRO_EMAILAUTH){
+			Log.d("mithril", ": REQUEST_INTRO_EMAILAUTH");
+
+
 			return;
 		}
 

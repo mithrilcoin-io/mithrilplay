@@ -48,8 +48,8 @@ public class RequestLogout extends RequestCommon {
 				if (!response.isSuccessful()) {
 					return;
 				}
-				MemberResponse memberJoinResponse = response.body();
-				listener.onSuccess(memberJoinResponse);
+				MemberResponse memberResponse = response.body();
+				listener.onSuccess(memberResponse);
 			}
 
 			@Override

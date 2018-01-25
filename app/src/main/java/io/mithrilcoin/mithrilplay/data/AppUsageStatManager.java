@@ -14,16 +14,16 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 
 /**
- * Created by User on 3/2/15.
  */
-public class UStatManager {
+public class AppUsageStatManager {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("M-d-yyyy HH:mm:ss");
     private static final SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-M-d HH:mm:ss");
-//    public static final String TAG = UStatManager.class.getSimpleName();
+//    public static final String TAG = AppUsageStatManager.class.getSimpleName();
     public static final String TAG = "mithril";
 
     public static Context mContext;
@@ -64,34 +64,18 @@ public class UStatManager {
         Log.d(TAG, "Range end:" + dateFormat.format(endTime));
 
 //        List<UsageStats> usageStatsList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,startTime,endTime);
-        List<UsageStats> usageStatsList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,getStartTime2(),endTime);
+        List<UsageStats> usageStatsList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,getStartTime(),endTime);
         return usageStatsList;
     }
 
     public static long getStartTime() {
         Calendar calendar = Calendar.getInstance();
-//        calendar.set(Calendar.DAY_OF_MONTH, calendar.DATE);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-
         Log.d(TAG, "today start:" + dateFormat2.format(calendar.getTimeInMillis()) );
-
         return calendar.getTimeInMillis();
-    }
-
-    public static long getStartTime2() {
-        Calendar calendar = Calendar.getInstance();
-//        calendar.set(Calendar.DAY_OF_MONTH, calendar.DATE);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        Log.d(TAG, "today start:" + dateFormat2.format(System.currentTimeMillis() -100000) );
-
-        return System.currentTimeMillis() -100000;
     }
 
 
@@ -146,10 +130,21 @@ public class UStatManager {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void printCurrentUsageStatus(Context context){
-
         mContext = context;
-
         printUsageStats(getUsageStatsList2(context));
+    }
+
+    /**
+     *  오늘 00시부터 현재 시간까지 앱사용리스트 가져오기
+     * @param context
+     * @return
+     */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static Map<String, UsageStats> getTodayUsageStatList(Context context){
+        mContext = context;
+        UsageStatsManager usm = getUsageStatsManager(context);
+        Map<String, UsageStats> usageStats = usm.queryAndAggregateUsageStats(getStartTime(), System.currentTimeMillis());
+        return usageStats;
     }
 
     @SuppressWarnings("ResourceType")

@@ -1,7 +1,9 @@
 package io.mithrilcoin.mithrilplay.view;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.view.adapter.TabPagerAdapter;
 
@@ -39,21 +42,10 @@ public class HomeActivity extends ActivityBase {
         // 앱 첫 시작시 환영 페이지로 이동
         boolean isLoaded = MithrilPreferences.getBoolean(mActivity, MithrilPreferences.TAG_INTRO_SLIDE);
         if(!isLoaded){
-
             launchWelcomeScreen();
-
-
         }else{
 
-
-
         }
-
-
-
-
-
-
 
     }
 
@@ -72,6 +64,7 @@ public class HomeActivity extends ActivityBase {
         // Creating TabPagerAdapter adapter
         TabPagerAdapter pagerAdapter = new TabPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(1);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         // Set TabSelectedListener
@@ -88,6 +81,28 @@ public class HomeActivity extends ActivityBase {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onPageSelected(int position) {
+                Log.d("mithril", "pager position =" + position);
+
+                if(position == 1){
+                    RewardHistoryFragment.instance.onResume();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
 
             }
         });

@@ -4,8 +4,13 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.List;
+
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
-import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
+import io.mithrilcoin.mithrilplay.network.vo.AppGameListResponse;
+import io.mithrilcoin.mithrilplay.network.vo.AppRequest;
+import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateRequest;
+import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateResponse;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -15,19 +20,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *	회원인증 이메일 전송 요청
+ *  게임리스트 가져오기
  */
-public class RequestSendEmailAuth extends RequestCommon {
+public class RequestTodayGameList extends RequestCommon {
 
 	public Context context;
-	public String mId;
+	private String mId;
+	private List<AppRequest> appRequests;
 
-	public RequestSendEmailAuth(Context context, String id){
+	public RequestTodayGameList(Context context, String id, List<AppRequest> appList){
 		this.context = context;
 		this.mId = id;
+		this.appRequests = appList;
 	}
 
-	public void post(final ApiSendEmailAuthtListener listener){
+	public void post(final ApiTodayGameListListener listener){
 
 		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -39,21 +46,21 @@ public class RequestSendEmailAuth extends RequestCommon {
 				.build();
 
 		InterfaceRestful service = retrofit.create(InterfaceRestful.class);
-		Call<MemberResponse> call = service.setEmailAuth(mId);
-		call.enqueue(new Callback<MemberResponse>() {
+		Call<AppGameListResponse> call = service.getGameApp(mId, appRequests);
+		call.enqueue(new Callback<AppGameListResponse>() {
 
 			@Override
-			public void onResponse(Call<MemberResponse> call, Response<MemberResponse> response) {
+			public void onResponse(Call<AppGameListResponse> call, Response<AppGameListResponse> response) {
 
 				if (!response.isSuccessful()) {
 					return;
 				}
-				MemberResponse memberJoinResponse = response.body();
-				listener.onSuccess(memberJoinResponse);
+				AppGameListResponse appGameListResponse = response.body();
+				listener.onSuccess(appGameListResponse);
 			}
 
 			@Override
-			public void onFailure(Call<MemberResponse> call, Throwable t) {
+			public void onFailure(Call<AppGameListResponse> call, Throwable t) {
 				Log.v("mithril", "onFailure");
 
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -62,9 +69,8 @@ public class RequestSendEmailAuth extends RequestCommon {
 		});
 	}
 
-
-	public interface ApiSendEmailAuthtListener {
-		void onSuccess(MemberResponse item);
+	public interface ApiTodayGameListListener {
+		void onSuccess(AppGameListResponse item);
 		void onFail();
 	}
 

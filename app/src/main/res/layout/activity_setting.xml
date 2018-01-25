@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorLightGray"
-    tools:context="io.mithrilcoin.mithrilplay.SettingActivity">
+    tools:context="io.mithrilcoin.mithrilplay.view.SettingActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -38,8 +38,19 @@
         android:paddingBottom="4dp"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@color/colorBlack"
-        tools:text="zack.cho@mithrilcoin.io"/>
+        android:textColor="@color/colorBlack"/>
+
+    <TextView
+        android:id="@+id/tv_mtp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="4dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorBlack"/>
 
     <TextView
         android:id="@+id/tv_more_info"
@@ -48,11 +59,13 @@
         android:textColor="@color/colorBlack"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
+        android:layout_marginTop="10dp"
         android:paddingBottom="4dp"
         android:textSize="12sp"
-        tools:text="남자 / 1979.12 / 대한민국"/>
+        android:visibility="visible" />
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/layout_more_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -93,6 +106,7 @@
         android:background="@color/colorGray"/>
 
     <TextView
+        android:id="@+id/logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="24dp"
