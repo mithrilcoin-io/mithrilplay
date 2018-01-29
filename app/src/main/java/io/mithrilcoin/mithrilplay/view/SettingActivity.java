@@ -55,7 +55,7 @@ public class SettingActivity extends ActivityBase  {
             @Override
             public void onClick(View v) {
 
-                // Ãß°¡Á¤º¸ ÀÔ·ÂÀ¸·Î ÀÌµ¿
+                // ì¶”ê°€ì •ë³´ ì…ë ¥ìœ¼ë¡œ ì´ë™
                 Intent intent = new Intent(mActivity, MoreInfoActivity.class);
                 startActivityForResult(intent, Constant.REQUEST_SETTING_MOREINFO);
 
@@ -70,7 +70,7 @@ public class SettingActivity extends ActivityBase  {
             }
         });
 
-        // °èÁ¤Á¤º¸
+        // ê³„ì •ì •ë³´
         String email = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_EMAIL);
         tv_email.setText(email);
 
@@ -94,7 +94,7 @@ public class SettingActivity extends ActivityBase  {
             public void onSuccess(MemberResponse item) {
 
                 if(item.getBody().getCode().equals("SUCCESS")){
-                    Log.d("mithril","·Î±×¾Æ¿ô ¼º°ø" );
+                    Log.d("mithril","ë¡œê·¸ì•„ì›ƒ ì„±ê³µ" );
                     logout();
                     for (int i = 0; i < activityList.size(); i++) {
                         activityList.get(i).finish();
@@ -129,24 +129,23 @@ public class SettingActivity extends ActivityBase  {
                     return;
                 }
 
-                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // ¹ÌÀÎÁõ
+                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // ë¯¸ì¸ì¦
 
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
 
-                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // Á¤»ó
-                    Log.d("mithril", "ÀÌ¸ŞÀÎ ÀÎÁõ±îÁö ¿Ï·á");
+                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // ì •ìƒ
+                    Log.d("mithril", "ì´ë©”ì¸ ì¸ì¦ê¹Œì§€ ì™„ë£Œ");
 
                     layout_more_info.setVisibility(View.VISIBLE);
                     tv_more_info.setVisibility(View.GONE);
 
-                }else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){  // Ãß°¡Á¤º¸ ÀÔ·Â¿Ï·á
-                    Log.d("mithril", "Ãß°¡Á¤º¸ ÀÔ·Â¿Ï·á");
+                }else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){ // ì¶”ê°€ì •ë³´ ì…ë ¥ì™„ë£Œ
 
-                    // »ç¿ëÀÚ Ãß°¡ Á¤º¸
+                    // ì‚¬ìš©ì ì¶”ê°€ ì •ë³´
                     layout_more_info.setVisibility(View.GONE);
                     tv_more_info.setVisibility(View.VISIBLE);
 
-                    // "³²ÀÚ / 1979.12 / ´ëÇÑ¹Î±¹"
+                    // "ë‚¨ì / 1979.12 / ëŒ€í•œë¯¼êµ­"
                     if(item.getUserInfo().getMemberDetail() != null){
                         tv_more_info.setText(String.format(getString(R.string.more_info_set),
                                 item.getUserInfo().getMemberDetail().getGender(),
