@@ -1,47 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:padding="16dp"
+    android:background="@drawable/bg_border_bottom_gray">
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/iv_game_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/game_icon_sample" />
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/iv_mithril_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:scaleType="fitXY"
+        android:tint="@color/colorPrimary"
+        android:src="@drawable/ic_symbol" />
+
+    <TextView
+        android:id="@+id/tv_reward_mtp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        tools:text="100 MTP"/>
+
+    <TextView
+        android:id="@+id/tv_reward_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:background="@drawable/bg_border_bottom_gray">
+        android:layout_toStartOf="@id/tv_reward_mtp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="56dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="2"
+        android:textColor="@color/colorBlack"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="Game title"/>
 
-        <ImageView
-            android:id="@+id/iv_game_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/game_icon_sample" />
-
-        <TextView
-            android:id="@+id/tv_reward_mtp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            tools:text="100 MTP"/>
-
-        <TextView
-            android:id="@+id/tv_reward_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/tv_reward_mtp"
-            android:layout_toEndOf="@id/iv_game_icon"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:textColor="@color/colorBlack"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="수퍼마리오"/>
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

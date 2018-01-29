@@ -34,12 +34,11 @@
             android:textColor="@color/colorPrimary"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:text="1,000 MTP"/>
+            tools:text="1,000 MTP"/>
 
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:visibility="gone"
         android:id="@+id/rv_reward_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -49,7 +48,7 @@
         tools:listitem="@layout/list_item_reward_history_data"/>
 
     <RelativeLayout
-
+        android:visibility="gone"
         android:id="@+id/empty_reward_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -61,7 +60,8 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_empty_history"/>
+            android:src="@drawable/ic_empty_history"
+            android:contentDescription="@string/empty_reward_history"/>
 
         <TextView
             android:id="@+id/empty_data"
