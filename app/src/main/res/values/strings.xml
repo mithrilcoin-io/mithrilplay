@@ -70,8 +70,6 @@
     <string name="total_mtp">%s MTP</string>
 
 
-
-
     <string name="welcome_slide1_title">JUST PLAY</string>
     <string name="welcome_slide1_desc">미스릴 플레이에 오신것을 환영합니다.\n폰에 설치된 게임을 마음껏 즐기세요.</string>
     <string name="welcome_slide2_title">GET REWARD</string>
@@ -82,6 +80,11 @@
     <string name="setting">설정</string>
     <string name="setting_profile_title">MITHRIL PLAY 계정</string>
     <string name="sign_out">로그아웃</string>
+
+    <string name="total_reward">총 리워드</string>
+
+    <string name="empty_today_txt">오늘 플레이한 기록이 없네요.\n내 폰에 설치된 어떤 게임이든 플레이하세요!\n3개의 게임에서 각각 한 번,\n총 3번의 리워드를 받을 수 있어요.</string>
+    <string name="empty_reward_history_txt">아직 받은 리워드가 하나도 없네요.\n내 폰에 설치된 게임을 즐기고\n오늘의 첫 리워드를 받아보세요.</string>
 
     <!-- image desc -->
     <string name="mithril_logo">미스릴 로고</string>

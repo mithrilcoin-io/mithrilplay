@@ -55,21 +55,43 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
+
         android:id="@+id/rv_today_reward"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="32dp"
+        android:clipToPadding="false"
         android:layout_below="@id/layout_total_mtp"
         tools:listitem="@layout/list_item_today_reward"/>
 
-
-    <TextView
-        android:id="@+id/empty_data"
+    <RelativeLayout
         android:visibility="gone"
+        android:id="@+id/empty_today_reward"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_total_mtp"
-        android:padding="32dp"
-        android:textColor="@color/colorPrimary"
-        android:text="미스릴 플레이를 설치한 다음 플레이한 기록이 없네요.\n\n매일 10분이상 게임을 플레이하고 100MTP 를 얻으세요 최대 3개의 게임에서 리워드를 받을 수 있어요.\n\n3 x 100MTP = 300MTP"/>
+        android:gravity="center_vertical"
+        android:layout_below="@id/layout_total_mtp">
+
+        <ImageView
+            android:id="@+id/iv_empty_today"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_empty_today"/>
+
+        <TextView
+            android:id="@+id/empty_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:layout_below="@id/iv_empty_today"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/empty_today_txt"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

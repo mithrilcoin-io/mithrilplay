@@ -23,7 +23,7 @@
             android:layout_weight="2"
             android:textColor="@color/colorDarkGray"
             android:textSize="14sp"
-            android:text="Total reward"/>
+            android:text="@string/total_reward"/>
 
         <TextView
             android:id="@+id/total_mtp"
@@ -39,11 +39,44 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
         android:id="@+id/rv_reward_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_total_mtp"
+        android:paddingBottom="32dp"
+        android:clipToPadding="false"
         tools:listitem="@layout/list_item_reward_history_data"/>
+
+    <RelativeLayout
+
+        android:id="@+id/empty_reward_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_below="@id/layout_total_mtp">
+
+        <ImageView
+            android:id="@+id/iv_empty_today"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_empty_history"/>
+
+        <TextView
+            android:id="@+id/empty_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:layout_below="@id/iv_empty_today"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/empty_reward_history_txt"/>
+
+    </RelativeLayout>
 
 
 
