@@ -3,24 +3,27 @@ package io.mithrilcoin.mithrilplay;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.usage.UsageStats;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
+import io.mithrilcoin.mithrilplay.common.CommonApplication;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.common.TimeUtil;
+import io.mithrilcoin.mithrilplay.data.AppUsageStatManager;
 import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
@@ -48,6 +51,7 @@ public class IntroActivity extends ActivityBase {
 			ROOT_PATH + ROOTING_PATH_4
 	};
 
+	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	@SuppressLint("WrongConstant")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +96,29 @@ public class IntroActivity extends ActivityBase {
 
 		}else {
 
+			// 오늘까지 한 데이터 저장하고 이메일 인증후에 첫 실행시 빼준다.
+			String mAuthDate = 	MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_DATE);
+			if(TextUtils.isEmpty(mAuthDate)){
+
+				// 오늘 실행된 앱 목록 (앱 전체)
+				Map<String, UsageStats> todayAppUsage = AppUsageStatManager.getTodayUsageStatList(mActivity);
+				String[] mKeys = todayAppUsage.keySet().toArray(new String[todayAppUsage.size()]);
+
+				Map<String, String> saveData = new HashMap<String, String>();
+				for(int i = 0 ; i < mKeys.length ; ++i ){
+				    if(todayAppUsage.containsKey(mKeys[i])){
+				        if(todayAppUsage.get(mKeys[i]).getTotalTimeInForeground() > 0){
+                            saveData.put(mKeys[i], todayAppUsage.get(mKeys[i]).getTotalTimeInForeground()+"");
+//                            Log.d("mithril", "key = " + mKeys[i] + ", TimeInForeground =" + todayAppUsage.get(mKeys[i]).getTotalTimeInForeground());
+                        }
+                    }
+                }
+                MithrilPreferences.saveMap(mActivity, MithrilPreferences.TAG_APP_EMAILAUTH_BEFORE_DATA, saveData);
+                MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_APP_EMAILAUTH_BEFORE_DATA_date, TimeUtil.getTodayString());
+
+			}
+
+
 			// 안드로이드 퍼미션 권한 안내 한번만 호출
 			boolean isPLoaded = MithrilPreferences.getBoolean(mActivity, MithrilPreferences.TAG_PERMISSION);
 			if(!isPLoaded){
@@ -104,6 +131,8 @@ public class IntroActivity extends ActivityBase {
 				if(isLogin()){
 					if(isEmailAuth()){
 						launchHomeScreen();
+						String ad = MithrilPreferences.getString(CommonApplication.getApplication(), MithrilPreferences.TAG_AUTH_DATE);
+						Log.e("mithril", "ad = " + ad );
 					}else{
 						String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
 						getUserinfo(mId);
@@ -199,9 +228,8 @@ public class IntroActivity extends ActivityBase {
 					Intent intent = new Intent(mActivity, VerifyEmailActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 					startActivityForResult(intent, Constant.REQUEST_INTRO_EMAILAUTH);
-
 				}else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
-					Log.d("mithril", "이메인 인증까지 완료");
+					Log.d("mithril", "이메일 인증까지 완료");
 					MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
 					launchHomeScreen();
 				}else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){  // 추가정보 입력완료
@@ -213,6 +241,9 @@ public class IntroActivity extends ActivityBase {
 
 				}
 
+				if(item.getUserInfo().getAuthdate() != null){
+					MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
+				}
 
 			}
 

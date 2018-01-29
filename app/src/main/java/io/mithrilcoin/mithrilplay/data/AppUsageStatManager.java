@@ -6,16 +6,19 @@ import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.widget.Toast;
+import android.text.TextUtils;
+import android.util.ArrayMap;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
+import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+
+import static android.app.usage.UsageStatsManager.INTERVAL_DAILY;
 
 /**
  */
@@ -23,7 +26,7 @@ public class AppUsageStatManager {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("M-d-yyyy HH:mm:ss");
     private static final SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-M-d HH:mm:ss");
-//    public static final String TAG = AppUsageStatManager.class.getSimpleName();
+
     public static final String TAG = "mithril";
 
     public static Context mContext;
@@ -52,86 +55,40 @@ public class AppUsageStatManager {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static List<UsageStats> getUsageStatsList(Context context){
-        UsageStatsManager usm = getUsageStatsManager(context);
-        Calendar calendar = Calendar.getInstance();
-        long endTime = calendar.getTimeInMillis();
-        calendar.add(Calendar.DATE, -1);
-        long startTime = calendar.getTimeInMillis();
-
-        Log.d(TAG, "Range start:" + dateFormat.format(startTime) );
-        Log.d(TAG, "Range end:" + dateFormat.format(endTime));
-
-//        List<UsageStats> usageStatsList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,startTime,endTime);
-        List<UsageStats> usageStatsList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,getStartTime(),endTime);
-        return usageStatsList;
-    }
 
     public static long getStartTime() {
+//        Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
+//        Calendar calendar = GregorianCalendar.getInstance();
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        Log.d(TAG, "today start:" + dateFormat2.format(calendar.getTimeInMillis()) );
-        return calendar.getTimeInMillis();
-    }
 
+        long startTime = 0;
+        String mAuthDate = MithrilPreferences.getString(mContext, MithrilPreferences.TAG_AUTH_DATE);
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static List<UsageStats> getUsageStatsList2(Context context){
-        UsageStatsManager usm = getUsageStatsManager(context);
-//        Calendar calendar = Calendar.getInstance();
-//        long endTime = calendar.getTimeInMillis();
-//        calendar.add(Calendar.DATE, -1);
-//        long startTime = calendar.getTimeInMillis();
-//
-//        Log.d(TAG, "Range start:" + dateFormat.format(startTime) );
-//        Log.d(TAG, "Range end:" + dateFormat.format(endTime));
-//        List<UsageStats> usageStatsList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,startTime,endTime);
+        long lAuthDate = 0;
 
-        Log.d(TAG, "current time:" + dateFormat2.format(System.currentTimeMillis()));
-        Map<String, UsageStats> usageStats = usm.queryAndAggregateUsageStats(getStartTime(), System.currentTimeMillis());
-
-        Log.d(TAG, "usageStats.size():" + usageStats.size());
-
-        for(int i = 0 ; i<usageStats.size() ; i++){
-
-
+        if(!TextUtils.isEmpty(mAuthDate)){
+            lAuthDate = Long.parseLong(mAuthDate);
         }
 
-        List<UsageStats> stats = new ArrayList<>();
-        stats.addAll(usageStats.values());
-
-
-        return stats;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void printUsageStats(List<UsageStats> usageStatsList){
-        Log.d(TAG, "usageStatsList.size():" + usageStatsList.size());
-        for (UsageStats u : usageStatsList){
-//            Log.d(TAG, "Pkg: " + u.getPackageName() +  "\t" + "ForegroundTime: " + u.getTotalTimeInForeground()) ;
-            if(u.getPackageName().equals("com.ketchapp.rider")) {
-                Log.d(TAG, "Pkg: " + u.getPackageName() + "\t"
-                        + "getFirstTimeStamp: " +  dateFormat2.format(u.getFirstTimeStamp()) + "\t"
-                        + "getLastTimeStamp: " + dateFormat2.format(u.getLastTimeStamp())  + "\t"
-                        + "getTotalTimeInForeground: " + u.getTotalTimeInForeground() + "\t"
-                        + "게임시간 : " + getTime(u.getTotalTimeInForeground())
-                        + "getLastTimeUsed: " + dateFormat2.format(u.getLastTimeUsed())
-                );
-
-                Toast.makeText(mContext, "게임시간 : " + getTime(u.getTotalTimeInForeground()), Toast.LENGTH_SHORT).show();
-            }
+        if(lAuthDate > calendar.getTimeInMillis()){
+            startTime = lAuthDate;
+        }else{
+            startTime = calendar.getTimeInMillis();
         }
 
-    }
+        Log.d("mithriltime", "getStartTime today start calendar:" + startTime);
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void printCurrentUsageStatus(Context context){
-        mContext = context;
-        printUsageStats(getUsageStatsList2(context));
+//        TimeZone utc = TimeZone.getTimeZone("UTC");
+//        dateFormat2.setTimeZone(utc);
+//        Log.d("mithriltime", "getStartTime today start dateFormat2:" + dateFormat2.format(calendar.getTimeInMillis()));
+//        Log.d("mithriltime", "getStartTime System.currentTimeMillis():" + System.currentTimeMillis());
+//        Log.d("mithriltime", "getStartTime System.currentTimeMillis() dateFormat2:" + dateFormat2.format(System.currentTimeMillis()));
+
+        return startTime;
     }
 
     /**
@@ -143,25 +100,53 @@ public class AppUsageStatManager {
     public static Map<String, UsageStats> getTodayUsageStatList(Context context){
         mContext = context;
         UsageStatsManager usm = getUsageStatsManager(context);
-        Map<String, UsageStats> usageStats = usm.queryAndAggregateUsageStats(getStartTime(), System.currentTimeMillis());
+
+        Log.d("mithriltime", "System.currentTimeMillis():" + System.currentTimeMillis());
+
+        Map<String, UsageStats> usageStats = queryAndAggregateUsageStatsDaily(getStartTime(), System.currentTimeMillis());
+//        Map<String, UsageStats> usageStats = queryAndAggregateUsageStatsDaily(startTime, endTime);
+//        Map<String, UsageStats> usageStats = queryAndAggregateUsageStatsDaily(20180126, 20180127);
+//        Map<String, UsageStats> usageStats = queryAndAggregateUsageStatsDaily(System.currentTimeMillis() - (20 * 60 * 1000), System.currentTimeMillis());
+
+//        UsageStatsManager usageStatsManager = (UsageStatsManager)context.getSystemService(Context.USAGE_STATS_SERVICE);
+//        List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, getStartTime()  , System.currentTimeMillis());
+//        List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, 0  , System.currentTimeMillis());
+
+//        for (UsageStats us : queryUsageStats) {
+//            Log.d("mithriltime", us.getPackageName() + " = " + us.getTotalTimeInForeground());
+//        }
+
         return usageStats;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static Map<String, UsageStats> queryAndAggregateUsageStatsDaily(long beginTime, long endTime) {
+
+        UsageStatsManager usm = getUsageStatsManager(mContext);
+        List<UsageStats> stats = usm.queryUsageStats(INTERVAL_DAILY, beginTime, endTime);
+        if (stats.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        ArrayMap<String, UsageStats> aggregatedStats = new ArrayMap<>();
+        final int statCount = stats.size();
+        for (int i = 0; i < statCount; i++) {
+            UsageStats newStat = stats.get(i);
+            UsageStats existingStat = aggregatedStats.get(newStat.getPackageName());
+            if (existingStat == null) {
+                aggregatedStats.put(newStat.getPackageName(), newStat);
+            } else {
+                existingStat.add(newStat);
+            }
+        }
+        return aggregatedStats;
     }
 
     @SuppressWarnings("ResourceType")
     private static UsageStatsManager getUsageStatsManager(Context context){
         UsageStatsManager usm = (UsageStatsManager) context.getSystemService("usagestats");
         return usm;
-    }
-
-    public static String getTime(long sTime){
-        String time = "";
-        int hours   = (int) ((sTime / (1000*60*60)) % 24);  //시
-        int minutes = (int) ((sTime / (1000*60)) % 60);     //분
-        int seconds = (int) (sTime / 1000) % 60 ;           //초
-
-        time = hours + "시간 " + minutes + "분 " + seconds + "초";
-        Log.d(TAG, "게임시간 :" + time);
-        return time;
     }
 
 }

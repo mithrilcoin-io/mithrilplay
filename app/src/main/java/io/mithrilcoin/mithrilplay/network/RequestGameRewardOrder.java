@@ -4,13 +4,11 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.util.List;
-
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
 import io.mithrilcoin.mithrilplay.network.vo.AppGameBody;
-import io.mithrilcoin.mithrilplay.network.vo.AppGameListResponse;
 import io.mithrilcoin.mithrilplay.network.vo.AppGamedataRewardResponse;
-import io.mithrilcoin.mithrilplay.network.vo.AppRequest;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,6 +49,12 @@ public class RequestGameRewardOrder extends RequestCommon {
 
 			@Override
 			public void onResponse(Call<AppGamedataRewardResponse> call, Response<AppGamedataRewardResponse> response) {
+
+				Log.d("mithril", "response.code() =" +  response.code() );
+				if(response.code() == Constant.OTHER_LOGIN){
+					ActivityBase.instance.logoutInlogin();
+					return;
+				}
 
 				if (!response.isSuccessful()) {
 					return;

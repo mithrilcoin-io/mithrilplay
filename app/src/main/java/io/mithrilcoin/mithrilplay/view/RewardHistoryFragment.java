@@ -1,6 +1,5 @@
 package io.mithrilcoin.mithrilplay.view;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,26 +7,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.common.TimeUtil;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
-import io.mithrilcoin.mithrilplay.network.RequestGameRewardOrder;
 import io.mithrilcoin.mithrilplay.network.RequestTotalRewardGetList;
-import io.mithrilcoin.mithrilplay.network.vo.AppGamePackageBody;
 import io.mithrilcoin.mithrilplay.network.vo.GameRewardGet;
 import io.mithrilcoin.mithrilplay.network.vo.GameRewardTotalListResponse;
-import io.mithrilcoin.mithrilplay.view.adapter.RewardAdapter;
 import io.mithrilcoin.mithrilplay.view.adapter.RewardHistoryAdapter;
 import io.mithrilcoin.mithrilplay.view.adapter.RewardHistoryData;
 
@@ -54,14 +46,9 @@ public class RewardHistoryFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_reward_history, container, false);
 
         instance = RewardHistoryFragment.this;
-
         mActivity = (HomeActivity) getActivity();
 
         setLayout(rootView);
-
-        Log.d("mithril", "RewardHistoryFragment onCreateView");
-
-//        getData();
 
         return rootView;
     }
@@ -103,7 +90,7 @@ public class RewardHistoryFragment extends Fragment {
             @Override
             public void onItemClick(int position) {
                 showNotInputValueDialog(mAdapter.getItem(position).getAppName(), mAdapter.getItem(position).getTimeToString() + ""
-                        , (getTime(Long.parseLong(mAdapter.getItem(position).getPlayTime()))), mAdapter.getItem(position).getRewardMtp());
+                        , (TimeUtil.getTime(Long.parseLong(mAdapter.getItem(position).getPlayTime()))), mAdapter.getItem(position).getRewardMtp());
 
             }
         });
@@ -151,12 +138,8 @@ public class RewardHistoryFragment extends Fragment {
 
                     historyDataList.clear();
                     for(GameRewardGet rewardGet : gameRewardGets ){
-                        try {
-                            long rTime = dateFormat.parse(rewardGet.getRegistdate()).getTime();
-                            historyDataList.add(new RewardHistoryData(rewardGet.getPackagename(), rewardGet.getTitle(),  rewardGet.getReward(), rewardGet.getPlaytime(), rTime));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                        long rTime = Long.parseLong(rewardGet.getRegistdate());
+                        historyDataList.add(new RewardHistoryData(rewardGet.getPackagename(), rewardGet.getAlttitle(),  rewardGet.getReward(), rewardGet.getPlaytime(), rTime));
                     }
 
                     mAdapter.setItemData(historyDataList);
@@ -173,25 +156,5 @@ public class RewardHistoryFragment extends Fragment {
         });
 
     }
-
-    private String getTime(long sTime){
-        String time = "";
-        int hours   = (int) ((sTime / (1000*60*60)) % 24);  //시
-        int minutes = (int) ((sTime / (1000*60)) % 60);     //분
-        int seconds = (int) (sTime / 1000) % 60 ;           //초
-
-        if(hours != 0){
-            time += hours + "시간 ";
-        }
-        if(minutes != 0){
-            time += minutes + "분 ";
-        }
-        if(seconds != 0){
-            time += seconds + "초";
-        }
-//        Log.d("mithril", "게임시간 :" + time);
-        return time;
-    }
-
 
 }

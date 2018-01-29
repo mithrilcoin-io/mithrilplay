@@ -3,11 +3,6 @@ package io.mithrilcoin.mithrilplay.network.vo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.text.ParseException;
-import java.util.Date;
-
-import io.mithrilcoin.mithrilplay.view.adapter.RewardHistoryItem;
-
 public class GameRewardGet {
 
     @SerializedName("startDate")
@@ -76,6 +71,9 @@ public class GameRewardGet {
     @SerializedName("playtime")
     @Expose
     private String playtime;
+    @SerializedName("alttitle")
+    @Expose
+    private String alttitle;
     @SerializedName("modifydate")
     @Expose
     private String modifydate;
@@ -257,6 +255,14 @@ public class GameRewardGet {
 
     public void setPlaytime(String playtime) {
         this.playtime = playtime;
+    }
+
+    public String getAlttitle() {
+        return alttitle;
+    }
+
+    public void setAlttitle(String alttitle) {
+        this.alttitle = alttitle;
     }
 
     public String getModifydate() {

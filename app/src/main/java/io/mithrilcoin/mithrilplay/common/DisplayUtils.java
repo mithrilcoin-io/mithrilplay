@@ -1,8 +1,6 @@
 package io.mithrilcoin.mithrilplay.common;
 
 import android.content.Context;
-import android.graphics.Paint;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 

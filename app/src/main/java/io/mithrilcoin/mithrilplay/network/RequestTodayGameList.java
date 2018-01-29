@@ -6,11 +6,11 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
 import io.mithrilcoin.mithrilplay.network.vo.AppGameListResponse;
 import io.mithrilcoin.mithrilplay.network.vo.AppRequest;
-import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateRequest;
-import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateResponse;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,6 +51,12 @@ public class RequestTodayGameList extends RequestCommon {
 
 			@Override
 			public void onResponse(Call<AppGameListResponse> call, Response<AppGameListResponse> response) {
+
+				Log.d("mithril", "response.code() =" +  response.code() );
+				if(response.code() == Constant.OTHER_LOGIN){
+					ActivityBase.instance.logoutInlogin();
+					return;
+				}
 
 				if (!response.isSuccessful()) {
 					return;

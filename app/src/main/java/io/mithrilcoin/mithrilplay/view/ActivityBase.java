@@ -14,6 +14,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
@@ -25,18 +28,13 @@ import io.mithrilcoin.mithrilplay.view.auth.SignupOkActivity;
 import io.mithrilcoin.mithrilplay.view.auth.VerifyEmailActivity;
 import io.mithrilcoin.mithrilplay.view.auth.WelcomeActivity;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 
 public class ActivityBase extends AppCompatActivity {
 
     protected final String TAG = this.getClass().getSimpleName() + ": ";
 
     private Activity mActivity = null;
+    public static ActivityBase instance = null;
 
     public static ArrayList<Activity> activityList = new ArrayList<Activity>();
 
@@ -51,6 +49,7 @@ public class ActivityBase extends AppCompatActivity {
 //        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         mActivity = ActivityBase.this;
+        instance = ActivityBase.this;
 
         activityList.add(this);
     }
@@ -80,7 +79,6 @@ public class ActivityBase extends AppCompatActivity {
 //        finish();
 //        ActivityConstant.applicationKill(this);
         System.exit(0);
-
 //        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
@@ -111,16 +109,16 @@ public class ActivityBase extends AppCompatActivity {
         MithrilPreferences.putString(this, MithrilPreferences.TAG_AUTH_ID, "");
         MithrilPreferences.putBoolean(this, MithrilPreferences.TAG_EMAIL_AUTH, false);
         MithrilPreferences.putString(this, MithrilPreferences.TAG_EMAIL, "");
+        MithrilPreferences.putString(this, MithrilPreferences.TAG_AUTH_DATE, "");
     }
 
-    public String getTodayTime(){
-
-        String time = "";
-        SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 HH시", Locale.KOREA);
-        Date currentTime = new Date();
-        time = mSimpleDateFormat.format ( currentTime );
-
-        return time;
+    public void logoutInlogin(){
+        Log.e("mithril","다른 기기에서 로그인했습니다." );
+        logout();
+        for (int i = 0; i < activityList.size(); i++) {
+            activityList.get(i).finish();
+        }
+        launchLoginScreen();
     }
 
     public String getAppVersion() {

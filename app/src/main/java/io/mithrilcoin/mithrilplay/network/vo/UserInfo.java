@@ -23,6 +23,9 @@ public class UserInfo {
     @SerializedName("recentLoginTime")
     @Expose
     private String recentLoginTime;
+    @SerializedName("authdate")
+    @Expose
+    private String authdate;
 
     public String getId() {
         return id;
@@ -72,4 +75,11 @@ public class UserInfo {
         this.recentLoginTime = recentLoginTime;
     }
 
+    public String getAuthdate() {
+        return authdate;
+    }
+
+    public void setAuthdate(String authdate) {
+        this.authdate = authdate;
+    }
 }

@@ -10,7 +10,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import io.mithrilcoin.mithrilplay.R;
-import io.mithrilcoin.mithrilplay.common.Log;
 
 /**
  */

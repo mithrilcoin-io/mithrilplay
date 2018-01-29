@@ -3,14 +3,9 @@ package io.mithrilcoin.mithrilplay.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.QuickContactBadge;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -152,15 +147,12 @@ public class SettingActivity extends ActivityBase  {
                     tv_more_info.setVisibility(View.VISIBLE);
 
                     // "남자 / 1979.12 / 대한민국"
-
                     if(item.getUserInfo().getMemberDetail() != null){
-
                         tv_more_info.setText(String.format(getString(R.string.more_info_set),
                                 item.getUserInfo().getMemberDetail().getGender(),
                                 item.getUserInfo().getMemberDetail().getBirthyear(),
                                 item.getUserInfo().getMemberDetail().getBirthmonth(),
                                 item.getUserInfo().getMemberDetail().getCountry()));
-
                     }
 
                 }else{
@@ -168,7 +160,7 @@ public class SettingActivity extends ActivityBase  {
 
                 }
 
-                if(!TextUtils.isEmpty(item.getUserInfo().getMtptotal().getIncomeamount())){
+                if(item.getUserInfo().getMtptotal() != null && !TextUtils.isEmpty(item.getUserInfo().getMtptotal().getIncomeamount())){
                     tv_mtp.setText(String.format(getString(R.string.setting_mtp), item.getUserInfo().getMtptotal().getIncomeamount()));
                 }else{
                     tv_mtp.setText(String.format(getString(R.string.setting_mtp), "0"));

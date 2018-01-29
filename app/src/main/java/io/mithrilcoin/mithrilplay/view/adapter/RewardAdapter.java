@@ -5,28 +5,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 
 import io.mithrilcoin.mithrilplay.R;
-import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.network.vo.AppGameBody;
 import io.mithrilcoin.mithrilplay.view.RewardFragment.GameRewardCallListener;
 
@@ -74,6 +66,8 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
         AppGameBody Value = mItems.get(key);
 
         String packgeName = Value.getPackagename();
+        String AppName ="";
+
 
         try {
             holder.iv_game_icon.setImageDrawable(pm.getApplicationIcon(packgeName));
@@ -82,14 +76,15 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
         }
 
         try {
-            String name = (String) pm.getApplicationLabel(pm.getApplicationInfo(packgeName, PackageManager.GET_UNINSTALLED_PACKAGES));
-            holder.tv_game_title.setText(name);
+            AppName = (String) pm.getApplicationLabel(pm.getApplicationInfo(packgeName, PackageManager.GET_UNINSTALLED_PACKAGES));
+            holder.tv_game_title.setText(AppName);
         } catch (PackageManager.NameNotFoundException e1) {
             e1.printStackTrace();
         }
 
         holder.tv_play_time.setText(getTime(Long.parseLong(Value.getPlaytime())));
 
+        holder.reward_layout.setVisibility(View.VISIBLE);
         if(!Value.getReward().equals("0")){
             // 리워드 받음
             holder.tv_today_reward.setVisibility(View.VISIBLE);
@@ -104,14 +99,18 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
             holder.iv_rewarded.setVisibility(View.GONE);
         }else{
             // 기타 게임
+            holder.reward_layout.setVisibility(View.GONE);
             holder.tv_today_reward.setVisibility(View.GONE);
             holder.btn_reward_mtp.setVisibility(View.GONE);
             holder.iv_rewarded.setVisibility(View.GONE);
         }
 
+
+        String finalAppName = AppName;
         holder.btn_reward_mtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Value.setAlttitle(finalAppName);
                 mRewardListener.onGameReward(Value);
             }
         });
@@ -178,6 +177,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
         private TextView tv_today_reward;
         private ImageView iv_rewarded;
         private ImageView iv_game_play;
+        private RelativeLayout reward_layout;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -188,6 +188,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
             tv_today_reward = (TextView) itemView.findViewById(R.id.tv_today_reward);
             iv_rewarded = (ImageView) itemView.findViewById(R.id.iv_rewarded);
             iv_game_play = (ImageView) itemView.findViewById(R.id.iv_game_play);
+            reward_layout = (RelativeLayout) itemView.findViewById(R.id.reward_layout);
         }
 
     }

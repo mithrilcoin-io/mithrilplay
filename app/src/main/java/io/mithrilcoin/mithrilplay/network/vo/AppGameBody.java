@@ -14,6 +14,9 @@ public class AppGameBody {
     @SerializedName("title")
     @Expose
     private String title;
+    @SerializedName("alttitle")
+    @Expose
+    private String alttitle;
     @SerializedName("playdate")
     @Expose
     private String playdate;
@@ -55,6 +58,14 @@ public class AppGameBody {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getAlttitle() {
+        return alttitle;
+    }
+
+    public void setAlttitle(String alttitle) {
+        this.alttitle = alttitle;
     }
 
     public String getPlaydate() {

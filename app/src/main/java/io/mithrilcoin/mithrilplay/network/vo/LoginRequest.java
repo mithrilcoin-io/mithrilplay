@@ -11,10 +11,14 @@ public class LoginRequest {
     @SerializedName("password")
     @Expose
     private String password;
+    @SerializedName("deviceid")
+    @Expose
+    private String deviceid;
 
-    public LoginRequest(String email, String password) {
+    public LoginRequest(String email, String password, String deviceid) {
         this.email = email;
         this.password = password;
+        this.deviceid = deviceid;
     }
 
     public String getEmail() {
@@ -31,6 +35,14 @@ public class LoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDeviceid() {
+        return deviceid;
+    }
+
+    public void setDeviceid(String deviceid) {
+        this.deviceid = deviceid;
     }
 
 }

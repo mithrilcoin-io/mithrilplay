@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,6 +46,12 @@ public class RequestUserInfo extends RequestCommon {
 
 			@Override
 			public void onResponse(Call<MemberResponse> call, Response<MemberResponse> response) {
+
+				Log.d("mithril", "response.code() =" +  response.code() );
+				if(response.code() == Constant.OTHER_LOGIN){
+					ActivityBase.instance.logoutInlogin();
+					return;
+				}
 
 				if (!response.isSuccessful()) {
 					return;

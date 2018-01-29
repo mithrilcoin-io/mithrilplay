@@ -1,8 +1,5 @@
 package io.mithrilcoin.mithrilplay.view.adapter;
 
-import android.content.pm.ApplicationInfo;
-import android.graphics.drawable.Drawable;
-
 /**
  *
  */

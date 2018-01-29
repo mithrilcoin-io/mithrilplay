@@ -6,9 +6,11 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
 import io.mithrilcoin.mithrilplay.network.vo.AppBody;
 import io.mithrilcoin.mithrilplay.network.vo.AppGamePackageListResponse;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,6 +51,12 @@ public class RequestGamePackageList extends RequestCommon {
 
 			@Override
 			public void onResponse(Call<AppGamePackageListResponse> call, Response<AppGamePackageListResponse> response) {
+
+				Log.d("mithril", "response.code() =" +  response.code() );
+				if(response.code() == Constant.OTHER_LOGIN){
+					ActivityBase.instance.logoutInlogin();
+					return;
+				}
 
 				if (!response.isSuccessful()) {
 					return;

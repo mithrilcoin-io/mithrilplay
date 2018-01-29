@@ -121,7 +121,8 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
 
     private void loginCall(){
 
-        LoginRequest loginRequest = new LoginRequest(mId, mPasswd);
+        String mDeviceId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_ANDROD_ID);
+        LoginRequest loginRequest = new LoginRequest(mId, mPasswd, mDeviceId);
 
         RequestLogin requestLogin = new RequestLogin(mActivity,loginRequest);
         requestLogin.post(new RequestLogin.ApiLoginResultListener() {
@@ -161,6 +162,9 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
                 // 이메일 임시 저장
                 MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_EMAIL, mId);
 
+                if(item.getUserInfo().getAuthdate() != null){
+                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
+                }
 
             }
 

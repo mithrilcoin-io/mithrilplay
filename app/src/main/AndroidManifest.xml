@@ -33,7 +33,8 @@
         <activity android:name=".view.auth.PermissionActivity" />
         <activity android:name=".view.auth.LoginActivity"  android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".view.auth.WelcomeActivity"  android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".view.auth.VerifyEmailActivity" >
+        <activity android:name=".view.auth.VerifyEmailActivity"
+            android:launchMode="singleTop">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -41,7 +42,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="mithrilplay" android:host="emailcheck"/>
+                <data android:scheme="mithrilplay"/>
             </intent-filter>
 
         </activity>

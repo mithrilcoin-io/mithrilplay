@@ -36,6 +36,9 @@ public class SignupOkActivity extends ActivityBase {
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                for (int i = 0; i < activityList.size(); i++) {
+                    activityList.get(i).finish();
+                }
                 launchHomeScreen();
             }
         });
