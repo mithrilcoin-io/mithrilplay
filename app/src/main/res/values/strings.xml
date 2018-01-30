@@ -32,7 +32,7 @@
     <string name="init_info_ok">완료되었습니다.\n이제 시작하세요.</string>
     <string name="password">비밀번호</string>
     <string name="password_null">비밀번호를 입력해주세요</string>
-    <string name="password_info">8-20자, 1개이상 대문자, 1개이상 특수기호(!,@,#,$), 숫자포함</string>
+    <string name="password_info">8&#45;20자, 1개이상 대문자, 1개이상 특수기호(&#33;,&#64;,&#35;,&#36;), 숫자포함</string>
     <string name="email">이메일</string>
     <string name="email_null">이메일을 입력해주세요</string>
     <string name="sign_in">로그인</string>
