@@ -12,7 +12,8 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="16dp"
-        android:src="@drawable/game_icon_sample" />
+        android:src="@drawable/game_icon_sample"
+        android:contentDescription="@string/game_icon"/>
 
     <TextView
         android:id="@+id/tv_game_title"
@@ -24,7 +25,7 @@
         android:textStyle="bold"
         android:textColor="@color/colorBlack"
         android:textSize="18sp"
-        android:text="수퍼마리오"/>
+        tools:text="Game title"/>
 
     <TextView
         android:id="@+id/tv_play_time"
@@ -35,7 +36,7 @@
         android:layout_below="@id/tv_game_title"
         android:textColor="@color/colorDarkGray"
         android:textSize="12sp"
-        android:text="플레이 시간 : 32분 24초 "/>
+        tools:text="Play time : 32m 24s "/>
 
     <RelativeLayout
         android:id="@+id/reward_layout"
@@ -84,21 +85,10 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:tint="@color/colorDarkGray"
-            android:src="@drawable/ic_check"/>
+            android:src="@drawable/ic_check"
+            android:contentDescription="@string/reward_ok_check"/>
 
     </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/iv_game_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:visibility="gone"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_play_circle" />
-
 
 
 </RelativeLayout>

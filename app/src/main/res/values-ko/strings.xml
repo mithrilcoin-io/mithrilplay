@@ -2,6 +2,9 @@
 
     <string name="app_name">Mithril Play</string>
 
+    <string name="set_usage_data_access">설정하기</string>
+    <string name="usage_data_access_desc">안녕하세요.\n미스릴 플레이 사용을 위해 \'사용정보 접근 허용\' 설정이 필요합니다. 아래 설정하기 버튼을 누르고 Mithril Play를 선택 한 후 \'사용 추적 허용\'을 켜주세요.</string>
+    <string name="usage_data_access">사용정보 접근 허용</string>
     <string name="confirm">확인</string>
     <string name="cancel">취소</string>
     <string name="ok">OK</string>
@@ -29,6 +32,7 @@
     <string name="init_info_ok">완료되었습니다.\n이제 시작하세요.</string>
     <string name="password">비밀번호</string>
     <string name="password_null">비밀번호를 입력해주세요</string>
+    <string name="password_info">8-20자, 1개이상 대문자, 1개이상 특수기호(!,@,#,$), 숫자포함</string>
     <string name="email">이메일</string>
     <string name="email_null">이메일을 입력해주세요</string>
     <string name="sign_in">로그인</string>
@@ -75,5 +79,8 @@
     <string name="empty_reward_history">리워드 기록이 없습니다.</string>
     <string name="empty_today_reward">오늘의 플레이 기록이 없습니다.</string>
     <string name="today_reward_check">오늘의 리워드 표시</string>
+    <string name="permission_check">권한 동의 체크</string>
+    <string name="reward_ok_check">리워드 받기 성공</string>
+    <string name="game_icon">게임 아이콘</string>
 
 </resources>

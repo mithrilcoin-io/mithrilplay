@@ -11,7 +11,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
-        android:src="@drawable/game_icon_sample" />
+        android:src="@drawable/game_icon_sample"
+        android:contentDescription="@string/game_icon"/>
 
     <ImageView
         android:visibility="gone"
@@ -21,7 +22,8 @@
         android:layout_centerVertical="true"
         android:scaleType="fitXY"
         android:tint="@color/colorPrimary"
-        android:src="@drawable/ic_symbol" />
+        android:src="@drawable/ic_symbol"
+        android:contentDescription="@string/mithril_logo"/>
 
     <TextView
         android:id="@+id/tv_reward_mtp"

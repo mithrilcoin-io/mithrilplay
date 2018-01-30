@@ -5,10 +5,12 @@
 
     <ImageView
         android:id="@+id/intro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="208dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
         android:layout_centerInParent="true"
-        android:background="@drawable/ic_logo">
+        android:background="@drawable/ic_mithrilplay_logo"
+        android:contentDescription="@string/mithril_logo">
     </ImageView>
 
 </RelativeLayout>
