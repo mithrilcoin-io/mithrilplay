@@ -1,7 +1,6 @@
 package io.mithrilcoin.mithrilplay.network;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.common.ServerConstant;
@@ -55,8 +54,6 @@ public class RequestMemberJoin extends RequestCommon {
 
 			@Override
 			public void onFailure(Call<MemberResponse> call, Throwable t) {
-				Log.v("mithril", "onFailure");
-
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
 				listener.onFail();
 			}

@@ -1,10 +1,12 @@
 package io.mithrilcoin.mithrilplay.view;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -19,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.common.TimeUtil;
@@ -44,6 +48,7 @@ import io.mithrilcoin.mithrilplay.network.vo.AppGamedataRewardResponse;
 import io.mithrilcoin.mithrilplay.network.vo.AppRequest;
 import io.mithrilcoin.mithrilplay.view.adapter.EventVO;
 import io.mithrilcoin.mithrilplay.view.adapter.RewardAdapter;
+import io.mithrilcoin.mithrilplay.view.auth.DataAccessInfoPermissionActivity;
 
 
 public class RewardFragment extends Fragment {
@@ -51,17 +56,17 @@ public class RewardFragment extends Fragment {
     public RewardFragment() {
     }
 
-    private Activity mActivity = null;
+    private HomeActivity mActivity = null;
+    public static RewardFragment instance = null;
     private RewardAdapter mAdapter = null;
     private LinearLayoutManager mLayoutManager = null;
 
     private TextView tv_today_reward_info = null;
     private ImageView tv_today_reward_one, tv_today_reward_two, tv_today_reward_three = null;
     private RecyclerView mRecyclerView = null;
-    private TextView empty_data = null;
+    private RelativeLayout mEmptyTodayReward = null;
 
     private PackageManager pm;
-    private List<ApplicationInfo> mAppList = null;
     private LinkedHashMap<String, AppGameBody> mGameList = new LinkedHashMap<String, AppGameBody>();
 
     int isGetRewardCnt = 0;
@@ -70,12 +75,12 @@ public class RewardFragment extends Fragment {
 
     public GameRewardCallListener gameRewardCallListener;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_reward, container, false);
 
-        mActivity = (Activity) getActivity();
+        mActivity = (HomeActivity) getActivity();
+        instance = RewardFragment.this;
         pm = mActivity.getPackageManager();
 
         setLayout(rootView);
@@ -86,21 +91,16 @@ public class RewardFragment extends Fragment {
     private void setLayout(View v) {
 
         tv_today_reward_info = (TextView) v.findViewById(R.id.tv_today_reward_info);
-
         tv_today_reward_one = (ImageView) v.findViewById(R.id.tv_today_reward_one);
         tv_today_reward_two = (ImageView) v.findViewById(R.id.tv_today_reward_two);
         tv_today_reward_three = (ImageView) v.findViewById(R.id.tv_today_reward_three);
-
         mRecyclerView = (RecyclerView) v.findViewById(R.id.rv_today_reward);
-        empty_data = (TextView) v.findViewById(R.id.empty_data);
+        mEmptyTodayReward = (RelativeLayout) v.findViewById(R.id.empty_today_reward);
 
         gameRewardCallListener = new GameRewardCallListener() {
             @Override
             public void onGameReward(AppGameBody item) {
-
-                Log.d("mithril", "Rewardfragment onGameReward");
                 getGameReward(item);
-
             }
         };
 
@@ -108,23 +108,16 @@ public class RewardFragment extends Fragment {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onResume() {
         super.onResume();
-
-        mTodaytime = TimeUtil.getTodayUtcTime();
-
-        long startTime = System.currentTimeMillis();
-
-        getTodayGameAppList();
-
-        long endTime = System.currentTimeMillis();
-
-        // Total time
-        long lTime = endTime - startTime;
-        Log.e("mithril", "today game GET TIME : " + lTime + "(ms)");
-
+        if (!mActivity.hasPermission()) {
+            Intent intent = new Intent(mActivity, DataAccessInfoPermissionActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            mActivity.startActivityForResult(intent, Constant.REQUEST_CODE_HOME_USE_INFO);
+        }else{
+            getTodayGameAppList();
+        }
     }
 
     private void setRewardcnt(int cnt){
@@ -159,12 +152,11 @@ public class RewardFragment extends Fragment {
 
     }
 
-
-
-    // 패지키 게임시간 투데이 적용
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("WrongConstant")
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void getTodayGameAppList(){
+    public void getTodayGameAppList(){
+
+        mTodaytime = TimeUtil.getTodayUtcTime();
 
         // 이메일 인증 완료 시간
         String mAuthDate = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_DATE);
@@ -183,24 +175,6 @@ public class RewardFragment extends Fragment {
         // 오늘 실행된 앱 목록 (앱 전체)
         Map<String, UsageStats> todayAppUsage = AppUsageStatManager.getTodayUsageStatList(mActivity);
 
-        Map<String,String> saveData = new HashMap<String,String>();
-
-        String validDate = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_APP_EMAILAUTH_BEFORE_DATA_date);
-
-        if(!TextUtils.isEmpty(validDate) && validDate.equals(TimeUtil.getTodayString())){
-            saveData = MithrilPreferences.loadMap(mActivity, MithrilPreferences.TAG_APP_EMAILAUTH_BEFORE_DATA);
-            if(saveData != null && saveData.size() > 0){
-                String[] mKeys = saveData.keySet().toArray(new String[saveData.size()]);
-                for(int i = 0 ; i < mKeys.length ; ++i ){
-                    Log.d("mithril", "key = " + mKeys[i] + ", value =" + saveData.get(mKeys[i]));
-                }
-            }
-        }else{
-            saveData.clear();
-            MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_APP_EMAILAUTH_BEFORE_DATA_date, "");
-            MithrilPreferences.saveMap(mActivity, MithrilPreferences.TAG_APP_EMAILAUTH_BEFORE_DATA, saveData);
-        }
-
         ArrayList<EventVO> list = new ArrayList<EventVO>();
         HashMap<String, Long> eventTime = new HashMap<String, Long>();
 
@@ -211,7 +185,7 @@ public class RewardFragment extends Fragment {
             UsageEvents.Event event = new UsageEvents.Event();
             uEvents.getNextEvent(event);
             if (event != null){
-                Log.d("mithriltime", "Event: " + event.getPackageName() + "__" +  event.getTimeStamp() + "__" +  event.getEventType() );
+//                Log.d("mithriltime", "Event: " + event.getPackageName() + "__" +  event.getTimeStamp() + "__" +  event.getEventType() );
                 EventVO eventVO = new EventVO();
                 eventVO.setPackagename(event.getPackageName());
                 eventVO.setState(event.getEventType() + "");
@@ -233,28 +207,11 @@ public class RewardFragment extends Fragment {
 
             // 앱 사용시간 셋팅
             if(todayAppUsage.containsKey(app.packageName)){
-//                if(saveData != null && saveData.size() > 0){
-//                    long cTime = todayAppUsage.get(app.packageName).getTotalTimeInForeground();
-//                    if(saveData.containsKey(app.packageName)){
-//                        appRequest.setPlaytime((cTime - Long.parseLong(saveData.get(app.packageName))) + "");
-//                    }else{
-//                        if(eventTime.containsKey(app.packageName)){
-//                            appRequest.setPlaytime(eventTime.get(app.packageName).toString());
-//                        }else{
-//                            appRequest.setPlaytime(cTime +"");
-//                        }
-//                    }
-//                }else{
-
-                    if(eventTime.containsKey(app.packageName)){
-                        Log.d("mithriltime", "Event 수정됨: " + app.packageName + "__" +  eventTime.get(app.packageName).toString() );
-                        appRequest.setPlaytime(eventTime.get(app.packageName).toString());
-                    }else{
-                        appRequest.setPlaytime(todayAppUsage.get(app.packageName).getTotalTimeInForeground()+"");
-                    }
-
-//                }
-
+                if(eventTime.containsKey(app.packageName)){
+                    appRequest.setPlaytime(eventTime.get(app.packageName).toString());
+                }else{
+                    appRequest.setPlaytime(todayAppUsage.get(app.packageName).getTotalTimeInForeground()+"");
+                }
             }else{
                 appRequest.setPlaytime("0");
             }
@@ -269,20 +226,6 @@ public class RewardFragment extends Fragment {
                 appRequestList.add(appRequest);
             }
 
-
-/*          sample target game
-
-            if(app.packageName.equals("com.ketchapp.rider") && todayAppUsage.containsKey("com.ketchapp.rider")) {
-                Log.e("mithriltime", "Pkg: " + todayAppUsage.get(app.packageName).getPackageName() + "\n"
-                        + "getFirstTimeStamp: " + todayAppUsage.get(app.packageName).getFirstTimeStamp() + "\n"
-                        + "getLastTimeStamp: " + todayAppUsage.get(app.packageName).getLastTimeStamp()  + "\n"
-                        + "getTotalTimeInForeground: " + todayAppUsage.get(app.packageName).getTotalTimeInForeground() + "\n"
-                        + "게임시간 : " + getTime(todayAppUsage.get(app.packageName).getTotalTimeInForeground())  + "\n"
-                        + "getLastTimeUsed: " + todayAppUsage.get(app.packageName).getLastTimeUsed()
-                );
-            }
-*/
-
         }
 
         RequestTodayGameList requestTodayGameList = new RequestTodayGameList(mActivity, mId, appRequestList);
@@ -292,7 +235,7 @@ public class RewardFragment extends Fragment {
 
                 if(item.getBody() == null || item.getBody().size() == 0){
                     mRecyclerView.setVisibility(View.GONE);
-                    empty_data.setVisibility(View.VISIBLE);
+                    mEmptyTodayReward.setVisibility(View.VISIBLE);
 
                     try{
                         tv_today_reward_info.setText(String.format(getString(R.string.today_reward_remain), (3-isGetRewardCnt) + ""));
@@ -303,7 +246,7 @@ public class RewardFragment extends Fragment {
 
                 }else{
                     mRecyclerView.setVisibility(View.VISIBLE);
-                    empty_data.setVisibility(View.GONE);
+                    mEmptyTodayReward.setVisibility(View.GONE);
                     List<AppGameBody> installGames = item.getBody();
                     gameAppFilltering(installGames);
                 }
@@ -365,11 +308,9 @@ public class RewardFragment extends Fragment {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void gameAppFilltering(List<AppGameBody> gameList){
 
         isGetRewardCnt = 0;
-        // 리스트에 보낼 데이터 셋팅
         for(AppGameBody appGameBody : gameList){
             String gPackagename =  appGameBody.getPackagename();
             if(!appGameBody.getReward().equals("0") ){
@@ -381,16 +322,16 @@ public class RewardFragment extends Fragment {
             }
         }
 
-        Log.d("mithril", "isGetRewardCnt = " + isGetRewardCnt );
+//        Log.d("mithril", "isGetRewardCnt = " + isGetRewardCnt );
 
         if(mGameList.size() > 0){
             mRecyclerView.setVisibility(View.VISIBLE);
-            empty_data.setVisibility(View.GONE);
+            mEmptyTodayReward.setVisibility(View.GONE);
             mAdapter.setItemData(mGameList);
             mAdapter.notifyDataSetChanged();
         }else{
             mRecyclerView.setVisibility(View.GONE);
-            empty_data.setVisibility(View.VISIBLE);
+            mEmptyTodayReward.setVisibility(View.VISIBLE);
         }
 
         setRewardcnt(isGetRewardCnt);
@@ -400,7 +341,6 @@ public class RewardFragment extends Fragment {
     // 게임리워드 받기
     private void getGameReward(AppGameBody appGameBody){
 
-        // 사용자 id
         String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
 
         RequestGameRewardOrder requestGameRewardOrder = new RequestGameRewardOrder(mActivity, mId, appGameBody);

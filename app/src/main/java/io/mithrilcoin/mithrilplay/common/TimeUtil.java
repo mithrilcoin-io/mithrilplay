@@ -1,30 +1,34 @@
 package io.mithrilcoin.mithrilplay.common;
 
 
+import android.app.Activity;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import io.mithrilcoin.mithrilplay.R;
+
 public class TimeUtil {
 
-	public static String getTime(long sTime){
+	public static String getTime(Activity activity, long sTime){
 		String time = "";
 		int hours   = (int) ((sTime / (1000*60*60)) % 24);  //시
 		int minutes = (int) ((sTime / (1000*60)) % 60);     //분
 		int seconds = (int) (sTime / 1000) % 60 ;           //초
 
 		if(hours != 0){
-			time += hours + "시간 ";
+			time += hours + activity.getString(R.string.hours) + " ";
 		}
 		if(minutes != 0){
-			time += minutes + "분 ";
+			time += minutes + activity.getString(R.string.minutes) + " ";
 		}
 		if(seconds != 0){
-			time += seconds + "초";
+			time += seconds + activity.getString(R.string.seconds) + " ";
 		}
-        Log.d("mithril", "시간 :" + time);
+        Log.d("mithril", "time :" + time);
 
 		return time;
 	}

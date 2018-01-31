@@ -1,7 +1,6 @@
 package io.mithrilcoin.mithrilplay.network;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.List;
@@ -52,7 +51,6 @@ public class RequestGamePackageList extends RequestCommon {
 			@Override
 			public void onResponse(Call<AppGamePackageListResponse> call, Response<AppGamePackageListResponse> response) {
 
-				Log.d("mithril", "response.code() =" +  response.code() );
 				if(response.code() == Constant.OTHER_LOGIN){
 					ActivityBase.instance.logoutInlogin();
 					return;
@@ -67,8 +65,6 @@ public class RequestGamePackageList extends RequestCommon {
 
 			@Override
 			public void onFailure(Call<AppGamePackageListResponse> call, Throwable t) {
-				Log.v("mithril", "onFailure");
-
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
 				listener.onFail();
 			}

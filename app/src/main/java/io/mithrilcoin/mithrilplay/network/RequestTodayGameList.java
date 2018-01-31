@@ -52,7 +52,6 @@ public class RequestTodayGameList extends RequestCommon {
 			@Override
 			public void onResponse(Call<AppGameListResponse> call, Response<AppGameListResponse> response) {
 
-				Log.d("mithril", "response.code() =" +  response.code() );
 				if(response.code() == Constant.OTHER_LOGIN){
 					ActivityBase.instance.logoutInlogin();
 					return;
@@ -67,8 +66,6 @@ public class RequestTodayGameList extends RequestCommon {
 
 			@Override
 			public void onFailure(Call<AppGameListResponse> call, Throwable t) {
-				Log.v("mithril", "onFailure");
-
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
 				listener.onFail();
 			}

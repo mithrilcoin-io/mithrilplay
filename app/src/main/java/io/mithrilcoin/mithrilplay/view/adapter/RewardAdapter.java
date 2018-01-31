@@ -2,9 +2,6 @@ package io.mithrilcoin.mithrilplay.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,9 +13,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.TimeUtil;
 import io.mithrilcoin.mithrilplay.network.vo.AppGameBody;
 import io.mithrilcoin.mithrilplay.view.RewardFragment.GameRewardCallListener;
 
@@ -31,10 +28,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
     private LinkedHashMap<String, AppGameBody> mItems = null;
     private String[] mKeys;
     private PackageManager pm;
-    private List<ApplicationInfo> mAppList = null;
     private GameRewardCallListener mRewardListener;
-
-
 
     @SuppressLint("WrongConstant")
     public RewardAdapter(Activity activity, LinkedHashMap<String, AppGameBody> items, GameRewardCallListener gameRewardCallListener){
@@ -44,7 +38,6 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
         mKeys = items.keySet().toArray(new String[items.size()]);
 
         pm = mActivity.getPackageManager();
-        mAppList = pm.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES | PackageManager.GET_DISABLED_COMPONENTS);
     }
 
     public void setItemData(LinkedHashMap<String, AppGameBody> item){
@@ -68,7 +61,6 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
         String packgeName = Value.getPackagename();
         String AppName ="";
 
-
         try {
             holder.iv_game_icon.setImageDrawable(pm.getApplicationIcon(packgeName));
         } catch (PackageManager.NameNotFoundException e) {
@@ -82,7 +74,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
             e1.printStackTrace();
         }
 
-        holder.tv_play_time.setText(getTime(Long.parseLong(Value.getPlaytime())));
+        holder.tv_play_time.setText(TimeUtil.getTime(mActivity, Long.parseLong(Value.getPlaytime())));
 
         holder.reward_layout.setVisibility(View.VISIBLE);
         if(!Value.getReward().equals("0")){
@@ -115,53 +107,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
             }
         });
 
-        holder.iv_game_play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openApp(mActivity, packgeName);
-            }
-        });
-
     }
-
-    public boolean openApp(Context context, String packageName) {
-        PackageManager manager = context.getPackageManager();
-        try {
-            Intent i = manager.getLaunchIntentForPackage(packageName);
-            if (i == null) {
-                throw new PackageManager.NameNotFoundException();
-            }
-            i.addCategory(Intent.CATEGORY_LAUNCHER);
-            context.startActivity(i);
-            return true;
-        }catch(PackageManager.NameNotFoundException e){
-            e.printStackTrace();
-            return false;
-        }catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private String getTime(long sTime){
-        String time = "";
-        int hours   = (int) ((sTime / (1000*60*60)) % 24);  //시
-        int minutes = (int) ((sTime / (1000*60)) % 60);     //분
-        int seconds = (int) (sTime / 1000) % 60 ;           //초
-
-        if(hours != 0){
-            time += hours + "시간 ";
-        }
-        if(minutes != 0){
-            time += minutes + "분 ";
-        }
-        if(seconds != 0){
-            time += seconds + "초";
-        }
-//        Log.d("mithril", "게임시간 :" + time);
-        return time;
-    }
-
 
     @Override
     public int getItemCount() {
@@ -176,7 +122,6 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
         private Button btn_reward_mtp;
         private TextView tv_today_reward;
         private ImageView iv_rewarded;
-        private ImageView iv_game_play;
         private RelativeLayout reward_layout;
 
         public ItemViewHolder(View itemView) {
@@ -187,7 +132,6 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
             btn_reward_mtp = (Button) itemView.findViewById(R.id.btn_reward_mtp);
             tv_today_reward = (TextView) itemView.findViewById(R.id.tv_today_reward);
             iv_rewarded = (ImageView) itemView.findViewById(R.id.iv_rewarded);
-            iv_game_play = (ImageView) itemView.findViewById(R.id.iv_game_play);
             reward_layout = (RelativeLayout) itemView.findViewById(R.id.reward_layout);
         }
 

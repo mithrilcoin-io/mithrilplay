@@ -44,7 +44,6 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
     private Button btn_toggle_male, btn_toggle_female;
     private AppCompatSpinner sp_birth_year, sp_birth_month, sp_nation;
-
     private Button btnGetBonusReward;
 
     // data
@@ -69,8 +68,6 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
         viewInit();
 
-
-
     }
 
     private void viewInit(){
@@ -89,7 +86,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         years.add(getString(R.string.birth_year));
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
         for (int i = thisYear; i >= 1900; i--) {
-            years.add(i +"년");
+            years.add(i+"");
         }
         ArrayAdapter<String> yearAdapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_item, years);
         yearAdapter.setDropDownViewResource(R.layout.spinner_item);
@@ -101,7 +98,6 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
                     mBirthYear = "";
                 }else{
                     mBirthYear = parent.getItemAtPosition(position) + "";
-                    mBirthYear = mBirthYear.replace("년","");
                 }
             }
 
@@ -116,7 +112,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         ArrayList<String> months = new ArrayList<String>();
         months.add(getString(R.string.month));
         for (int i = 1; i <= 12; i++) {
-            months.add(i +"월");
+            months.add(i +"");
         }
         ArrayAdapter<String> monthAdapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_item, months);
         monthAdapter.setDropDownViewResource(R.layout.spinner_item);
@@ -128,7 +124,6 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
                     mBirthMonth = "";
                 }else{
                     mBirthMonth = parent.getItemAtPosition(position) + "";
-                    mBirthMonth = mBirthMonth.replace("월","");
                 }
             }
 
@@ -226,7 +221,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
     private void showNotInputValueDialog(){
 
-        showDialogOneButton("","프로필 정보를 모두 선택하신 후 다시 시도하세요.", getString(R.string.confirm) , new CommonDialog.CommonDialogListener() {
+        showDialogOneButton("",getString(R.string.alert_more_info_empty), getString(R.string.confirm) , new CommonDialog.CommonDialogListener() {
             @Override
             public void onConfirm() {
 
@@ -284,8 +279,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
             @Override
             public void onSuccess(MemberUpdateResponse item) {
 
-                if(item.getBody().getCode().equals("SUCCESS")){
-                    Log.d("mithril","사용자 정보 업데이트" );
+                if(item.getBody().getCode().equals(Constant.SUCCESS)){
                     showRewardDoneDialog();
                 }
 

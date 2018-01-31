@@ -26,7 +26,6 @@ public class SettingActivity extends ActivityBase  {
     private TextView tv_email, tv_mtp, tv_more_info, logout;
     private RelativeLayout layout_more_info;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,8 +92,7 @@ public class SettingActivity extends ActivityBase  {
             @Override
             public void onSuccess(MemberResponse item) {
 
-                if(item.getBody().getCode().equals("SUCCESS")){
-                    Log.d("mithril","로그아웃 성공" );
+                if(item.getBody().getCode().equals(Constant.SUCCESS)){
                     logout();
                     for (int i = 0; i < activityList.size(); i++) {
                         activityList.get(i).finish();
@@ -125,7 +123,7 @@ public class SettingActivity extends ActivityBase  {
                     return;
                 }
 
-                if(!item.getBody().getCode().equals("SUCCESS")){
+                if(!item.getBody().getCode().equals(Constant.SUCCESS)){
                     return;
                 }
 
@@ -134,7 +132,6 @@ public class SettingActivity extends ActivityBase  {
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
 
                 }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
-                    Log.d("mithril", "이메인 인증까지 완료");
 
                     layout_more_info.setVisibility(View.VISIBLE);
                     tv_more_info.setVisibility(View.GONE);
@@ -185,14 +182,11 @@ public class SettingActivity extends ActivityBase  {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d("mithril", ": setting onActivityResult");
-
         if (resultCode != RESULT_OK) {
             return;
         }
 
         if(requestCode == Constant.REQUEST_SETTING_MOREINFO){
-            Log.d("mithril", ": REQUEST_SETTING_MOREINFO");
 
             getUserinfo();
 

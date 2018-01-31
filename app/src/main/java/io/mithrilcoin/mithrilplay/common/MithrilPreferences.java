@@ -16,21 +16,15 @@ public class MithrilPreferences {
 
 	private static MithrilPreferenceManager prefManager = null;
 
-	public static final String TAG_PERMISSION = "permission"; 		// boolean, 안드로이드 권한 정보 팝업 앱실행시 한번
 	public static final String TAG_INTRO_SLIDE = "intro_slide"; 	// boolean, 환영페이지, 앱실행시 회원가입이나 로그인이후 홈화면 진입시에 한번
 	public static final String TAG_AUTH_ID = "auth_id"; 		// string, 회원가입이나 로그인시 서버에서 내려주는 ID (유무로 로그인 체크)
 	public static final String TAG_EMAIL_AUTH = "email_auth"; 	// boolean, 이메일 인증 여부
-
 	public static final String TAG_AUTH_DATE = "auth_date"; 	// string, 이메일 인증 완료 시점 저장
-	public static final String TAG_APP_EMAILAUTH_BEFORE_DATA = "app_emailauth_before_data"; 	// string, 이메일 인증 완료 전 data
-
-	public static final String TAG_APP_EMAILAUTH_BEFORE_DATA_date = "app_emailauth_before_data_date"; 	// string, 이메일 인증 완료 전 data 일자 저장
 
 	// 임시 저장
 	public static final String TAG_EMAIL = "email"; 			// string, 이메일 임시 저장
 	public static final String TAG_ANDROD_ID = "android"; 		// string, android ID
 	public static final String TAG_MODEL = "model"; 		// string, 핸드폰 모델
-
 	public static final String TAG_BRAND = "brand"; 		// string, 핸드폰 브랜드
 
     public static synchronized MithrilPreferenceManager getInstance(Context context) {

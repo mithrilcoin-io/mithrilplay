@@ -1,8 +1,5 @@
 package io.mithrilcoin.mithrilplay.view.adapter;
 
-/**
- * Created by Moon on 2015-03-03.
- */
 public class HistoryTimeTag extends RewardHistoryItem {
 
     public HistoryTimeTag(long time) {

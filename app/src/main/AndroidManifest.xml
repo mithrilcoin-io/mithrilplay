@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.auth.PermissionActivity" />
+        <activity android:name=".view.auth.DataAccessInfoPermissionActivity" />
         <activity android:name=".view.auth.LoginActivity"  android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".view.auth.WelcomeActivity"  android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".view.auth.VerifyEmailActivity"

@@ -27,7 +27,7 @@
         android:layout_marginEnd="24dp"
         android:textSize="16sp"
         android:textColor="@color/colorBlack"
-        tools:text="플레이 날짜 : 2018.01.18\n플레이 시간 : 34분 23초\n리워드 : 100 MTP\n상세내용부분입니다."/>
+        tools:text="2018.01.18\n100 MTP 지급완료\n총 34분 23초 플레이"/>
 
     <LinearLayout
         android:layout_width="match_parent"

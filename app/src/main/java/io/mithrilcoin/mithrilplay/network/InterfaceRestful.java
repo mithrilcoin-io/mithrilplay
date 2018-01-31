@@ -11,10 +11,10 @@ import io.mithrilcoin.mithrilplay.network.vo.AppGamedataRewardResponse;
 import io.mithrilcoin.mithrilplay.network.vo.AppRequest;
 import io.mithrilcoin.mithrilplay.network.vo.GameRewardTotalListResponse;
 import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
+import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
+import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateResponse;
-import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
-import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -59,7 +59,7 @@ public interface InterfaceRestful {
     @POST(ServerConstant.APP_GAMEDATA_INSERT)
     Call<AppGameListResponse> getGameApp(@Path("id") String id, @Body List<AppRequest> appRequests);
 
-    // APP 필터링 (게임 APP) _ 테스트용
+    // APP 필터링 (게임 APP) _ not use
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_GAMEDATA_PACKAGE)
     Call<AppGamePackageListResponse> getGameAppPackage(@Path("id") String id, @Body List<AppBody> appRequests);

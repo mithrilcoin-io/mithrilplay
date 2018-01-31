@@ -1,6 +1,7 @@
 package io.mithrilcoin.mithrilplay.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -12,14 +13,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import io.mithrilcoin.mithrilplay.R;
-import io.mithrilcoin.mithrilplay.common.Log;
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.view.adapter.TabPagerAdapter;
 
 public class HomeActivity extends ActivityBase {
 
     private Activity mActivity = null;
-
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -43,8 +43,6 @@ public class HomeActivity extends ActivityBase {
         boolean isLoaded = MithrilPreferences.getBoolean(mActivity, MithrilPreferences.TAG_INTRO_SLIDE);
         if(!isLoaded){
             launchWelcomeScreen();
-        }else{
-
         }
 
     }
@@ -94,8 +92,6 @@ public class HomeActivity extends ActivityBase {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onPageSelected(int position) {
-                Log.d("mithril", "pager position =" + position);
-
                 if(position == 1){
                     RewardHistoryFragment.instance.onResume();
                 }
@@ -120,18 +116,31 @@ public class HomeActivity extends ActivityBase {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-
                 launchSettingScreen();
-
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == Constant.REQUEST_CODE_HOME_USE_INFO){
+            if(hasPermission()){
+                RewardFragment.instance.getTodayGameAppList();
+            }else{
+                for (int i = 0; i < activityList.size(); i++) {
+                    activityList.get(i).finish();
+                }
+                finish();
+            }
+            return;
+        }
+
     }
 
 }

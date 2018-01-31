@@ -49,7 +49,8 @@
     <string name="today_reward_remain">오늘의 리워드가 %s회 남았습니다.</string>
     <string name="today_reward_end">오늘의 리워드를 모두 받았습니다.</string>
     <string name="reward_detail">리워드 상세</string>
-    <string name="reward_detail_comment">%s\n%s\n\n총%s 플레이\n%sMTP 지급완료</string>
+    <string name="reward_detail_comment_game">%s\n%s MTP 지급완료\n총 %s 플레이</string>
+    <string name="reward_detail_comment_info">%s\n%s MTP 지급완료</string>
     <string name="get_reward_ready">1분 이상 플레이 성공!</string>
     <string name="get_reward_ok">%s MTP를 받았습니다.</string>
     <string name="get_reward">100 MTP 받기</string>
@@ -69,6 +70,12 @@
     <string name="total_reward">총 리워드</string>
     <string name="empty_today_txt">오늘 플레이한 기록이 없네요.\n내 폰에 설치된 어떤 게임이든 플레이하세요!\n3개의 게임에서 각각 한 번,\n총 3번의 리워드를 받을 수 있어요.</string>
     <string name="empty_reward_history_txt">아직 받은 리워드가 하나도 없네요.\n내 폰에 설치된 게임을 즐기고\n오늘의 첫 리워드를 받아보세요.</string>
+    <string name="email_not_valid">이메일 형식이 맞지않습니다.</string>
+    <string name="reward_userinfo_add">추가정보 입력 보상</string>
+    <string name="password_check">비밀번호 형식이 맞지않습니다.</string>
+    <string name="hours">시간</string>
+    <string name="minutes">분</string>
+    <string name="seconds">초</string>
 
     <!-- alert -->
     <string name="alert_more_info_empty">프로필 정보를 모두 선택하신 후 다시 시도하세요.</string>

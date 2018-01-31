@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.common.TimeUtil;
@@ -34,12 +36,10 @@ public class RewardHistoryFragment extends Fragment {
     private HomeActivity mActivity = null;
     private RewardHistoryAdapter mAdapter = null;
     private LinearLayoutManager mLayoutManager = null;
-
     private TextView total_mtp = null;
     private RecyclerView mRecyclerView = null;
 
     private ArrayList<RewardHistoryData> historyDataList = new ArrayList<RewardHistoryData>();
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,16 +67,7 @@ public class RewardHistoryFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        // Start time
-        long startTime = System.currentTimeMillis();
-
         getGameRewardTotalList();
-
-        long endTime = System.currentTimeMillis();
-
-        // Total time
-        long lTime = endTime - startTime;
-        Log.e("mithril", "Total reward list TIME : " + lTime + "(ms)");
 
     }
 
@@ -89,19 +80,32 @@ public class RewardHistoryFragment extends Fragment {
         mAdapter.setOnItemClickListener(new RewardHistoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                showNotInputValueDialog(mAdapter.getItem(position).getAppName(), mAdapter.getItem(position).getTimeToString() + ""
-                        , (TimeUtil.getTime(Long.parseLong(mAdapter.getItem(position).getPlayTime()))), mAdapter.getItem(position).getRewardMtp());
+
+                if(mAdapter.getItem(position).getTypeCode().equals(Constant.REWARD_TYPE_GAME)){
+
+                    showNotInputValueDialog(mAdapter.getItem(position).getAppName(), mAdapter.getItem(position).getTimeToString() + ""
+                            , mAdapter.getItem(position).getRewardMtp(), (TimeUtil.getTime(mActivity, Long.parseLong(mAdapter.getItem(position).getPlayTime())))
+                            , mAdapter.getItem(position).getTypeCode());
+
+                }else if(mAdapter.getItem(position).getTypeCode().equals(Constant.REWARD_TYPE_INFO_ADD)){
+
+                    showNotInputValueDialog(getString(R.string.reward_userinfo_add), mAdapter.getItem(position).getTimeToString() + ""
+                            , mAdapter.getItem(position).getRewardMtp(), "", mAdapter.getItem(position).getTypeCode());
+
+                }
 
             }
         });
 
     }
 
-    private void showNotInputValueDialog(String appname, String rewardTime, String playTime, String mtp){
+    private void showNotInputValueDialog(String appname, String rewardTime, String mtp, String playTime, String type){
 
         mActivity.showDialogOneButton(
-                getString(R.string.reward_detail),
-                String.format(getString(R.string.reward_detail_comment) ,appname ,rewardTime ,playTime ,mtp),
+                appname,
+                (type.equals(Constant.REWARD_TYPE_GAME))
+                        ? String.format(getString(R.string.reward_detail_comment_game),rewardTime, mtp, playTime)
+                        : String.format(getString(R.string.reward_detail_comment_info),rewardTime, mtp),
                 getString(R.string.ok),
                 new CommonDialog.CommonDialogListener() {
             @Override
@@ -134,12 +138,13 @@ public class RewardHistoryFragment extends Fragment {
                 }else{
 
                     List<GameRewardGet> gameRewardGets = item.getBody();
-                    Log.d("mithril", "gameRewardGets =" + gameRewardGets.size() );
+//                    Log.d("mithril", "gameRewardGets =" + gameRewardGets.size() );
 
                     historyDataList.clear();
                     for(GameRewardGet rewardGet : gameRewardGets ){
                         long rTime = Long.parseLong(rewardGet.getRegistdate());
-                        historyDataList.add(new RewardHistoryData(rewardGet.getPackagename(), rewardGet.getAlttitle(),  rewardGet.getReward(), rewardGet.getPlaytime(), rTime));
+                        historyDataList.add(new RewardHistoryData(rewardGet.getPackagename(), rewardGet.getAlttitle(),
+                                rewardGet.getReward(), rewardGet.getPlaytime(), rewardGet.getTypecode(), rTime));
                     }
 
                     mAdapter.setItemData(historyDataList);

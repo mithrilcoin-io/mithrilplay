@@ -54,8 +54,6 @@ public class RequestSendEmailAuth extends RequestCommon {
 
 			@Override
 			public void onFailure(Call<MemberResponse> call, Throwable t) {
-				Log.v("mithril", "onFailure");
-
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
 				listener.onFail();
 			}

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
+import io.mithrilcoin.mithrilplay.common.HashingUtil;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.network.RequestLogin;
 import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
@@ -30,11 +31,9 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
     private TextInputLayout layout_user_id, layout_pw_id;
     private EditText et_user_id, et_user_pw;
     private Button btnSignin, btnSignup;
+    private String mId, mPasswd;
 
     private Animation shake;
-
-    // data
-    private String mId, mPasswd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,22 +86,40 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
                 mId = et_user_id.getText().toString();
                 mPasswd = et_user_pw.getText().toString();
 
-                if (TextUtils.isEmpty(mId) && TextUtils.isEmpty(mPasswd)) {
+                boolean isIdvaile = false;
+                boolean isPdvaile = false;
+
+                if (TextUtils.isEmpty(mId)) {
+                    isIdvaile = false;
                     layout_user_id.setError(getString(R.string.email_null));
                     layout_user_id.startAnimation(shake);
-                    layout_pw_id.setError(getString(R.string.password_null));
-                    layout_pw_id.startAnimation(shake);
-                } else if (TextUtils.isEmpty(mId) && !TextUtils.isEmpty(mPasswd)) {
-                    layout_user_id.setError(getString(R.string.email_null));
-                    layout_user_id.startAnimation(shake);
-                    layout_pw_id.setErrorEnabled(false);
-                } else if (!TextUtils.isEmpty(mId) && TextUtils.isEmpty(mPasswd)) {
-                    layout_user_id.setErrorEnabled(false);
+                }else{
+                    if(HashingUtil.checkEmail(mId)){
+                        isIdvaile = true;
+                        layout_user_id.setErrorEnabled(false);
+                    }else{
+                        isIdvaile = false;
+                        layout_user_id.setError(getString(R.string.email_not_valid));
+                        layout_user_id.startAnimation(shake);
+                    }
+                }
+
+                if (TextUtils.isEmpty(mPasswd)) {
+                    isPdvaile = false;
                     layout_pw_id.setError(getString(R.string.password_null));
                     layout_pw_id.startAnimation(shake);
                 }else{
-                    layout_user_id.setErrorEnabled(false);
-                    layout_pw_id.setErrorEnabled(false);
+                    if(HashingUtil.checkPassword(mPasswd)){
+                        isPdvaile = true;
+                        layout_pw_id.setErrorEnabled(false);
+                    }else{
+                        isPdvaile = false;
+                        layout_pw_id.setError(getString(R.string.password_check));
+                        layout_pw_id.startAnimation(shake);
+                    }
+                }
+
+                if(isIdvaile && isPdvaile){
                     loginCall();
                 }
 

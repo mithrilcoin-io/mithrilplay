@@ -1,7 +1,6 @@
 package io.mithrilcoin.mithrilplay.network;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.common.Constant;
@@ -50,7 +49,6 @@ public class RequestMemberDetailUpdate extends RequestCommon {
 			@Override
 			public void onResponse(Call<MemberUpdateResponse> call, Response<MemberUpdateResponse> response) {
 
-				Log.d("mithril", "response.code() =" +  response.code() );
 				if(response.code() == Constant.OTHER_LOGIN){
 					ActivityBase.instance.logoutInlogin();
 					return;
@@ -65,8 +63,6 @@ public class RequestMemberDetailUpdate extends RequestCommon {
 
 			@Override
 			public void onFailure(Call<MemberUpdateResponse> call, Throwable t) {
-				Log.v("mithril", "onFailure");
-
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
 				listener.onFail();
 			}

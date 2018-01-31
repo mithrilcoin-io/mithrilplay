@@ -1,43 +1,34 @@
 package io.mithrilcoin.mithrilplay;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.usage.UsageStats;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
-import android.widget.ImageView;
+import android.os.Handler;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import io.mithrilcoin.mithrilplay.common.CommonApplication;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
-import io.mithrilcoin.mithrilplay.common.TimeUtil;
-import io.mithrilcoin.mithrilplay.data.AppUsageStatManager;
 import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
+import io.mithrilcoin.mithrilplay.view.auth.DataAccessInfoPermissionActivity;
 import io.mithrilcoin.mithrilplay.view.auth.LoginActivity;
-import io.mithrilcoin.mithrilplay.view.auth.PermissionActivity;
 import io.mithrilcoin.mithrilplay.view.auth.VerifyEmailActivity;
 
 public class IntroActivity extends ActivityBase {
 
 	private Activity mActivity = null;
 
-    private ImageView intro = null;
-
-	// 루팅 체크 관련
 	public static final String ROOT_PATH = Environment.getExternalStorageDirectory() + "";
 	public static final String ROOTING_PATH_1 = "/system/bin/su";
 	public static final String ROOTING_PATH_2 = "/system/xbin/su";
@@ -51,7 +42,7 @@ public class IntroActivity extends ActivityBase {
 			ROOT_PATH + ROOTING_PATH_4
 	};
 
-	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	@SuppressLint("WrongConstant")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +51,12 @@ public class IntroActivity extends ActivityBase {
 
 		mActivity = IntroActivity.this;
 
-		intro = (ImageView) findViewById(R.id.intro);
-
-		// 초기 기본 정보 셋팅
+		// init setting
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_ANDROD_ID, getAndroidID());
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_MODEL, Build.MODEL);
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_BRAND, Build.BRAND);
 
-		// 루팅 체크
+		// routing check
 		boolean isRootingFlag = false;
 		try {
 			Runtime.getRuntime().exec("su");
@@ -83,7 +72,6 @@ public class IntroActivity extends ActivityBase {
 
 		if(isRootingFlag){
 
-			// 루팅 안내 팝업
 			AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
 			builder.setMessage(getString(R.string.is_rooting_app_end));
 			builder.setPositiveButton(getString(R.string.confirm),
@@ -96,92 +84,29 @@ public class IntroActivity extends ActivityBase {
 
 		}else {
 
-			// 오늘까지 한 데이터 저장하고 이메일 인증후에 첫 실행시 빼준다.
-			String mAuthDate = 	MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_DATE);
-			if(TextUtils.isEmpty(mAuthDate)){
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
 
-				// 오늘 실행된 앱 목록 (앱 전체)
-				Map<String, UsageStats> todayAppUsage = AppUsageStatManager.getTodayUsageStatList(mActivity);
-				String[] mKeys = todayAppUsage.keySet().toArray(new String[todayAppUsage.size()]);
+				@Override
+				public void run() {
 
-				Map<String, String> saveData = new HashMap<String, String>();
-				for(int i = 0 ; i < mKeys.length ; ++i ){
-				    if(todayAppUsage.containsKey(mKeys[i])){
-				        if(todayAppUsage.get(mKeys[i]).getTotalTimeInForeground() > 0){
-                            saveData.put(mKeys[i], todayAppUsage.get(mKeys[i]).getTotalTimeInForeground()+"");
-//                            Log.d("mithril", "key = " + mKeys[i] + ", TimeInForeground =" + todayAppUsage.get(mKeys[i]).getTotalTimeInForeground());
-                        }
-                    }
-                }
-                MithrilPreferences.saveMap(mActivity, MithrilPreferences.TAG_APP_EMAILAUTH_BEFORE_DATA, saveData);
-                MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_APP_EMAILAUTH_BEFORE_DATA_date, TimeUtil.getTodayString());
-
-			}
-
-
-			// 안드로이드 퍼미션 권한 안내 한번만 호출
-			boolean isPLoaded = MithrilPreferences.getBoolean(mActivity, MithrilPreferences.TAG_PERMISSION);
-			if(!isPLoaded){
-
-				Intent intent = new Intent(this, PermissionActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-				startActivityForResult(intent, Constant.REQUEST_CODE_INTRO_PERMISSION);
-
-			}else{
-				if(isLogin()){
-					if(isEmailAuth()){
-						launchHomeScreen();
-						String ad = MithrilPreferences.getString(CommonApplication.getApplication(), MithrilPreferences.TAG_AUTH_DATE);
-						Log.e("mithril", "ad = " + ad );
+					if (hasPermission()){
+						checkRoute();
 					}else{
-						String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
-						getUserinfo(mId);
+						Intent intent = new Intent(mActivity, DataAccessInfoPermissionActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+						startActivityForResult(intent, Constant.REQUEST_CODE_INTRO_USE_INFO);
 					}
-				}else{
-					Intent intent = new Intent(this, LoginActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-					startActivity(intent);
-					finish();
+
 				}
-
-			}
-
-		}
-
-/*
-		try {
-			PackageInfo info = getPackageManager().getPackageInfo(
-					"io.mithrilcoin.mithrilplay",
-					PackageManager.GET_SIGNATURES);
-			for (Signature signature : info.signatures) {
-				MessageDigest md = MessageDigest.getInstance("SHA");
-				md.update(signature.toByteArray());
-				Log.e("jhs","hash="+ Base64.encodeToString(md.digest(), Base64.DEFAULT));
-			}
-		} catch (PackageManager.NameNotFoundException e) {
-
-		} catch (NoSuchAlgorithmException e) {
+			}, 1000);
 
 		}
-*/
-	}
 
-	public void checkIntent(){
-
-		if (getIntent().getData() != null) {
-//            if(getIntent().getData().toString().startsWith("mithril")) {
-//                checkWebIntent(getIntent().getData().toString());
-//            }else{
-//                networkCheckIntro();
-//            }
-//			networkCheckIntro();
-		}else{
-//            networkCheckIntro();
-		}
 	}
 
 	/**
-	 * 루팅파일 의심 Path를 가진 파일들을 생성 한다.
+	 * Routing files Creates files with suspicious paths.
 	 */
 	private File[] createFiles(String[] sfiles){
 		File[] rootingFiles = new File[sfiles.length];
@@ -192,7 +117,7 @@ public class IntroActivity extends ActivityBase {
 	}
 
 	/**
-	 * 루팅파일 여부를 확인 한다.
+	 * Check whether it is a routing file.
 	 */
 	private boolean checkRootingFiles(File... file){
 		boolean result = false;
@@ -207,6 +132,26 @@ public class IntroActivity extends ActivityBase {
 		return result;
 	}
 
+	private void checkRoute(){
+
+		if(isLogin()){
+			if(isEmailAuth()){
+				launchHomeScreen();
+				String ad = MithrilPreferences.getString(CommonApplication.getApplication(), MithrilPreferences.TAG_AUTH_DATE);
+				Log.e("mithril", "ad = " + ad );
+			}else{
+				String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
+				getUserinfo(mId);
+			}
+		}else{
+			Intent intent = new Intent(this, LoginActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			startActivity(intent);
+			finish();
+		}
+
+	}
+
 	private void getUserinfo(String mId){
 
 		RequestUserInfo requestUserInfo = new RequestUserInfo(mActivity, mId);
@@ -219,21 +164,18 @@ public class IntroActivity extends ActivityBase {
 					return;
 				}
 
-				if(!item.getBody().getCode().equals("SUCCESS")){
+				if(!item.getBody().getCode().equals(Constant.SUCCESS)){
 					return;
 				}
 
-				if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // 미인증
-					Log.d("mithril", "이메일 미인증");
+				if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){
 					Intent intent = new Intent(mActivity, VerifyEmailActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 					startActivityForResult(intent, Constant.REQUEST_INTRO_EMAILAUTH);
-				}else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
-					Log.d("mithril", "이메일 인증까지 완료");
+				}else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){
 					MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
 					launchHomeScreen();
-				}else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){  // 추가정보 입력완료
-					Log.d("mithril", "추가정보 입력완료");
+				}else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){
 					MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
 					launchHomeScreen();
 				}else{
@@ -259,29 +201,15 @@ public class IntroActivity extends ActivityBase {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d("mithril", ": intro onActivityResult");
-
 		if (resultCode != RESULT_OK) {
             finish();
 			return;
 		}
 
-		if(requestCode == Constant.REQUEST_CODE_INTRO_PERMISSION){
-			Log.d("mithril", ": REQUEST_CODE_INTRO_PERMISSION");
-
-			if(isLogin()){
-				launchHomeScreen();
-			}else{
-				Intent intent = new Intent(this, LoginActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-				startActivity(intent);
-				finish();
-			}
-
+		if(requestCode == Constant.REQUEST_CODE_INTRO_USE_INFO){
+			checkRoute();
 			return;
 		}else if(requestCode == Constant.REQUEST_INTRO_EMAILAUTH){
-			Log.d("mithril", ": REQUEST_INTRO_EMAILAUTH");
-
 
 			return;
 		}

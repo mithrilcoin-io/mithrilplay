@@ -1,13 +1,9 @@
 package io.mithrilcoin.mithrilplay.view;
 
 import android.app.Activity;
+import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -15,7 +11,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
@@ -35,57 +30,22 @@ public class ActivityBase extends AppCompatActivity {
 
     private Activity mActivity = null;
     public static ActivityBase instance = null;
-
     public static ArrayList<Activity> activityList = new ArrayList<Activity>();
-
-    // fcm 관련
-//    public FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Obtain the FirebaseAnalytics instance.
-//        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
         mActivity = ActivityBase.this;
         instance = ActivityBase.this;
 
         activityList.add(this);
-    }
 
-    public boolean checkNetwork() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        if(mobile != null){
-            if (mobile.isConnected() || wifi.isConnected()) {
-                return true;
-            }
-        }else{
-            if (wifi.isConnected()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void kill() {
-
-        for (int i = 0; i < activityList.size(); i++) {
-            activityList.get(i).finish();
-        }
-//        finish();
-//        ActivityConstant.applicationKill(this);
-        System.exit(0);
-//        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
     }
 
     @Override
@@ -113,7 +73,6 @@ public class ActivityBase extends AppCompatActivity {
     }
 
     public void logoutInlogin(){
-        Log.e("mithril","다른 기기에서 로그인했습니다." );
         logout();
         for (int i = 0; i < activityList.size(); i++) {
             activityList.get(i).finish();
@@ -121,34 +80,12 @@ public class ActivityBase extends AppCompatActivity {
         launchLoginScreen();
     }
 
-    public String getAppVersion() {
-        String appVersion = "";
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            appVersion = packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-        }
-        return appVersion;
-    }
-
     public String getAndroidID() {
 
         String androidId = "" + android.provider.Settings.Secure.getString(getBaseContext().getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-        Log.d("mithril","androidId =" + androidId);
+        Log.d(TAG,"androidId =" + androidId);
 
         return androidId;
-    }
-
-    private String getLauncherClassName(Context context){
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setPackage(getPackageName());
-
-        List<ResolveInfo> resolveInfoList = getPackageManager().queryIntentActivities(intent,0);
-        if(resolveInfoList != null && resolveInfoList.size() > 0){
-            return resolveInfoList.get(0).activityInfo.name;
-        }
-        return "";
     }
 
     public void hideKeyboard() {
@@ -223,5 +160,14 @@ public class ActivityBase extends AppCompatActivity {
         dialog.showDialogTwoButton(title, message, negativeButtonName, positiveButtonName);
     }
 
+    public boolean hasPermission() {
+        AppOpsManager appOps = (AppOpsManager)getSystemService(Context.APP_OPS_SERVICE);
+        int mode = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), getPackageName());
+        }
+        return mode == AppOpsManager.MODE_ALLOWED;
+//        return ContextCompat.checkSelfPermission(this, Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED;
+    }
 
 }

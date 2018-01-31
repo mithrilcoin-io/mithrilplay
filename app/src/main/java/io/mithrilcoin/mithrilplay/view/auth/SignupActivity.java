@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
+import io.mithrilcoin.mithrilplay.common.HashingUtil;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
 import io.mithrilcoin.mithrilplay.network.RequestMemberJoin;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
@@ -78,7 +80,8 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
 
             case R.id.btn_do_signup:
 
-                //TODO 비밀번호 정책 추가 해야함
+                //TODO 비밀번호 정책 확인
+                // 비밀번호 규칙 8자~20자, 1개이상 대문자, 1개이상 특수기호(!@#$), 숫자포함
 
                 hideKeyboard();
 
@@ -88,22 +91,40 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
                 mId = et_signup_id.getText().toString();
                 mPasswd = et_signup_pw.getText().toString();
 
-                if (TextUtils.isEmpty(mId) && TextUtils.isEmpty(mPasswd)) {
+                boolean isIdvaile = false;
+                boolean isPdvaile = false;
+
+                if (TextUtils.isEmpty(mId)) {
+                    isIdvaile = false;
                     layout_signup_id.setError(getString(R.string.email_null));
                     layout_signup_id.startAnimation(shake);
-                    layout_signup_pw.setError(getString(R.string.password_null));
-                    layout_signup_pw.startAnimation(shake);
-                } else if (TextUtils.isEmpty(mId) && !TextUtils.isEmpty(mPasswd)) {
-                    layout_signup_id.setError(getString(R.string.email_null));
-                    layout_signup_id.startAnimation(shake);
-                    layout_signup_pw.setErrorEnabled(false);
-                } else if (!TextUtils.isEmpty(mId) && TextUtils.isEmpty(mPasswd)) {
-                    layout_signup_id.setErrorEnabled(false);
+                }else{
+                    if(HashingUtil.checkEmail(mId)){
+                        isIdvaile = true;
+                        layout_signup_id.setErrorEnabled(false);
+                    }else{
+                        isIdvaile = false;
+                        layout_signup_id.setError(getString(R.string.email_not_valid));
+                        layout_signup_id.startAnimation(shake);
+                    }
+                }
+
+                if (TextUtils.isEmpty(mPasswd)) {
+                    isPdvaile = false;
                     layout_signup_pw.setError(getString(R.string.password_null));
                     layout_signup_pw.startAnimation(shake);
                 }else{
-                    layout_signup_id.setErrorEnabled(false);
-                    layout_signup_pw.setErrorEnabled(false);
+                    if(HashingUtil.checkPassword(mPasswd)){
+                        isPdvaile = true;
+                        layout_signup_pw.setErrorEnabled(false);
+                    }else{
+                        isPdvaile = false;
+                        layout_signup_pw.setError(getString(R.string.password_check));
+                        layout_signup_pw.startAnimation(shake);
+                    }
+                }
+
+                if(isIdvaile && isPdvaile){
                     memberJoinCall();
                 }
 
@@ -111,6 +132,7 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
         }
 
     }
+
 
     private void memberJoinCall(){
 

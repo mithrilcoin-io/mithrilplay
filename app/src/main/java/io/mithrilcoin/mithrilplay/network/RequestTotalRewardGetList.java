@@ -47,7 +47,6 @@ public class RequestTotalRewardGetList extends RequestCommon {
 			@Override
 			public void onResponse(Call<GameRewardTotalListResponse> call, Response<GameRewardTotalListResponse> response) {
 
-				Log.d("mithril", "response.code() =" +  response.code() );
 				if(response.code() == Constant.OTHER_LOGIN){
 					ActivityBase.instance.logoutInlogin();
 					return;
@@ -62,8 +61,6 @@ public class RequestTotalRewardGetList extends RequestCommon {
 
 			@Override
 			public void onFailure(Call<GameRewardTotalListResponse> call, Throwable t) {
-				Log.v("mithril", "onFailure");
-
 				Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
 				listener.onFail();
 			}
