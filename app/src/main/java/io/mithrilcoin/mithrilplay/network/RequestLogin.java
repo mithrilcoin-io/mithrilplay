@@ -14,7 +14,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * 로그인
+ * Login
  */
 public class RequestLogin extends RequestCommon {
 

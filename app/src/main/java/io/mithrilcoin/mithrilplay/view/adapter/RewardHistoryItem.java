@@ -3,7 +3,7 @@ package io.mithrilcoin.mithrilplay.view.adapter;
 import java.util.Calendar;
 
 /**
- *
+ *  RewardHistoryAdapter item
  */
 public abstract class RewardHistoryItem {
 

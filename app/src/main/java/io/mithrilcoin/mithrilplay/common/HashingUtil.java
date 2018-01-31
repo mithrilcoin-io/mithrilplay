@@ -6,8 +6,7 @@ import java.util.regex.Pattern;
 public class HashingUtil {
 
 	/**
-	 * 비밀번호 규칙 8자~20자, 1개이상 대문자, 1개이상 특수기호(!@#$), 숫자포함
-	 *
+	 * Password rules 8 to 20 characters, one or more uppercase letters, one or more special symbols (! @ # $), Including numbers
 	 * @param password
 	 * @return
 	 */
@@ -31,7 +30,6 @@ public class HashingUtil {
 
 	/**
 	 * email check
-	 *
 	 * @param email
 	 * @return
 	 */

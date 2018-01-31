@@ -21,6 +21,9 @@ import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
+/**
+ *  Wecome page
+ */
 public class WelcomeActivity extends ActivityBase {
 
     private Activity mActivity = null;
@@ -30,21 +33,12 @@ public class WelcomeActivity extends ActivityBase {
     private LinearLayout dotsLayout;
     private TextView[] dots;
     private int[] layouts;
-    private Button btnSkip, btnNext, btnStart;
-    //private PrefManager prefManager;
+    private Button btnStart;
+    private int mCurrentPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Checking for first time launch - before calling setContentView()
-        /*
-        prefManager = new PrefManager(this);
-        if (!prefManager.isFirstTimeLaunch()) {
-            launchHomeScreen();
-            finish();
-        }
-        */
 
         // Making notification bar transparent
         if (Build.VERSION.SDK_INT >= 18) {
@@ -57,10 +51,7 @@ public class WelcomeActivity extends ActivityBase {
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
-        //btnSkip = (Button) findViewById(R.id.btn_skip);
-        //btnNext = (Button) findViewById(R.id.btn_next);
         btnStart = (Button) findViewById(R.id.btn_start);
-
 
         // layouts of all welcome sliders
         // add few more layouts if you want
@@ -79,37 +70,16 @@ public class WelcomeActivity extends ActivityBase {
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
-        /*
-        btnSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchHomeScreen();
-                //viewPager.setCurrentItem(layouts.length);
-            }
-        });
-
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // checking for last page
-                // if last page home screen will be launched
-                int current = getItem(+1);
-                if (current < layouts.length) {
-                    // move to next screen
-                    viewPager.setCurrentItem(current);
-                } else {
-                    launchHomeScreen();
-                }
-            }
-        });
-        */
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // launchHomeScreen();
-                //viewPager.setCurrentItem(layouts.length);
-                MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_INTRO_SLIDE, true);
-                finish();
+                if (mCurrentPage == layouts.length - 1) {
+                    // Checking for first time launch
+                    MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_INTRO_SLIDE, true);
+                    finish();
+                } else {
+                    viewPager.setCurrentItem(++mCurrentPage);
+                }
             }
         });
     }
@@ -144,18 +114,16 @@ public class WelcomeActivity extends ActivityBase {
         public void onPageSelected(int position) {
             addBottomDots(position);
 
-            // changing the next button text 'NEXT' / 'GOT IT'
-            /*
+            mCurrentPage = position;
+
             if (position == layouts.length - 1) {
                 // last page. make button text to GOT IT
-                btnNext.setText(getString(R.string.start));
-                btnSkip.setVisibility(View.GONE);
+                btnStart.setText(getString(R.string.start));
             } else {
                 // still pages are left
-                btnNext.setText(getString(R.string.next));
-                btnSkip.setVisibility(View.VISIBLE);
+                btnStart.setText(getString(R.string.next));
             }
-            */
+
         }
 
         @Override

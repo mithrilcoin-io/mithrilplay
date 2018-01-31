@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *	회원인증 이메일 전송 요청
+ *	Member authentication e-mail request
  */
 public class RequestSendEmailAuth extends RequestCommon {
 

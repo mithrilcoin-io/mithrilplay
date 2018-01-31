@@ -36,7 +36,7 @@ import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
 /**
- * 추가정보 입력
+ * Enter additional information
  */
 public class MoreInfoActivity extends ActivityBase implements View.OnClickListener {
 
@@ -46,7 +46,6 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
     private AppCompatSpinner sp_birth_year, sp_birth_month, sp_nation;
     private Button btnGetBonusReward;
 
-    // data
     private String mGender = "";
     private String mBirthYear = "";
     private String mBirthMonth = "";
@@ -81,7 +80,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         sp_birth_month = (AppCompatSpinner) findViewById(R.id.sp_birth_month);
         sp_nation = (AppCompatSpinner) findViewById(R.id.sp_nation);
 
-        // 태어난 해
+        // birth year
         ArrayList<String> years = new ArrayList<String>();
         years.add(getString(R.string.birth_year));
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -108,7 +107,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         });
 
 
-        // 태어난 달
+        // birth month
         ArrayList<String> months = new ArrayList<String>();
         months.add(getString(R.string.month));
         for (int i = 1; i <= 12; i++) {
@@ -134,7 +133,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         });
 
 
-        // 국가정보
+        // nation info
         LinkedHashMap<String, Locale> mLocaleList = new LinkedHashMap<String, Locale>();
         ArrayList<String> nations = new ArrayList<String>();
 
@@ -224,13 +223,10 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         showDialogOneButton("",getString(R.string.alert_more_info_empty), getString(R.string.confirm) , new CommonDialog.CommonDialogListener() {
             @Override
             public void onConfirm() {
-
-
             }
 
             @Override
             public void onCancel() {
-
             }
         });
 
@@ -238,7 +234,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
     private void showRewardDoneDialog(){
 
-        showDialogOneButton(getString(R.string.congrats), getString(R.string.bonus), getString(R.string.ok), new CommonDialog.CommonDialogListener() {
+        showDialogOneButton(getString(R.string.congrats), getString(R.string.bonus), getString(R.string.confirm), new CommonDialog.CommonDialogListener() {
             @Override
             public void onConfirm() {
                 setResult(RESULT_OK);
@@ -247,7 +243,6 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
             @Override
             public void onCancel() {
-
             }
         });
 
@@ -269,8 +264,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
     private void setMemberDetailUpdate(){
 
-        //TODO city정보 없음 확인해야함
-
+        //TODO No city information
         String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
         MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(mGender, mBirthYear, mBirthMonth, mNation, "");
 
@@ -278,11 +272,9 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         requestMemberDetailUpdate.post(new RequestMemberDetailUpdate.ApiMemberDetailUpdateListener() {
             @Override
             public void onSuccess(MemberUpdateResponse item) {
-
                 if(item.getBody().getCode().equals(Constant.SUCCESS)){
                     showRewardDoneDialog();
                 }
-
             }
 
             @Override

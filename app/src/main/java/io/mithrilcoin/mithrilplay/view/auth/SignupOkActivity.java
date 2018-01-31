@@ -10,7 +10,9 @@ import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
-// 회원가입 완료
+/**
+ *  Sign Up Complete
+ */
 public class SignupOkActivity extends ActivityBase {
 
     private Button btnMoreInfo, btnSkip;
@@ -27,7 +29,7 @@ public class SignupOkActivity extends ActivityBase {
             @Override
             public void onClick(View v) {
 
-                // 추가정보 입력으로 이동
+                // Go to more info
                 Intent intent = new Intent(SignupOkActivity.this, MoreInfoActivity.class);
                 startActivityForResult(intent, Constant.REQUEST_JOIN_MOREINFO);
             }
@@ -48,14 +50,12 @@ public class SignupOkActivity extends ActivityBase {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d("mithril", ": SignupOkActivity onActivityResult");
-
         if (resultCode != RESULT_OK) {
             return;
         }
 
         if(requestCode == Constant.REQUEST_JOIN_MOREINFO){
-            Log.d("mithril", ": REQUEST_JOIN_MOREINFO");
+
             for (int i = 0; i < activityList.size(); i++) {
                 activityList.get(i).finish();
             }

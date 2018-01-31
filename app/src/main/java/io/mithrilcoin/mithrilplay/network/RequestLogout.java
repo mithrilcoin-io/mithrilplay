@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *	로그아웃
+ *	Logout
  */
 public class RequestLogout extends RequestCommon {
 

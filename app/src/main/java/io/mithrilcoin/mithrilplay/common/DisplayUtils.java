@@ -27,8 +27,8 @@ public class DisplayUtils {
     }
 
 	/**
-	 * @param dip dip 단위로 표현된 수
-	 * @return pixel 단위로 변환된 수
+	 * @param dip dip
+	 * @return pixel
 	 */
 	public static float toPixel2(float dip) {
 		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, CommonApplication.getResource().getDisplayMetrics());

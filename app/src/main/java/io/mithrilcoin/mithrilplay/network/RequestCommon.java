@@ -5,7 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class RequestCommon {
 
-	// 통신과정 로그확인
+	// Check network log
 	protected OkHttpClient createOkHttpClient() {
 		OkHttpClient.Builder builder = new OkHttpClient.Builder();
 		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

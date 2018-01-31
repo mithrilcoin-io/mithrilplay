@@ -19,6 +19,9 @@ import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.auth.MoreInfoActivity;
 
+/**
+ *  Setting page
+ */
 public class SettingActivity extends ActivityBase  {
 
     private Activity mActivity = null;
@@ -54,7 +57,7 @@ public class SettingActivity extends ActivityBase  {
             @Override
             public void onClick(View v) {
 
-                // 추가정보 입력으로 이동
+                // move additional information page
                 Intent intent = new Intent(mActivity, MoreInfoActivity.class);
                 startActivityForResult(intent, Constant.REQUEST_SETTING_MOREINFO);
 
@@ -69,7 +72,6 @@ public class SettingActivity extends ActivityBase  {
             }
         });
 
-        // 계정정보
         String email = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_EMAIL);
         tv_email.setText(email);
 
@@ -127,22 +129,22 @@ public class SettingActivity extends ActivityBase  {
                     return;
                 }
 
-                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // 미인증
+                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){
 
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
 
-                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
+                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){
 
                     layout_more_info.setVisibility(View.VISIBLE);
                     tv_more_info.setVisibility(View.GONE);
 
-                }else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){ // 추가정보 입력완료
+                }else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){
 
-                    // 사용자 추가 정보
+                    // User Additional Information button
                     layout_more_info.setVisibility(View.GONE);
                     tv_more_info.setVisibility(View.VISIBLE);
 
-                    // "남자 / 1979.12 / 대한민국"
+                    // User Additional Information "male / 1979.12 / korea"
                     if(item.getUserInfo().getMemberDetail() != null){
                         tv_more_info.setText(String.format(getString(R.string.more_info_set),
                                 item.getUserInfo().getMemberDetail().getGender(),

@@ -17,6 +17,9 @@ public class UserInfo {
     @SerializedName("memberDetail")
     @Expose
     private MemberDetail memberDetail;
+    @SerializedName("validtime")
+    @Expose
+    private String validtime;
     @SerializedName("mtptotal")
     @Expose
     private Mtptotal mtptotal;
@@ -57,6 +60,14 @@ public class UserInfo {
 
     public void setMemberDetail(MemberDetail memberDetail) {
         this.memberDetail = memberDetail;
+    }
+
+    public String getValidtime() {
+        return validtime;
+    }
+
+    public void setValidtime(String validtime) {
+        this.validtime = validtime;
     }
 
     public Mtptotal getMtptotal() {

@@ -14,7 +14,9 @@ import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
-
+/**
+ * requests permission to access usage informatiom
+ */
 public class DataAccessInfoPermissionActivity extends ActivityBase {
 
     private Button btn_set_data_access;

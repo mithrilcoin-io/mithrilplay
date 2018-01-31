@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -25,7 +26,9 @@ import io.mithrilcoin.mithrilplay.network.vo.GameRewardTotalListResponse;
 import io.mithrilcoin.mithrilplay.view.adapter.RewardHistoryAdapter;
 import io.mithrilcoin.mithrilplay.view.adapter.RewardHistoryData;
 
-
+/**
+ *  Get Reward history
+ */
 public class RewardHistoryFragment extends Fragment {
 
     public RewardHistoryFragment() {
@@ -38,6 +41,7 @@ public class RewardHistoryFragment extends Fragment {
     private LinearLayoutManager mLayoutManager = null;
     private TextView total_mtp = null;
     private RecyclerView mRecyclerView = null;
+    private RelativeLayout mEmptyRewardHistory = null;
 
     private ArrayList<RewardHistoryData> historyDataList = new ArrayList<RewardHistoryData>();
 
@@ -59,6 +63,7 @@ public class RewardHistoryFragment extends Fragment {
         total_mtp = (TextView) v.findViewById(R.id.total_mtp);
         mRecyclerView = (RecyclerView) v.findViewById(R.id.rv_reward_history);
         mRecyclerView.setHasFixedSize(true);
+        mEmptyRewardHistory = (RelativeLayout) v.findViewById(R.id.empty_reward_history);
 
         setAdapter();
 
@@ -106,7 +111,7 @@ public class RewardHistoryFragment extends Fragment {
                 (type.equals(Constant.REWARD_TYPE_GAME))
                         ? String.format(getString(R.string.reward_detail_comment_game),rewardTime, mtp, playTime)
                         : String.format(getString(R.string.reward_detail_comment_info),rewardTime, mtp),
-                getString(R.string.ok),
+                getString(R.string.confirm),
                 new CommonDialog.CommonDialogListener() {
             @Override
             public void onConfirm() {
@@ -122,7 +127,7 @@ public class RewardHistoryFragment extends Fragment {
 
     }
 
-    // 게임 리워드 받은 전체 기록 가져오기
+    // Get Full Reward list
     private void getGameRewardTotalList(){
 
         String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
@@ -135,6 +140,8 @@ public class RewardHistoryFragment extends Fragment {
                     if(item.getUserInfo() != null && item.getUserInfo().getMtptotal() != null){
                         total_mtp.setText(String.format(getString(R.string.total_mtp), item.getUserInfo().getMtptotal().getIncomeamount()));
                     }
+                    mRecyclerView.setVisibility(View.GONE);
+                    mEmptyRewardHistory.setVisibility(View.VISIBLE);
                 }else{
 
                     List<GameRewardGet> gameRewardGets = item.getBody();
@@ -149,7 +156,17 @@ public class RewardHistoryFragment extends Fragment {
 
                     mAdapter.setItemData(historyDataList);
                     mAdapter.notifyDataSetChanged();
-                    total_mtp.setText(String.format(getString(R.string.total_mtp), item.getUserInfo().getMtptotal().getIncomeamount()));
+                    if(item.getUserInfo() != null && item.getUserInfo().getMtptotal() != null) {
+                        total_mtp.setText(String.format(getString(R.string.total_mtp), item.getUserInfo().getMtptotal().getIncomeamount()));
+                    }
+                    if(gameRewardGets.size() > 0){
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        mEmptyRewardHistory.setVisibility(View.GONE);
+                    }else{
+                        mRecyclerView.setVisibility(View.GONE);
+                        mEmptyRewardHistory.setVisibility(View.VISIBLE);
+                    }
+
                 }
 
             }

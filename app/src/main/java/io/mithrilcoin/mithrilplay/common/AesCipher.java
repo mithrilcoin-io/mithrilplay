@@ -10,9 +10,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * AES 암호를 위한 지원. CBC mode, PKCS5 Padding.
- */
 public class AesCipher {
 
 	static final byte[] HEX_CHAR_TABLE = {
@@ -42,13 +39,6 @@ public class AesCipher {
 	protected Cipher ecipher;
 	protected Cipher dcipher;
 
-	/**
-	 * CBC mode, PKCS5 Padding.
-	 * @param key
-	 * @param initializationVector CBC requires an initialization vector.
-	 * @throws InvalidAlgorithmParameterException {@link Cipher#init(int, java.security.Key, AlgorithmParameterSpec)}
-	 * @throws InvalidKeyException {@link Cipher#init(int, java.security.Key, AlgorithmParameterSpec)}
-	 */
 	public AesCipher(byte[] key, byte[] initializationVector)
 	throws InvalidKeyException, InvalidAlgorithmParameterException {
 
@@ -70,10 +60,6 @@ public class AesCipher {
 		}
 	}
 
-	/**
-	 * @param plain 암호화할 대상. 암호화되지 않은 상태.
-	 * @return 암호화된 배열
-	 */
 	public byte[] encrypt(byte[] plain) {
 		try {
 			return ecipher.doFinal(plain);
@@ -83,13 +69,8 @@ public class AesCipher {
 		return null;
 	}
 
-	/**
-	 * @param encoded 복호화할 대상. 암호화된 상태.
-	 * @return 복호화된 배열
-	 */
 	public byte[] decrypt(byte[] encoded) {
 		try {
-            Log.e("jhsAES", dcipher.doFinal(encoded).toString());
 			return dcipher.doFinal(encoded);
 		} catch (Exception e) {
 			Log.e("AesCipher", e.getMessage().toString());
@@ -97,11 +78,6 @@ public class AesCipher {
 		return null;
 	}
 
-	/**
-	 * hex To bytArray
-	 * @param hex
-	 * @return
-	 */
 	public static byte[] hexToByteArray(String hex) {
 		if (hex == null || hex.length() == 0) {
 			return null;
@@ -114,10 +90,6 @@ public class AesCipher {
 		return ba;
 	}
 
-	/**
-	 * AES 암호화 key 를 가져온다.
-	 * @return
-	 */
 	public static byte[] getAESKey() {
 		byte[] keyFromServer = hexToByteArray(MithrilPreferences.getString(CommonApplication.getApplication(), MithrilPreferences.PREF_KEY, ""));
 		
@@ -144,10 +116,6 @@ public class AesCipher {
 		 return key;
 	}
 
-	/**
-	 * AES 암호화 Initialization Vector 값을 가져온다. 
-	 * @return
-	 */
 	public static byte[] getInitializationVector() {
 		byte[] keyFromServer = hexToByteArray(MithrilPreferences.getString(CommonApplication.getApplication(), MithrilPreferences.PREF_KEY, ""));
 		

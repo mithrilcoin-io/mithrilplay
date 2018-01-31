@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *	전체 게임 데이터 조회(no paging)
+ *	View full list received by Reward
  */
 public class RequestTotalRewardGetList extends RequestCommon {
 

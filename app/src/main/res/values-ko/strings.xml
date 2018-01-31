@@ -7,7 +7,6 @@
     <string name="usage_data_access">사용정보 접근 허용</string>
     <string name="confirm">확인</string>
     <string name="cancel">취소</string>
-    <string name="ok">OK</string>
     <string name="today_reward">오늘의 리워드</string>
     <string name="reward_history">리워드 기록</string>
     <string name="permission_desc">미스릴 플레이는 다음과 같은 권한에 동의해 주셔야 정상적인 사용이 가능합니다.</string>
@@ -51,7 +50,7 @@
     <string name="reward_detail">리워드 상세</string>
     <string name="reward_detail_comment_game">%s\n%s MTP 지급완료\n총 %s 플레이</string>
     <string name="reward_detail_comment_info">%s\n%s MTP 지급완료</string>
-    <string name="get_reward_ready">1분 이상 플레이 성공!</string>
+    <string name="get_reward_ready">%s이상 플레이 성공!</string>
     <string name="get_reward_ok">%s MTP를 받았습니다.</string>
     <string name="get_reward">100 MTP 받기</string>
     <string name="not_install_game">설치된 게임이 없습니다.</string>

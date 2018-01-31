@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *	로그인 사용자 정보조회
+ *	View login user information
  */
 public class RequestUserInfo extends RequestCommon {
 

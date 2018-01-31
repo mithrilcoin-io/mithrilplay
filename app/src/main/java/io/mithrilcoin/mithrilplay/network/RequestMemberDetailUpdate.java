@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- * 사용자 추가 정보 업데이트
+ * Update additional user information
  */
 public class RequestMemberDetailUpdate extends RequestCommon {
 

@@ -25,6 +25,9 @@ import io.mithrilcoin.mithrilplay.view.auth.DataAccessInfoPermissionActivity;
 import io.mithrilcoin.mithrilplay.view.auth.LoginActivity;
 import io.mithrilcoin.mithrilplay.view.auth.VerifyEmailActivity;
 
+/**
+ *  Intro page
+ */
 public class IntroActivity extends ActivityBase {
 
 	private Activity mActivity = null;
@@ -62,7 +65,6 @@ public class IntroActivity extends ActivityBase {
 			Runtime.getRuntime().exec("su");
 			isRootingFlag = true;
 		} catch ( Exception e) {
-			// Exception 나면 루팅 false;
 			isRootingFlag = false;
 		}
 		if(!isRootingFlag){

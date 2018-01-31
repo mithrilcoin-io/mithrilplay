@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *  게임리워드 요청
+ *  Game Reward Request
  */
 public class RequestGameRewardOrder extends RequestCommon {
 

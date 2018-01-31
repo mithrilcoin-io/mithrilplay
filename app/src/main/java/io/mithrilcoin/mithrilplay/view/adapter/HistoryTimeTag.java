@@ -1,5 +1,8 @@
 package io.mithrilcoin.mithrilplay.view.adapter;
 
+/**
+ *  RewardHistoryAdapter item
+ */
 public class HistoryTimeTag extends RewardHistoryItem {
 
     public HistoryTimeTag(long time) {

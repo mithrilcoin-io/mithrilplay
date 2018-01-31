@@ -1,6 +1,7 @@
 package io.mithrilcoin.mithrilplay.view.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
 
 /**
+ * Get Rewards List Adapter
  */
 public class RewardHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -129,10 +131,15 @@ public class RewardHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 dHolder.iv_game_icon.setVisibility(View.GONE);
                 dHolder.tv_reward_title.setText(mActivity.getString(R.string.reward_userinfo_add));
             }else if(((RewardHistoryData) itemList.get(position)).getTypeCode().equals(Constant.REWARD_TYPE_GAME)){
-                dHolder.iv_mithril_icon.setVisibility(View.GONE);
-                dHolder.iv_game_icon.setVisibility(View.VISIBLE);
                 try {
-                    dHolder.iv_game_icon.setImageDrawable(pm.getApplicationIcon(packgeName));
+                    if(isPackageInstalled(packgeName, mActivity)){
+                        dHolder.iv_mithril_icon.setVisibility(View.GONE);
+                        dHolder.iv_game_icon.setVisibility(View.VISIBLE);
+                        dHolder.iv_game_icon.setImageDrawable(pm.getApplicationIcon(packgeName));
+                    }else{
+                        dHolder.iv_mithril_icon.setVisibility(View.VISIBLE);
+                        dHolder.iv_game_icon.setVisibility(View.GONE);
+                    }
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                     dHolder.iv_mithril_icon.setVisibility(View.VISIBLE);
@@ -159,5 +166,15 @@ public class RewardHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
+    }
+
+    private boolean isPackageInstalled(String packagename, Context context) {
+        PackageManager pm = context.getPackageManager();
+        try {
+            pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }

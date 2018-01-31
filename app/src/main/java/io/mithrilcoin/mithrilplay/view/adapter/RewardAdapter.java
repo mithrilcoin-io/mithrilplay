@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,8 @@ import io.mithrilcoin.mithrilplay.network.vo.AppGameBody;
 import io.mithrilcoin.mithrilplay.view.RewardFragment.GameRewardCallListener;
 
 /**
+ * Today's Rewards Adapter
  */
-
 public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHolder> {
 
     private Activity mActivity = null;
@@ -29,6 +30,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
     private String[] mKeys;
     private PackageManager pm;
     private GameRewardCallListener mRewardListener;
+    private String mValidTime = "";
 
     @SuppressLint("WrongConstant")
     public RewardAdapter(Activity activity, LinkedHashMap<String, AppGameBody> items, GameRewardCallListener gameRewardCallListener){
@@ -43,6 +45,10 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
     public void setItemData(LinkedHashMap<String, AppGameBody> item){
         this.mItems = item;
         mKeys = mItems.keySet().toArray(new String[mItems.size()]);
+    }
+
+    public void setValidTime(long vTime){
+        this.mValidTime = TimeUtil.getTime(mActivity, vTime);
     }
 
     @Override
@@ -69,6 +75,9 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
 
         try {
             AppName = (String) pm.getApplicationLabel(pm.getApplicationInfo(packgeName, PackageManager.GET_UNINSTALLED_PACKAGES));
+            if(TextUtils.isEmpty(AppName)){
+                AppName = Value.getTitle();
+            }
             holder.tv_game_title.setText(AppName);
         } catch (PackageManager.NameNotFoundException e1) {
             e1.printStackTrace();
@@ -78,19 +87,20 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
 
         holder.reward_layout.setVisibility(View.VISIBLE);
         if(!Value.getReward().equals("0")){
-            // 리워드 받음
+            // Reward received
             holder.tv_today_reward.setVisibility(View.VISIBLE);
             holder.tv_today_reward.setText(String.format(mActivity.getString(R.string.get_reward_ok), Value.getReward()));
             holder.btn_reward_mtp.setVisibility(View.GONE);
             holder.iv_rewarded.setVisibility(View.VISIBLE);
 
         }else if(Value.getValid().equals("true")){
-            // 리워드 요청가능_리워드 받기전
+            // Rewards can be requested _ before receiving the reward
             holder.tv_today_reward.setVisibility(View.VISIBLE);
+            holder.tv_today_reward.setText(String.format(mActivity.getString(R.string.get_reward_ready),mValidTime));
             holder.btn_reward_mtp.setVisibility(View.VISIBLE);
             holder.iv_rewarded.setVisibility(View.GONE);
         }else{
-            // 기타 게임
+            // Games played today
             holder.reward_layout.setVisibility(View.GONE);
             holder.tv_today_reward.setVisibility(View.GONE);
             holder.btn_reward_mtp.setVisibility(View.GONE);

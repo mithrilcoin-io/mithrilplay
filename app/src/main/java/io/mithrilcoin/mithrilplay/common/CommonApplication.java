@@ -9,7 +9,7 @@ public class CommonApplication extends Application {
 
     private static volatile CommonApplication instance = null;
 
-    //개발모드일 경우 로그캣의 로그 출력을 처리
+    // Handles the log output of the logcat in development mode
     public static final int DEVELOPMENT_MODE = 2;
     public static final int PRODUCT_MODE = 0;
     public static int BUILD_MODE = 0;
@@ -32,9 +32,9 @@ public class CommonApplication extends Application {
     }
 
     /**
-     * 현재 어플의 빌드 정보를 반환
-     * 0 : 상용 모드 (디버깅 불가)
-     * 2 : 개발 모드 (디버깅 가능)
+     * Returns the build information of the current application
+     * 0 : Release Mode (Debuggering impossible)
+     * 2 : Development Mode (Debuggering possible)
      * @param context
      * @return
      */

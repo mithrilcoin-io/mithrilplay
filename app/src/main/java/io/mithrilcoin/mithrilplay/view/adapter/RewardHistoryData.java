@@ -1,6 +1,7 @@
 package io.mithrilcoin.mithrilplay.view.adapter;
 
 /**
+ *  RewardHistoryAdapter item
  */
 public class RewardHistoryData extends RewardHistoryItem {
 

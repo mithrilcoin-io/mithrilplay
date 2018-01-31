@@ -1,5 +1,6 @@
 package io.mithrilcoin.mithrilplay.data;
 
+import android.annotation.TargetApi;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
@@ -31,7 +32,7 @@ public class AppUsageStatManager {
 
     public static Context mContext;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @SuppressWarnings("ResourceType")
     public static void getStats(Context context){
         UsageStatsManager usm = (UsageStatsManager) context.getSystemService("usagestats");
@@ -40,10 +41,6 @@ public class AppUsageStatManager {
         long endTime = calendar.getTimeInMillis();
         calendar.add(Calendar.DATE, -1);
         long startTime = calendar.getTimeInMillis();
-
-        Log.d(TAG, "Range start:" + dateFormat.format(startTime) );
-        Log.d(TAG, "Range end:" + dateFormat.format(endTime));
-
         UsageEvents uEvents = usm.queryEvents(startTime,endTime);
         while (uEvents.hasNextEvent()){
             UsageEvents.Event e = new UsageEvents.Event();
@@ -57,8 +54,6 @@ public class AppUsageStatManager {
 
 
     public static long getStartTime() {
-//        Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
-//        Calendar calendar = GregorianCalendar.getInstance();
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -80,47 +75,27 @@ public class AppUsageStatManager {
             startTime = calendar.getTimeInMillis();
         }
 
-        Log.d("mithriltime", "getStartTime today start calendar:" + startTime);
-
-//        TimeZone utc = TimeZone.getTimeZone("UTC");
-//        dateFormat2.setTimeZone(utc);
-//        Log.d("mithriltime", "getStartTime today start dateFormat2:" + dateFormat2.format(calendar.getTimeInMillis()));
-//        Log.d("mithriltime", "getStartTime System.currentTimeMillis():" + System.currentTimeMillis());
-//        Log.d("mithriltime", "getStartTime System.currentTimeMillis() dateFormat2:" + dateFormat2.format(System.currentTimeMillis()));
+//        Log.d("mithriltime", "getStartTime today start calendar:" + startTime);
 
         return startTime;
     }
 
     /**
-     *  오늘 00시부터 현재 시간까지 앱사용리스트 가져오기
+     * Get app usage list from 00:00 till today
      * @param context
      * @return
      */
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Map<String, UsageStats> getTodayUsageStatList(Context context){
         mContext = context;
         UsageStatsManager usm = getUsageStatsManager(context);
 
-        Log.d("mithriltime", "System.currentTimeMillis():" + System.currentTimeMillis());
-
         Map<String, UsageStats> usageStats = queryAndAggregateUsageStatsDaily(getStartTime(), System.currentTimeMillis());
-//        Map<String, UsageStats> usageStats = queryAndAggregateUsageStatsDaily(startTime, endTime);
-//        Map<String, UsageStats> usageStats = queryAndAggregateUsageStatsDaily(20180126, 20180127);
-//        Map<String, UsageStats> usageStats = queryAndAggregateUsageStatsDaily(System.currentTimeMillis() - (20 * 60 * 1000), System.currentTimeMillis());
-
-//        UsageStatsManager usageStatsManager = (UsageStatsManager)context.getSystemService(Context.USAGE_STATS_SERVICE);
-//        List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, getStartTime()  , System.currentTimeMillis());
-//        List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, 0  , System.currentTimeMillis());
-
-//        for (UsageStats us : queryUsageStats) {
-//            Log.d("mithriltime", us.getPackageName() + " = " + us.getTotalTimeInForeground());
-//        }
-
         return usageStats;
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Map<String, UsageStats> queryAndAggregateUsageStatsDaily(long beginTime, long endTime) {
 
         UsageStatsManager usm = getUsageStatsManager(mContext);

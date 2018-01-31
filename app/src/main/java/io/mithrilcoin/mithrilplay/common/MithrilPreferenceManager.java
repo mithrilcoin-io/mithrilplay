@@ -11,9 +11,9 @@ import java.util.Set;
 public class MithrilPreferenceManager {
 	
 	private String TAG = "MithrilPreferenceManager";
-	
+	// todo
+	// Later keys are managed by the server
 	private static final String CRYPTOKEY = "308b4ba610cf3f1eeac517d98a534932cc70c28f0da6036b2e7091ccf80f42dd";
-
 	private static final String PREF_FILE = "MithrilPlay_prefs";
 	private Map<String, Object> mPreferenceInfo;
 	private SharedPreferences pref;
@@ -48,14 +48,6 @@ public class MithrilPreferenceManager {
 	}
 
 	private boolean checkEncryptKey(String key) {
-
-//        암호화 하지 않을 값들은 여기에 추가한다
-//        if (MithrilPreferences.PREF_MSISDN.equals(key)) {
-//            return false;
-//        }
-
-//        Log.d("jhsAES","checkEncryptKey = " + key);
-
 		return true;
 	}
 
@@ -115,11 +107,9 @@ public class MithrilPreferenceManager {
 
 		String value = defValue;
 		if (checkEncryptKey(key)) {
-			// 1. memory에 있는지 확인한다.
 			if (mPreferenceInfo.containsKey(key)) {
 				return (String) mPreferenceInfo.get(key);
 			}
-			// 2-1. 암호화 시킨 key값으로 preference가 있는지 확인한다.
 			String encryptKey = encrypt(key);
 			if (!TextUtils.isEmpty(encryptKey) && pref.contains(encryptKey)) {
 				String temp = pref.getString(encryptKey, defValue);
@@ -127,7 +117,7 @@ public class MithrilPreferenceManager {
 					value = decrypt(temp);
 				}
                 mPreferenceInfo.put(key, value);
-			} else if (pref.contains(key)) { // 2-2. 암호화 안된 key값으로 preference를 확인한다.
+			} else if (pref.contains(key)) {
 				String temp = pref.getString(key, defValue);
 				value = temp;
 				if (!TextUtils.isEmpty(temp)) {
@@ -146,11 +136,9 @@ public class MithrilPreferenceManager {
 				try {
 					value = pref.getString(key, defValue);
 				} catch (Exception e) {
-					Log.e("Error occured while trying to get string from key", getClass().getSimpleName());
 				}
 			}
 		}
-//        Log.d("jhsAES","getString value =" + value);
 		return value;
 	}
 
@@ -168,8 +156,6 @@ public class MithrilPreferenceManager {
 			String encryptValue = encrypt(value);
 			putStringInternal(encryptKey, encryptValue);
 			mPreferenceInfo.put(key, value);
-
-            // 기존에 암호화 안된 preference는 삭제
             if (pref.contains(key)) {
                 pref.edit().remove(key).commit();
             }
@@ -188,21 +174,14 @@ public class MithrilPreferenceManager {
 			return defValue;
 		}
         if (mPreferenceInfo.containsKey(key)) {
-            if (CommonApplication.DEBUG_MODE) {
-                Log.i("getBoolean - key : " + key + ", value : " +
-                                Boolean.toString((Boolean) mPreferenceInfo.get(key)),
-                        getClass().getSimpleName());
-            }
-//            Log.d("jhsAES","getBoolean value =" + (Boolean) mPreferenceInfo.get(key));
             return (Boolean) mPreferenceInfo.get(key);
         } else {
             String encryptKey = encrypt(key);
             Boolean value = defValue;
-			// 암호화 시킨 key값으로 preference가 있는지 확인한다.
             if (!TextUtils.isEmpty(encryptKey) && pref.contains(encryptKey)) {
                 value = pref.getBoolean(encryptKey, defValue);
                 mPreferenceInfo.put(key, value);
-            } else if(pref.contains(key)){ // 	암호화 안된 key값으로 preference를 확인한다.
+            } else if(pref.contains(key)){
 				Boolean temp = pref.getBoolean(key, defValue);
 				value = temp;
 				if (temp != null) {
@@ -212,19 +191,8 @@ public class MithrilPreferenceManager {
 				}
                 mPreferenceInfo.put(key, value);
 			}
-            if (CommonApplication.DEBUG_MODE) {
-                Log.i("getBoolean - key : " + key + ", value : " +
-                        Boolean.toString(value), getClass().getSimpleName());
-            }
-//            Log.d("jhsAES","getBoolean value =" + value);
             return value;
         }
-//		Boolean value = pref.getBoolean(key, defValue);
-		// if( ChatONLogWriter.D_FLAG ){
-		// ChatONLogWriter.dlog("getBoolean - key : " + key + ", value : " +
-		// Boolean.toString(value), getClass().getSimpleName());
-		// }
-//		return value;
 	}
 
 	public synchronized void putBoolean(String key, Boolean value) {
@@ -237,16 +205,9 @@ public class MithrilPreferenceManager {
         mPreferenceInfo.put(key, value);
         putBooleanInternal(encrypt(key), value);
 
-        // 기존에 암호화 안된 preference는 삭제
         if (pref.contains(key)) {
             pref.edit().remove(key).commit();
         }
-
-        if (CommonApplication.DEBUG_MODE) {
-            Log.i("putBoolean - key : " + key + ", value : " +
-                    Boolean.toString(value), getClass().getSimpleName());
-        }
-//		putBooleanInternal(key, value);
 	}
 
 	private void putBooleanInternal(String key, Boolean value) {
@@ -258,20 +219,14 @@ public class MithrilPreferenceManager {
 			return defValue;
 		}
         if (mPreferenceInfo.containsKey(key)) {
-            if (CommonApplication.DEBUG_MODE) {
-                Log.i("getLong - key : " + key + ", value : " +
-                                Long.toString((Long) mPreferenceInfo.get(key)),
-                        getClass().getSimpleName());
-            }
             return (Long) mPreferenceInfo.get(key);
         } else {
             String encryptKey = encrypt(key);
             Long value = defValue;
-            // 암호화 시킨 key값으로 preference가 있는지 확인한다.
             if (!TextUtils.isEmpty(encryptKey) && pref.contains(encryptKey)) {
                 value = pref.getLong(encryptKey, defValue);
                 mPreferenceInfo.put(key, value);
-            } else if(pref.contains(key)) { // 	암호화 안된 key값으로 preference를 확인한다.
+            } else if(pref.contains(key)) {
                 Long temp = pref.getLong(key, defValue);
                 value = temp;
                 if (temp != null) {
@@ -281,18 +236,8 @@ public class MithrilPreferenceManager {
                 }
                 mPreferenceInfo.put(key, value);
             }
-            if (CommonApplication.DEBUG_MODE) {
-                Log.i("getLong - key : " + key + ", value : " +
-                        Long.toString(value), getClass().getSimpleName());
-            }
             return value;
         }
-//		Long value = pref.getLong(key, defValue);
-		// if( ChatONLogWriter.D_FLAG ){
-		// ChatONLogWriter.dlog("getLong - key : " + key + ", value : " +
-		// Long.toString(value), getClass().getSimpleName());
-		// }
-//		return value;
 	}
 
 	public synchronized void putLong(String key, Long value) {
@@ -306,16 +251,9 @@ public class MithrilPreferenceManager {
         mPreferenceInfo.put(key, value);
         putLongInternal(encrypt(key), value);
 
-        // 기존에 암호화 안된 preference는 삭제
         if (pref.contains(key)) {
             pref.edit().remove(key).commit();
         }
-
-        if (CommonApplication.DEBUG_MODE) {
-            Log.i("putLong - key : " + key + ", value : " +
-                    Long.toString(value), getClass().getSimpleName());
-        }
-//		putLongInternal(key, value);
 	}
 
 	public void putLongInternal(String key, Long value) {
@@ -327,21 +265,14 @@ public class MithrilPreferenceManager {
 			return defValue;
 		}
         if (mPreferenceInfo.containsKey(key)) {
-            if (CommonApplication.DEBUG_MODE) {
-                Log.i("getInt - key : " + key + ", value : " +
-                                Integer.toString((Integer) mPreferenceInfo.get(key)),
-                        getClass().getSimpleName());
-            }
-//            Log.d("jhsAES","getInt value =" + (Integer) mPreferenceInfo.get(key));
             return (Integer) mPreferenceInfo.get(key);
         } else {
             String encryptKey = encrypt(key);
             int value = defValue;
-            // 암호화 시킨 key값으로 preference가 있는지 확인한다.
             if (!TextUtils.isEmpty(encryptKey) && pref.contains(encryptKey)) {
                 value = pref.getInt(encryptKey, defValue);
                 mPreferenceInfo.put(key, value);
-            } else if(pref.contains(key)) { // 	암호화 안된 key값으로 preference를 확인한다.
+            } else if(pref.contains(key)) {
                 int temp = pref.getInt(key, defValue);
                 value = temp;
                 if (pref.edit().putInt(encryptKey, value).commit()) {
@@ -350,19 +281,8 @@ public class MithrilPreferenceManager {
                 mPreferenceInfo.put(key, value);
             }
 
-            if (CommonApplication.DEBUG_MODE) {
-                Log.i("getInt - key : " + key + ", value : " +
-                        Integer.toString(value), getClass().getSimpleName());
-            }
-//            Log.d("jhsAES","getInt value =" + value);
             return value;
         }
-//		int value = pref.getInt(key, defValue);
-//        if (SsocioApplication.DEBUG_MODE) {
-//            Log.i("getInt - key : " + key + ", value : " +
-//                    Integer.toString(value), getClass().getSimpleName());
-//        }
-//        return value;
 	}
 
 	public synchronized void putInt(String key, Integer value) {
@@ -375,15 +295,9 @@ public class MithrilPreferenceManager {
         mPreferenceInfo.put(key, value);
         putIntInternal(encrypt(key), value);
 
-        // 기존에 암호화 안된 preference는 삭제
         if (pref.contains(key)) {
             pref.edit().remove(key).commit();
         }
-
-        if (CommonApplication.DEBUG_MODE) {
-            Log.i("putInt - key : " + key + ", value : " + Integer.toString(value), getClass().getSimpleName());
-        }
-//		putIntInternal(key, value);
 	}
 
 	public void putIntInternal(String key, Integer value) {
@@ -394,15 +308,9 @@ public class MithrilPreferenceManager {
 		if (key == null) {
 			return;
 		}
-        if (CommonApplication.DEBUG_MODE) {
-            Log.i("remove - key : " + key, getClass().getSimpleName());
-        }
         if (checkEncryptKey(key)) {
 			mPreferenceInfo.remove(key);
 			if (pref.edit().remove(encrypt(key)).commit()) {
-                if (CommonApplication.DEBUG_MODE) {
-                    Log.i("remove success - key : " + key, getClass().getSimpleName());
-                }
             }
 		} else {
 			removeInternal(key);
@@ -416,9 +324,6 @@ public class MithrilPreferenceManager {
 	public synchronized void clear() {
 		mPreferenceInfo.clear();
 		clearInternal();
-        if (CommonApplication.DEBUG_MODE) {
-            Log.i("clear - count : " + mPreferenceInfo.size(), getClass().getSimpleName());
-        }
     }
 
 	private void clearInternal() {
@@ -433,16 +338,10 @@ public class MithrilPreferenceManager {
 		if (checkEncryptKey(key)) {
 			String encryptKey = encrypt(key);
 			if (mPreferenceInfo.containsKey(key) || pref.contains(key) || (!TextUtils.isEmpty(encryptKey) && pref.contains(encryptKey))) {
-				 if(CommonApplication.DEBUG_MODE){
-                     Log.i("contain - key : " + key + " - true", getClass().getSimpleName());
-				 }
 				return true;
 			}
 		} else {
 			if (mPreferenceInfo.containsKey(key) || pref.contains(key)) {
-                if(CommonApplication.DEBUG_MODE){
-                    Log.i("contain - key : " + key + " - true", getClass().getSimpleName());
-				 }
 				return true;
 			}
 		}

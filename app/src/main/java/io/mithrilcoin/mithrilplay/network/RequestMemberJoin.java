@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- * 회원가입
+ * Sign Up
  */
 public class RequestMemberJoin extends RequestCommon {
 

@@ -16,16 +16,15 @@ public class MithrilPreferences {
 
 	private static MithrilPreferenceManager prefManager = null;
 
-	public static final String TAG_INTRO_SLIDE = "intro_slide"; 	// boolean, 환영페이지, 앱실행시 회원가입이나 로그인이후 홈화면 진입시에 한번
-	public static final String TAG_AUTH_ID = "auth_id"; 		// string, 회원가입이나 로그인시 서버에서 내려주는 ID (유무로 로그인 체크)
-	public static final String TAG_EMAIL_AUTH = "email_auth"; 	// boolean, 이메일 인증 여부
-	public static final String TAG_AUTH_DATE = "auth_date"; 	// string, 이메일 인증 완료 시점 저장
+	public static final String TAG_INTRO_SLIDE = "intro_slide"; 	// boolean, Welcome page, when you launch your app
+	public static final String TAG_AUTH_ID = "auth_id"; 		// string, ID that you give to the server at the time of registration or login (check login with or without)
+	public static final String TAG_EMAIL_AUTH = "email_auth"; 	// boolean, Whether email is verified
+	public static final String TAG_AUTH_DATE = "auth_date"; 	// string, Save when email is verified
 
-	// 임시 저장
-	public static final String TAG_EMAIL = "email"; 			// string, 이메일 임시 저장
+	public static final String TAG_EMAIL = "email"; 			// string, Save Email Temporary
 	public static final String TAG_ANDROD_ID = "android"; 		// string, android ID
-	public static final String TAG_MODEL = "model"; 		// string, 핸드폰 모델
-	public static final String TAG_BRAND = "brand"; 		// string, 핸드폰 브랜드
+	public static final String TAG_MODEL = "model"; 		// string, Mobile phone model
+	public static final String TAG_BRAND = "brand"; 		// string, Mobile phone brand
 
     public static synchronized MithrilPreferenceManager getInstance(Context context) {
         if (null == prefManager) {
@@ -52,14 +51,12 @@ public class MithrilPreferences {
 	}
 	
 	public static int getInt(Context context, String key) {
-//		SharedPreferences pref = getSharedPreferences(context);
 		if(context == null)
 			return  -1;
 		return getInstance(context).getInt(key, -1);
 	}
 
 	public static int getInt(Context context, String key, int defaultValue) {
-//		SharedPreferences pref = getSharedPreferences(context);
 		if(context == null)
 			return  -1;
 
@@ -67,7 +64,6 @@ public class MithrilPreferences {
 	}
 
 	public static String getString(Context context, String key) {
-//		SharedPreferences pref = getSharedPreferences(context);
 		if(context == null)
 			return  "";
 
@@ -75,7 +71,6 @@ public class MithrilPreferences {
 	}
 
 	public static String getString(Context context, String key, String defaultValue) {
-//		SharedPreferences pref = getSharedPreferences(context);
 		if(context == null)
 			return  "";
 
@@ -83,14 +78,12 @@ public class MithrilPreferences {
 	}
 
 	public static boolean getBoolean(Context context, String key) {
-//		SharedPreferences pref = getSharedPreferences(context);
 		if(context == null)
 			return  false;
 
 		return getBoolean(context,key, false);
 	}
 	public static boolean getBoolean(Context context, String key , boolean defaultState) {
-//		SharedPreferences pref = getSharedPreferences(context);
 		if(context == null)
 			return  false;
 
@@ -98,7 +91,6 @@ public class MithrilPreferences {
 	}
 	
 	public static long getLong(Context context, String key) {
-//		SharedPreferences pref = getSharedPreferences(context);
 		if(context == null)
 			return  0;
 

@@ -7,6 +7,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import io.mithrilcoin.mithrilplay.view.RewardFragment;
 import io.mithrilcoin.mithrilplay.view.RewardHistoryFragment;
 
+
+/**
+ *  HomeActivity adapter
+ */
 public class TabPagerAdapter extends FragmentStatePagerAdapter {
 
     // Count number of tabs

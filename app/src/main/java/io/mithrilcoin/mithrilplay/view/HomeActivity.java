@@ -17,6 +17,9 @@ import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.view.adapter.TabPagerAdapter;
 
+/**
+ *  main view
+ */
 public class HomeActivity extends ActivityBase {
 
     private Activity mActivity = null;
@@ -39,7 +42,7 @@ public class HomeActivity extends ActivityBase {
 
         viewInit();
 
-        // 앱 첫 시작시 환영 페이지로 이동
+        // Go to welcome page when app starts
         boolean isLoaded = MithrilPreferences.getBoolean(mActivity, MithrilPreferences.TAG_INTRO_SLIDE);
         if(!isLoaded){
             launchWelcomeScreen();

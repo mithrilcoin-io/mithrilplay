@@ -20,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *  게임리스트 가져오기
+ *  Transfer game data (send installed app list to server and download game information only)
  */
 public class RequestTodayGameList extends RequestCommon {
 

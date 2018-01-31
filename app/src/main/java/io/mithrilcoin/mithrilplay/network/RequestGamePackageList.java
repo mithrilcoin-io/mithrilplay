@@ -19,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- *  APP 필터링 (게임APP만)
+ *  APP filtering (game APP) _ test
  */
 public class RequestGamePackageList extends RequestCommon {
 

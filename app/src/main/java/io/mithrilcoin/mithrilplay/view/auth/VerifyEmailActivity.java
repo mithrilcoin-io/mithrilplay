@@ -19,6 +19,10 @@ import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
+
+/**
+ *  Email Authentication
+ */
 public class VerifyEmailActivity extends ActivityBase {
 
     private Activity mActivity = null;
@@ -37,10 +41,6 @@ public class VerifyEmailActivity extends ActivityBase {
 
         Intent intent = getIntent();
         mAuthId = intent.getStringExtra(Constant.TAG_AUTH_EMAIL_ID);
-
-        if(intent != null){
-            Log.e("mithril", "[VerifyEmailActivity] launch_uri=[" + intent.getDataString() + "]");
-        }
 
         if(!TextUtils.isEmpty(mAuthId)){
             Log.d("mithril", "mAuthId =" + mAuthId );
@@ -66,7 +66,6 @@ public class VerifyEmailActivity extends ActivityBase {
         btnResend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO HENRY 인증메일을 재발송 합니다~
                 if(TextUtils.isEmpty(mAuthId)){
                     String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
                     mAuthId = mId;
@@ -80,7 +79,6 @@ public class VerifyEmailActivity extends ActivityBase {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("mithril", "VerifyEmailActivity onResume");
     }
 
     private void sendEmailCall(String mId){
@@ -94,8 +92,6 @@ public class VerifyEmailActivity extends ActivityBase {
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-//                Toast.makeText(mActivity, getString(R.string.verify_email_resend), Toast.LENGTH_SHORT).show();
 
             }
 
@@ -119,17 +115,15 @@ public class VerifyEmailActivity extends ActivityBase {
                     return;
                 }
 
-                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // 미인증
+                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){
 
-                    //TODO 인증 미완료시 문구 확인
                     Toast.makeText(mActivity, getString(R.string.verify_fail), Toast.LENGTH_SHORT).show();
 
-                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 정상
-//                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
+                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){
+
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
-
                     launchSignupOkScreen();
 
                 }else{

@@ -24,6 +24,9 @@ import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
+/**
+ * login
+ */
 public class LoginActivity extends ActivityBase implements View.OnClickListener {
 
     private Activity mActivity = null;
@@ -86,6 +89,8 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
                 mId = et_user_id.getText().toString();
                 mPasswd = et_user_pw.getText().toString();
 
+/*              id, email valid check
+
                 boolean isIdvaile = false;
                 boolean isPdvaile = false;
 
@@ -122,6 +127,26 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
                 if(isIdvaile && isPdvaile){
                     loginCall();
                 }
+*/
+
+                if (TextUtils.isEmpty(mId) && TextUtils.isEmpty(mPasswd)) {
+                    layout_user_id.setError(getString(R.string.email_null));
+                    layout_user_id.startAnimation(shake);
+                    layout_pw_id.setError(getString(R.string.password_null));
+                    layout_pw_id.startAnimation(shake);
+                } else if (TextUtils.isEmpty(mId) && !TextUtils.isEmpty(mPasswd)) {
+                    layout_user_id.setError(getString(R.string.email_null));
+                    layout_user_id.startAnimation(shake);
+                    layout_pw_id.setErrorEnabled(false);
+                } else if (!TextUtils.isEmpty(mId) && TextUtils.isEmpty(mPasswd)) {
+                    layout_user_id.setErrorEnabled(false);
+                    layout_pw_id.setError(getString(R.string.password_null));
+                    layout_pw_id.startAnimation(shake);
+                }else{
+                    layout_user_id.setErrorEnabled(false);
+                    layout_pw_id.setErrorEnabled(false);
+                    loginCall();
+                }
 
                 break;
 
@@ -130,7 +155,6 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
                 launchSignupScreen();
 
                 break;
-
 
         }
 
@@ -151,32 +175,24 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
                     return;
                 }
 
-                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){ // 미인증
-
+                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, false);
-
-                    // 이메일 인증으로 이동
                     launchVerifyScreen(item.getUserInfo().getId());
 
-                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){  // 이메일 인증까지 완료
+                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
-
-                    // 메인으로 이동
                     launchHomeScreen();
 
-                }else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){  // 추가정보 입력완료
+                }else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
-
-                    // 메인으로 이동
                     launchHomeScreen();
                 }
 
-                // 이메일 임시 저장
                 MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_EMAIL, mId);
 
                 if(item.getUserInfo().getAuthdate() != null){
@@ -192,7 +208,6 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
         });
 
     }
-
 
     private void changeStatusBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

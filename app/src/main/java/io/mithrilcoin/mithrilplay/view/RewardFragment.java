@@ -2,7 +2,6 @@ package io.mithrilcoin.mithrilplay.view;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
@@ -24,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,7 +34,6 @@ import java.util.Map;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
-import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.common.TimeUtil;
 import io.mithrilcoin.mithrilplay.data.AppUsageStatManager;
@@ -50,7 +47,9 @@ import io.mithrilcoin.mithrilplay.view.adapter.EventVO;
 import io.mithrilcoin.mithrilplay.view.adapter.RewardAdapter;
 import io.mithrilcoin.mithrilplay.view.auth.DataAccessInfoPermissionActivity;
 
-
+/**
+ *  Today Game list
+ */
 public class RewardFragment extends Fragment {
 
     public RewardFragment() {
@@ -69,9 +68,9 @@ public class RewardFragment extends Fragment {
     private PackageManager pm;
     private LinkedHashMap<String, AppGameBody> mGameList = new LinkedHashMap<String, AppGameBody>();
 
-    int isGetRewardCnt = 0;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private String mTodaytime; // 서버에 전송할 오늘 날짜 (예 2018-01-03)
+    private int isGetRewardCnt = 0;
+    private String mTodaytime;      // Today's date to send to server (ex 2018-01-03)
+    private String mGameValidTime;  // Game time for rewards
 
     public GameRewardCallListener gameRewardCallListener;
 
@@ -158,27 +157,27 @@ public class RewardFragment extends Fragment {
 
         mTodaytime = TimeUtil.getTodayUtcTime();
 
-        // 이메일 인증 완료 시간
+        // Email authentication completion time
         String mAuthDate = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_DATE);
         long emailAuthTime = 0;
         if(!TextUtils.isEmpty(mAuthDate)){
             emailAuthTime = Long.parseLong(mAuthDate);
         }
 
-        // 사용자 id
+        // user id
         String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
 
-        // 폰에 설치된 앱리스트 전부 가져오기
+        // Get all apps list installed on your phone
         List<ApplicationInfo> mAppList = new ArrayList<ApplicationInfo>();
         mAppList = pm.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES | PackageManager.GET_DISABLED_COMPONENTS);
 
-        // 오늘 실행된 앱 목록 (앱 전체)
+        // List of apps launched today (all apps)
         Map<String, UsageStats> todayAppUsage = AppUsageStatManager.getTodayUsageStatList(mActivity);
 
         ArrayList<EventVO> list = new ArrayList<EventVO>();
         HashMap<String, Long> eventTime = new HashMap<String, Long>();
 
-        // 이벤트로 앱별 사용시간 가져오기.
+        // Get events by app
         UsageStatsManager usm = (UsageStatsManager) mActivity.getSystemService("usagestats");
         UsageEvents uEvents = usm.queryEvents(AppUsageStatManager.getStartTime(), System.currentTimeMillis());
         while (uEvents.hasNextEvent()){
@@ -198,14 +197,14 @@ public class RewardFragment extends Fragment {
         }
         eventTime = sortList(list);
 
-        // 서버에 전송할 앱리스트값 셋팅
+        // Setting the app list value to be sent to the server
         List<AppRequest> appRequestList = new ArrayList<AppRequest>();
         for(ApplicationInfo app : mAppList){
             AppRequest appRequest = new AppRequest();
             appRequest.setPackagename(app.packageName);
             appRequest.setPlaydate(mTodaytime);
 
-            // 앱 사용시간 셋팅
+            // App usage time setting
             if(todayAppUsage.containsKey(app.packageName)){
                 if(eventTime.containsKey(app.packageName)){
                     appRequest.setPlaytime(eventTime.get(app.packageName).toString());
@@ -245,6 +244,10 @@ public class RewardFragment extends Fragment {
                     };
 
                 }else{
+
+                    if(item.getUserInfo() != null && item.getUserInfo().getValidtime() != null){
+                        mGameValidTime = item.getUserInfo().getValidtime();
+                    }
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mEmptyTodayReward.setVisibility(View.GONE);
                     List<AppGameBody> installGames = item.getBody();
@@ -265,7 +268,7 @@ public class RewardFragment extends Fragment {
         HashMap<String, Long> maplist2 = new HashMap<>();
         AscendingObj abd = new AscendingObj();
         for(EventVO pack : list){
-            if(pack.getPackagename().equals("io.mithrilcoin.mithrilplay")){
+            if(pack.getPackagename().equals(mActivity.getPackageName())){
                 continue;
             }
 
@@ -308,6 +311,7 @@ public class RewardFragment extends Fragment {
 
     }
 
+    // list adapter data setting
     private void gameAppFilltering(List<AppGameBody> gameList){
 
         isGetRewardCnt = 0;
@@ -328,6 +332,7 @@ public class RewardFragment extends Fragment {
             mRecyclerView.setVisibility(View.VISIBLE);
             mEmptyTodayReward.setVisibility(View.GONE);
             mAdapter.setItemData(mGameList);
+            mAdapter.setValidTime(Long.parseLong(mGameValidTime));
             mAdapter.notifyDataSetChanged();
         }else{
             mRecyclerView.setVisibility(View.GONE);
@@ -338,7 +343,7 @@ public class RewardFragment extends Fragment {
 
     }
 
-    // 게임리워드 받기
+    // Receive game rewards
     private void getGameReward(AppGameBody appGameBody){
 
         String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);

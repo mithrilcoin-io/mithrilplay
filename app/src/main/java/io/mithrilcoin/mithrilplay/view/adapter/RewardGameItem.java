@@ -6,10 +6,10 @@ package io.mithrilcoin.mithrilplay.view.adapter;
 
 public class RewardGameItem {
 
-    public String mAppPackge = null;    // 앱패키지명
-    public String mPlayTime = null;     // 게임플레이 시간
-    public Boolean mRewardOn = false;   // 리워드 받기 실행 여부
-    public Boolean mRewardIsValid = false;  // 리워드 받기 가능 여부
+    public String mAppPackge = null;
+    public String mPlayTime = null;
+    public Boolean mRewardOn = false;
+    public Boolean mRewardIsValid = false;
 
     public RewardGameItem(String mAppPackge, String mPlayTime, Boolean mRewardOn, Boolean mRewardIsValid) {
         this.mAppPackge = mAppPackge;

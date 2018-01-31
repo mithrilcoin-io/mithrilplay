@@ -24,52 +24,52 @@ import retrofit2.http.Path;
 
 public interface InterfaceRestful {
 
-    // 회원가입
+    // Sign Up
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_MEMBER_JOIN)
     Call<MemberResponse> setMemberJoin(@Body MemberJoinRequest memberJoinRequest);
 
-    // 로그인
+    // Login
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_LOGIN)
     Call<MemberResponse> setLogin(@Body LoginRequest loginRequest);
 
-    // 로그아웃
+    // Logout
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_LOGOUT)
     Call<MemberResponse> setLogout(@Path("id") String id);
 
-    // 회원인증 이메일 발송요청
+    // Member authentication e-mail request
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_SEND_EMAIL_ORDER)
     Call<MemberResponse> setEmailAuth(@Path("id") String id);
 
-    // 로그인 사용자 정보 조회
+    // View login user information
     @Headers("Content-Type:application/json")
     @GET(ServerConstant.APP_USER_INFO)
     Call<MemberResponse> getUserInfo(@Path("id") String id);
 
-    // 사용자 추가 정보 업데이트
+    // Update additional user information
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_MEMBER_UPDATE)
     Call<MemberUpdateResponse> setMenberDetailUpdate(@Path("id") String id, @Body MemberUpdateRequest memberUpdateRequest);
 
-    // 게임데이터 전송(서버에 설치앱리스트를 보내고 게임정보만 내려받음)
+    // Transfer game data (send installed app list to server and download game information only)
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_GAMEDATA_INSERT)
     Call<AppGameListResponse> getGameApp(@Path("id") String id, @Body List<AppRequest> appRequests);
 
-    // APP 필터링 (게임 APP) _ not use
+    // APP filtering (game APP) _ test
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_GAMEDATA_PACKAGE)
     Call<AppGamePackageListResponse> getGameAppPackage(@Path("id") String id, @Body List<AppBody> appRequests);
 
-    // 데이터 리워드 요청
+    // Game Reward Request
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_GAMEDATA_REWARD_ORDER)
     Call<AppGamedataRewardResponse> getGamedataReward(@Path("id") String id, @Body AppGameBody appGameBody);
 
-    // 전체 게임 데이터 조회
+    // View full list received by Reward
     @Headers("Content-Type:application/json")
     @GET(ServerConstant.APP_GAME_REWARD_ALL_LIST_GET)
     Call<GameRewardTotalListResponse> getGameRewardAllListGet(@Path("id") String id);
