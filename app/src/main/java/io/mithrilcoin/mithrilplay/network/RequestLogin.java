@@ -28,15 +28,6 @@ public class RequestLogin extends RequestCommon {
 
 	public void post(final ApiLoginResultListener listener){
 
-		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl(ServerConstant.getHostUrl())
-				.addConverterFactory(GsonConverterFactory.create())
-				.client(createOkHttpClient())
-				.build();
-
 		InterfaceRestful service = retrofit.create(InterfaceRestful.class);
 		Call<MemberResponse> call = service.setLogin(mLoginRequest);
 		call.enqueue(new Callback<MemberResponse>() {

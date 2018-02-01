@@ -19,11 +19,13 @@ android {
             minifyEnabled false
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'HOST_SERVER', '"http://dev-play.mithrilcoin.io:80"'
         }
         release {
             minifyEnabled true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'HOST_SERVER', '"http://dev-play.mithrilcoin.io:80"'
         }
     }
 

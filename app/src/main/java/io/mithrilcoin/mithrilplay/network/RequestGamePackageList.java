@@ -6,16 +6,12 @@ import android.widget.Toast;
 import java.util.List;
 
 import io.mithrilcoin.mithrilplay.common.Constant;
-import io.mithrilcoin.mithrilplay.common.ServerConstant;
 import io.mithrilcoin.mithrilplay.network.vo.AppBody;
 import io.mithrilcoin.mithrilplay.network.vo.AppGamePackageListResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
@@ -34,15 +30,6 @@ public class RequestGamePackageList extends RequestCommon {
 	}
 
 	public void post(final ApiGamePackageListListener listener){
-
-		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl(ServerConstant.getHostUrl())
-				.addConverterFactory(GsonConverterFactory.create())
-				.client(createOkHttpClient())
-				.build();
 
 		InterfaceRestful service = retrofit.create(InterfaceRestful.class);
 		Call<AppGamePackageListResponse> call = service.getGameAppPackage(mId, appBodies);

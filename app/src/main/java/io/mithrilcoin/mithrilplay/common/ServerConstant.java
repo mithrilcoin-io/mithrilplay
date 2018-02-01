@@ -1,25 +1,7 @@
 package io.mithrilcoin.mithrilplay.common;
 
+
 public class ServerConstant {
-
-    //  host mode
-    public static final int REAL_SERVER_MODE                = 0;
-    public static final int DEV_SERVER_MODE                 = REAL_SERVER_MODE + 1;
-
-    //  Set HostUrl
-    public static final int CONNECT_SERVER_MODE      = DEV_SERVER_MODE;
-
-    private static String hostUrl = "http://dev.mithril.io";
-
-    public static String getHostUrl(){
-        if(CONNECT_SERVER_MODE == REAL_SERVER_MODE){
-            hostUrl               = "http://dev.mithril.io";
-        }else if(CONNECT_SERVER_MODE == DEV_SERVER_MODE){
-            hostUrl               = "http://dev-play.mithrilcoin.io:80";
-        }
-
-        return hostUrl;
-    }
 
     // API Address
     public static final String APP_MEMBER_JOIN  = "/member/signup";            // Sign Up
