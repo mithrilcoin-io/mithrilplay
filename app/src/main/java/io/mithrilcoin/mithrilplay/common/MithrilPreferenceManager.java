@@ -8,12 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import io.mithrilcoin.mithrilplay.BuildConfig;
+
 public class MithrilPreferenceManager {
 	
 	private String TAG = "MithrilPreferenceManager";
-	// todo
-	// Later keys are managed by the server
-	private static final String CRYPTOKEY = "308b4ba610cf3f1eeac517d98a534932cc70c28f0da6036b2e7091ccf80f42dd";
+
+	private static final String CRYPTOKEY = BuildConfig.PREF_CRYPTOKEY;
 	private static final String PREF_FILE = "MithrilPlay_prefs";
 	private Map<String, Object> mPreferenceInfo;
 	private SharedPreferences pref;

@@ -1,4 +1,19 @@
 apply plugin: 'com.android.application'
+import groovy.json.JsonSlurper
+
+def debug_hostUrl = ""
+def debug_prefKey = ""
+def release_hostUrl = ""
+def release_prefKey = ""
+
+if(file('../host.mithril').exists()){
+    File appInfo = file('../host.mithril')
+    def json = new JsonSlurper().parseText(appInfo.text)
+    debug_hostUrl= json.debug.hosturl
+    debug_prefKey= json.debug.prefkey
+    release_hostUrl= json.release.hosturl
+    release_prefKey= json.release.prefkey
+}
 
 android {
     compileSdkVersion 27
@@ -10,30 +25,25 @@ android {
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-//        vectorDrawables.useSupportLibrary = true
-
     }
     buildTypes {
         debug {
-            minifyEnabled false
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'HOST_SERVER', '"http://dev-play.mithrilcoin.io:80"'
+            buildConfigField 'String', 'HOST_SERVER', '\"' + debug_hostUrl + '\"'
+            buildConfigField 'String', 'PREF_CRYPTOKEY', '\"' + debug_prefKey + '\"'
         }
         release {
-            minifyEnabled true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'HOST_SERVER', '"http://dev-play.mithrilcoin.io:80"'
+            buildConfigField 'String', 'HOST_SERVER', '\"' + release_hostUrl + '\"'
+            buildConfigField 'String', 'PREF_CRYPTOKEY', '\"' + release_prefKey + '\"'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
 }
 
 dependencies {
