@@ -10,19 +10,30 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-        android:textSize="32sp"
+        android:textSize="16sp"
+        android:gravity="center"
         android:text="@string/welcome_slide2_title"/>
+
+    <ImageView
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_welcome002"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorWhite"
+        android:lineSpacingMultiplier="1.1"
+        android:gravity="center"
+        android:textSize="14sp"
         android:text="@string/welcome_slide2_desc"/>
 
 </LinearLayout>
