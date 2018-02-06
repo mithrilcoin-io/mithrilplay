@@ -14,6 +14,7 @@ import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
 import io.mithrilcoin.mithrilplay.network.RequestLogout;
 import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
@@ -68,7 +69,7 @@ public class SettingActivity extends ActivityBase  {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logOutCall();
+                logoutDialog();
             }
         });
 
@@ -178,6 +179,22 @@ public class SettingActivity extends ActivityBase  {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    private void logoutDialog(){
+
+        showDialogTwoButton("", getString(R.string.logout_comment), getString(R.string.cancel), getString(R.string.confirm), new CommonDialog.CommonDialogListener() {
+            @Override
+            public void onConfirm() {
+                logOutCall();
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
+
     }
 
     @Override

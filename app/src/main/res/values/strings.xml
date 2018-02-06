@@ -75,6 +75,7 @@
     <string name="hours">시간</string>
     <string name="minutes">분</string>
     <string name="seconds">초</string>
+    <string name="logout_comment">로그아웃시 저장되지 않은 정보가 삭제될 수 있습니다.\n로그아웃 하시겠습니까?</string>
 
     <!-- alert -->
     <string name="alert_more_info_empty">프로필 정보를 모두 선택하신 후 다시 시도하세요.</string>

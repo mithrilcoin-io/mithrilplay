@@ -156,7 +156,7 @@ public class ActivityBase extends AppCompatActivity {
     }
 
     // Common Dialog two button
-    public void showWebViewDialogTwoButton(String title, String message, String negativeButtonName, String positiveButtonName, CommonDialogListener listener) {
+    public void showDialogTwoButton(String title, String message, String negativeButtonName, String positiveButtonName, CommonDialogListener listener) {
         CommonDialog dialog = new CommonDialog(this, listener);
         dialog.showDialogTwoButton(title, message, negativeButtonName, positiveButtonName);
     }
