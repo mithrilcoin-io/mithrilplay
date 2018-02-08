@@ -6,6 +6,23 @@ def debug_prefKey = ""
 def release_hostUrl = ""
 def release_prefKey = ""
 
+/*
+Server host address and preference CRYPTOKEY stored in json format in \host.mithril
+
+ex)
+{
+    "debug": {
+      "hosturl": "http://***.***.io",
+      "prefkey": "***************************************"
+    },
+     "release": {
+      "hosturl": "http://***.***.io",
+      "prefkey": "***************************************"
+    }
+}
+
+*/
+
 if(file('../host.mithril').exists()){
     File appInfo = file('../host.mithril')
     def json = new JsonSlurper().parseText(appInfo.text)
