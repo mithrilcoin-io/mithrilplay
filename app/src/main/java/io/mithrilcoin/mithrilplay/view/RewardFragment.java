@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -55,6 +56,8 @@ public class RewardFragment extends Fragment {
     public RewardFragment() {
     }
 
+    public static final String TAG = "mithril";
+
     private HomeActivity mActivity = null;
     public static RewardFragment instance = null;
     private RewardAdapter mAdapter = null;
@@ -104,7 +107,6 @@ public class RewardFragment extends Fragment {
         };
 
         setAdapter();
-
     }
 
     @Override
@@ -178,13 +180,13 @@ public class RewardFragment extends Fragment {
         HashMap<String, Long> eventTime = new HashMap<String, Long>();
 
         // Get events by app
-        UsageStatsManager usm = (UsageStatsManager) mActivity.getSystemService("usagestats");
+        UsageStatsManager usm = (UsageStatsManager) mActivity.getSystemService(Context.USAGE_STATS_SERVICE);
         UsageEvents uEvents = usm.queryEvents(AppUsageStatManager.getStartTime(), System.currentTimeMillis());
         while (uEvents.hasNextEvent()){
             UsageEvents.Event event = new UsageEvents.Event();
             uEvents.getNextEvent(event);
             if (event != null){
-//                Log.d("mithriltime", "Event: " + event.getPackageName() + "__" +  event.getTimeStamp() + "__" +  event.getEventType() );
+//                Log.d(TAG, "Event: " + event.getPackageName() + "__" +  event.getTimeStamp() + "__" +  event.getEventType() );
                 EventVO eventVO = new EventVO();
                 eventVO.setPackagename(event.getPackageName());
                 eventVO.setState(event.getEventType() + "");
@@ -326,7 +328,7 @@ public class RewardFragment extends Fragment {
             }
         }
 
-//        Log.d("mithril", "isGetRewardCnt = " + isGetRewardCnt );
+//        Log.d(TAG, "isGetRewardCnt = " + isGetRewardCnt );
 
         if(mGameList.size() > 0){
             mRecyclerView.setVisibility(View.VISIBLE);

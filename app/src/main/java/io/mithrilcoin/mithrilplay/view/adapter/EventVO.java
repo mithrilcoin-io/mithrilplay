@@ -1,5 +1,9 @@
 package io.mithrilcoin.mithrilplay.view.adapter;
 
+
+/**
+ * UsageStatsManager UsageEvents VO
+ */
 public class EventVO {
 
     private String packagename;

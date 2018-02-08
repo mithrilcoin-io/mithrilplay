@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
-import io.mithrilcoin.mithrilplay.common.HashingUtil;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.network.RequestLogin;
 import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;

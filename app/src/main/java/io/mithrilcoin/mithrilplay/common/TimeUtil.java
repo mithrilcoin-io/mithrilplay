@@ -11,7 +11,9 @@ import java.util.TimeZone;
 
 import io.mithrilcoin.mithrilplay.R;
 
-public class TimeUtil {
+public class  TimeUtil {
+
+	public static final String TAG = "mithril";
 
 	public static String getTime(Activity activity, long sTime){
 		String time = "";
@@ -28,7 +30,7 @@ public class TimeUtil {
 		if(seconds != 0){
 			time += seconds + activity.getString(R.string.seconds) + " ";
 		}
-        Log.d("mithril", "time :" + time);
+        Log.d(TAG, "time :" + time);
 
 		return time;
 	}
@@ -62,8 +64,15 @@ public class TimeUtil {
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 //        todayTime = dateFormat.format(calendar.getTimeInMillis());
 		todayTime = calendar.getTimeInMillis() + "";
-		Log.d("mithril", "todayTime:"+ todayTime);
+		Log.d(TAG, "todayTime:"+ todayTime);
 		return todayTime;
+	}
+
+	public static String getTimeString(long aTime){
+		String time = "";
+		SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		time = mSimpleDateFormat.format (aTime);
+		return time;
 	}
 
 }

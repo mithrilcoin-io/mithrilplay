@@ -107,7 +107,6 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ItemViewHo
             holder.iv_rewarded.setVisibility(View.GONE);
         }
 
-
         String finalAppName = AppName;
         holder.btn_reward_mtp.setOnClickListener(new View.OnClickListener() {
             @Override

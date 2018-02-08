@@ -12,6 +12,9 @@ public class Constant {
 	public static final String REWARD_TYPE_INFO_ADD	= "T003002";	// Additional information input reward
 	public static final String REWARD_TYPE_GAME		= "T003003";	// game working reward
 
+	public static final String GENDER_MALE = "male"; 		// User gender _ male
+	public static final String GENDER_FEMALE = "female"; 	// User gender _ female
+
 	public static final String TAG_AUTH_EMAIL_ID = "auth_email_id"; 	// ID (ID that the server gives at login or membership)
 
 	public static final int REQUEST_CODE_INTRO_USE_INFO = 1000;		// When the Intro requests permission to access usage information

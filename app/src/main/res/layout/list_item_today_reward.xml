@@ -12,7 +12,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="16dp"
-        android:src="@drawable/game_icon_sample"
+        android:src="@drawable/ic_symbol"
         android:contentDescription="@string/game_icon"/>
 
     <TextView

@@ -70,7 +70,7 @@ public class IntroActivity extends ActivityBase {
 		if(!isRootingFlag){
 			isRootingFlag = checkRootingFiles(createFiles(RootFilesPath));
 		}
-		Log.e("mithril", "isRootingFlag = " + isRootingFlag);
+		Log.e(TAG, "isRooting = " + isRootingFlag);
 
 		if(isRootingFlag){
 
@@ -140,7 +140,7 @@ public class IntroActivity extends ActivityBase {
 			if(isEmailAuth()){
 				launchHomeScreen();
 				String ad = MithrilPreferences.getString(CommonApplication.getApplication(), MithrilPreferences.TAG_AUTH_DATE);
-				Log.e("mithril", "ad = " + ad );
+//				Log.e(TAG, "ad = " + ad );
 			}else{
 				String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
 				getUserinfo(mId);

@@ -35,7 +35,7 @@ public class RewardHistoryFragment extends Fragment {
     }
 
     public static RewardHistoryFragment instance = null;
-
+    public static final String TAG = "mithril";
     private HomeActivity mActivity = null;
     private RewardHistoryAdapter mAdapter = null;
     private LinearLayoutManager mLayoutManager = null;
@@ -145,7 +145,7 @@ public class RewardHistoryFragment extends Fragment {
                 }else{
 
                     List<GameRewardGet> gameRewardGets = item.getBody();
-//                    Log.d("mithril", "gameRewardGets =" + gameRewardGets.size() );
+//                    Log.d(TAG, "gameRewardGets =" + gameRewardGets.size() );
 
                     historyDataList.clear();
                     for(GameRewardGet rewardGet : gameRewardGets ){

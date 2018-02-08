@@ -28,7 +28,7 @@ import io.mithrilcoin.mithrilplay.view.auth.WelcomeActivity;
  */
 public class ActivityBase extends AppCompatActivity {
 
-    protected final String TAG = this.getClass().getSimpleName() + ": ";
+    protected final String TAG = "mithril";
 
     private Activity mActivity = null;
     public static ActivityBase instance = null;

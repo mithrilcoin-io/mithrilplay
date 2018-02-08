@@ -145,7 +145,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
             String ename = locale.getDisplayCountry(Locale.ENGLISH);
             if(!TextUtils.isEmpty(code) && !TextUtils.isEmpty(name) && !mLocaleList.containsKey(name)){
                 mLocaleList.put(name, locale);
-//                Log.d("mithril", code + "," + name + "," + ename);
+//                Log.d(TAG, code + "," + name + "," + ename);
             }
         }
 
@@ -168,7 +168,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
                 }else{
                     mNation = parent.getItemAtPosition(position).toString();
                     mNation += "-" + mLocaleList.get(mNation).getCountry();
-                    Log.d("mithril", "mNation =" + mNation);
+//                    Log.d(TAG, "mNation =" + mNation);
                 }
             }
 
@@ -192,7 +192,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
                 btn_toggle_male.setSelected(true);
                 btn_toggle_female.setSelected(false);
-                mGender = "male";
+                mGender = Constant.GENDER_MALE;
 
                 break;
 
@@ -200,7 +200,7 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
                 btn_toggle_male.setSelected(false);
                 btn_toggle_female.setSelected(true);
-                mGender = "female";
+                mGender = Constant.GENDER_FEMALE;
 
                 break;
 

@@ -11,7 +11,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
-        android:src="@drawable/game_icon_sample"
+        android:src="@drawable/ic_symbol"
         android:contentDescription="@string/game_icon"/>
 
     <ImageView

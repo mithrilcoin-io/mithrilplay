@@ -1,1 +1,1 @@
-include ':app', ':eoscommander'
+include ':app', ':eos'

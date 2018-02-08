@@ -43,7 +43,7 @@ public class VerifyEmailActivity extends ActivityBase {
         mAuthId = intent.getStringExtra(Constant.TAG_AUTH_EMAIL_ID);
 
         if(!TextUtils.isEmpty(mAuthId)){
-            Log.d("mithril", "mAuthId =" + mAuthId );
+//            Log.d(TAG, "mAuthId =" + mAuthId );
             sendEmailCall(mAuthId);
         }
 
@@ -131,6 +131,7 @@ public class VerifyEmailActivity extends ActivityBase {
 
                 }
 
+                // Save email verification time
                 if(item.getUserInfo().getAuthdate() != null){
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
                 }

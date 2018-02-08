@@ -26,7 +26,7 @@
             android:paddingEnd="8dp"
             android:layout_weight="1"
             android:textSize="14sp"
-            android:text="@string/today_reward_remain"/>
+            tools:text="@string/today_reward_remain"/>
 
         <ImageView
             android:id="@+id/tv_today_reward_one"
