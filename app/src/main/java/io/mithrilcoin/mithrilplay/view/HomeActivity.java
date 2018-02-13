@@ -12,9 +12,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
+import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.fcm.FCMVo;
 import io.mithrilcoin.mithrilplay.view.adapter.TabPagerAdapter;
 
 /**
@@ -48,7 +52,44 @@ public class HomeActivity extends ActivityBase {
             launchWelcomeScreen();
         }
 
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG,"Home onCreate fcm : " + refreshedToken);
+
+        try{
+            final FCMVo fcmVo = (FCMVo)(getIntent().getSerializableExtra(FCMVo.FCM_PUSH_INTENT_KEY));
+            if(fcmVo != null){
+                Intent intent;
+                getIntent().removeExtra(FCMVo.FCM_PUSH_INTENT_KEY);
+                intent = new Intent(this, AlterDialogActivity.class);
+                intent.putExtra(FCMVo.FCM_PUSH_INTENT_KEY, fcmVo);
+                startActivity(intent);
+            }
+        }catch (Exception e) {
+
+        }
+
     }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.e("jhs", "home  onNewIntent ");
+
+        try{
+            final FCMVo fcmVo = (FCMVo)(intent.getSerializableExtra(FCMVo.FCM_PUSH_INTENT_KEY));
+            if(fcmVo != null){
+                getIntent().removeExtra(FCMVo.FCM_PUSH_INTENT_KEY);
+                intent = new Intent(this, AlterDialogActivity.class);
+                intent.putExtra(FCMVo.FCM_PUSH_INTENT_KEY, fcmVo);
+                startActivity(intent);
+            }
+        }catch (Exception e) {
+
+        }
+
+    }
+
 
 
     private void viewInit(){

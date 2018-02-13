@@ -2,6 +2,8 @@ package io.mithrilcoin.mithrilplay.common;
 
 public class Constant {
 
+	public static final int NOTIFICATION_INDEX = 836809030;
+
 	public static final int OTHER_LOGIN		= 409;			// Sign in from another device
 	public static final String SUCCESS		= "SUCCESS";	// network succeed
 

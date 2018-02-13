@@ -12,6 +12,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.io.File;
 
 import io.mithrilcoin.mithrilplay.common.CommonApplication;
@@ -53,6 +55,9 @@ public class IntroActivity extends ActivityBase {
 		setContentView(R.layout.activity_intro);
 
 		mActivity = IntroActivity.this;
+
+		String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+		Log.d("mithril","intro onCreate fcm : " + refreshedToken);
 
 		// init setting
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_ANDROD_ID, getAndroidID());
