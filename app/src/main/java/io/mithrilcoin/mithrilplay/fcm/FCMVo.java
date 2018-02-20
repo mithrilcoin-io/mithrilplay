@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 
 /**
+ *  FCM Data VO
  */
 public class FCMVo implements Serializable {
 

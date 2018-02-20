@@ -14,11 +14,19 @@ public class LoginRequest {
     @SerializedName("deviceid")
     @Expose
     private String deviceid;
+    @SerializedName("fcmid")
+    @Expose
+    private String fcmid;
+    @SerializedName("osversion")
+    @Expose
+    private String osversion;
 
-    public LoginRequest(String email, String password, String deviceid) {
+    public LoginRequest(String email, String password, String deviceid, String fcmid, String osversion) {
         this.email = email;
         this.password = password;
         this.deviceid = deviceid;
+        this.fcmid = fcmid;
+        this.osversion = osversion;
     }
 
     public String getEmail() {
@@ -43,6 +51,22 @@ public class LoginRequest {
 
     public void setDeviceid(String deviceid) {
         this.deviceid = deviceid;
+    }
+
+    public String getFcmid() {
+        return fcmid;
+    }
+
+    public void setFcmid(String fcmid) {
+        this.fcmid = fcmid;
+    }
+
+    public String getOsversion() {
+        return osversion;
+    }
+
+    public void setOsversion(String osversion) {
+        this.osversion = osversion;
     }
 
 }

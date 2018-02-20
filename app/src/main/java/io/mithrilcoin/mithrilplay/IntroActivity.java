@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,6 +22,7 @@ import io.mithrilcoin.mithrilplay.common.CommonApplication;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.db.entity.Device;
 import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
@@ -63,6 +66,13 @@ public class IntroActivity extends ActivityBase {
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_ANDROD_ID, getAndroidID());
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_MODEL, Build.MODEL);
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_BRAND, Build.BRAND);
+		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_OS_VERSION, Build.VERSION.RELEASE);
+		String version = "";
+		try {
+			PackageInfo i = mActivity.getPackageManager().getPackageInfo(mActivity.getPackageName(), 0);
+			version = i.versionName;
+		} catch(PackageManager.NameNotFoundException e) { }
+		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_APP_VERSION, version);
 
 		// routing check
 		boolean isRootingFlag = false;
@@ -150,6 +160,21 @@ public class IntroActivity extends ActivityBase {
 				String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
 				getUserinfo(mId);
 			}
+
+			// Device check
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					String mEmail = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_EMAIL);
+					int mDeviceList = CommonApplication.getApplication().getDB().deviceDao().checkEmailOsver(Build.VERSION.RELEASE, mEmail);
+					if(mDeviceList == 0){
+						Device device = new Device(mEmail, Build.MODEL, Build.BRAND, "y", Build.VERSION.RELEASE);
+						CommonApplication.getApplication().getDB().deviceDao().insert(device);
+					}
+
+				}
+			}).start();
+
 		}else{
 			Intent intent = new Intent(this, LoginActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

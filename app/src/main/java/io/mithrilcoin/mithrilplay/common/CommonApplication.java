@@ -1,9 +1,13 @@
 package io.mithrilcoin.mithrilplay.common;
 
 import android.app.Application;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
+import android.os.Environment;
+
+import io.mithrilcoin.mithrilplay.db.MithrilDatabase;
 
 public class CommonApplication extends Application {
 
@@ -20,6 +24,9 @@ public class CommonApplication extends Application {
     public static boolean LOG_W = false;
     public static boolean DEBUG_MODE = false;
 
+    private static final String DATABASE_NAME = "MithrilPlay.db";
+    private MithrilDatabase database;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -28,6 +35,11 @@ public class CommonApplication extends Application {
 
         // log setting
         initLogSetting();
+
+        // create database
+        database = Room.databaseBuilder(getApplicationContext(), MithrilDatabase.class, DATABASE_NAME)
+                    .allowMainThreadQueries()
+                    .build();
 
     }
 
@@ -60,6 +72,10 @@ public class CommonApplication extends Application {
 
     public static CommonApplication getApplication() {
         return instance;
+    }
+
+    public MithrilDatabase getDB() {
+        return database;
     }
 
 }

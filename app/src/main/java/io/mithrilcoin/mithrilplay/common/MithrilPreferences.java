@@ -25,6 +25,9 @@ public class MithrilPreferences {
 	public static final String TAG_ANDROD_ID = "android_id"; 		// string, android ID
 	public static final String TAG_MODEL = "model"; 		// string, Mobile phone model
 	public static final String TAG_BRAND = "brand"; 		// string, Mobile phone brand
+	public static final String TAG_OS_VERSION = "os_version"; 		// string, Mobile os_version
+	public static final String TAG_APP_VERSION = "app_version"; 		// string, Mobile app_version
+
 	public static final String TAG_PUSH_ID = "push_id"; 		// string, push_id
 
     public static synchronized MithrilPreferenceManager getInstance(Context context) {

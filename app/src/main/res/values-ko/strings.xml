@@ -77,6 +77,11 @@
     <string name="seconds">초</string>
     <string name="logout_comment">로그아웃시 저장되지 않은 정보가 삭제될 수 있습니다.\n로그아웃 하시겠습니까?</string>
 
+    <string name="permissions_memory_order_title">Permission required</string>
+    <string name="permissions_memory_order">MithrilPlay의 기능 실행을 위해 메모리 사용 접근 권한이 필요합니다.</string>
+    <string name="permissions_memory_deny_title">Permission denied</string>
+    <string name="permissions_memory_deny">MithrilPlay의 기능 실행을 위해 필요한 기능인 메모리 사용 접근이 거부 되었습니다\n\n기능을 실행하기 위해서 설정하기로 이동이 필요합니다</string>
+
     <!-- alert -->
     <string name="alert_more_info_empty">프로필 정보를 모두 선택하신 후 다시 시도하세요.</string>
     <string name="is_rooting_app_end">루팅된 단말입니다.\n개인정보 유출의 위험성이 있으므로,Mithril 서비스를 종료합니다</string>

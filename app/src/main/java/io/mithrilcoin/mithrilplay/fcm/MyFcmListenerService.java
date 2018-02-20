@@ -65,49 +65,40 @@ public class MyFcmListenerService extends FirebaseMessagingService {
 
         try {
         
-        if (isAppInForeground(this)) {
+            if (isAppInForeground(this)) {
 
-            intent = new Intent(this, AlterDialogActivity.class);
-//                intent.putExtra("PUSH_TYPE", type);
-            intent.putExtra(FCMVo.FCM_PUSH_INTENT_KEY, FCMVo);
+                intent = new Intent(this, AlterDialogActivity.class);
+                intent.putExtra(FCMVo.FCM_PUSH_INTENT_KEY, FCMVo);
+                PendingIntent contentIntent = null;
+                contentIntent = PendingIntent.getActivity(this, 8888, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                contentIntent.send();
 
-            PendingIntent contentIntent = null;
-            contentIntent = PendingIntent.getActivity(this, 8888, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            contentIntent.send();
-            
+            } else {
 
-        } else {
+                try {
+                    NotificationCompat.Builder builder = getBuilder(FCMVo);
+                    mNotificationManager.notify(Constant.NOTIFICATION_INDEX, builder.build());
+                    if (sCpuWakeLock != null) {
+                        return;
+                    }
+                    PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+                    sCpuWakeLock = pm.newWakeLock(
+                            PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                                    PowerManager.ACQUIRE_CAUSES_WAKEUP |
+                                    PowerManager.ON_AFTER_RELEASE, "hi");
 
-//            intent = new Intent(this, AlterDialogActivity.class);
-//            intent.putExtra(FCMVo.FCM_PUSH_INTENT_KEY, FCMVo);
-//            PendingIntent contentIntent = null;
-//            contentIntent = PendingIntent.getActivity(this, 8888, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//            contentIntent.send();
+                    sCpuWakeLock.acquire();
 
-            try {
-                NotificationCompat.Builder builder = getBuilder(FCMVo);
-                mNotificationManager.notify(Constant.NOTIFICATION_INDEX, builder.build());
-                if (sCpuWakeLock != null) {
-                    return;
+
+                    if (sCpuWakeLock != null) {
+                        sCpuWakeLock.release();
+                        sCpuWakeLock = null;
+                    }
+
+                } catch (Exception e) {
+
                 }
-                PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
-                sCpuWakeLock = pm.newWakeLock(
-                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
-                                PowerManager.ACQUIRE_CAUSES_WAKEUP |
-                                PowerManager.ON_AFTER_RELEASE, "hi");
-
-                sCpuWakeLock.acquire();
-
-
-                if (sCpuWakeLock != null) {
-                    sCpuWakeLock.release();
-                    sCpuWakeLock = null;
-                }
-
-            } catch (Exception e) {
-
             }
-        }
 
         } catch (Exception e) {
             Log.d(TAG, "Exception");
@@ -185,7 +176,7 @@ public class MyFcmListenerService extends FirebaseMessagingService {
 
         mBuilder.setWhen(System.currentTimeMillis());
         mBuilder.setAutoCancel(true);
-        mBuilder.setPriority(Notification.PRIORITY_MAX); //** MAX 나 HIGH로 줘야 가능함
+        mBuilder.setPriority(Notification.PRIORITY_MAX);
 
         Intent intent = new Intent(this, IntroActivity.class);
         intent.putExtra(FCMVo.FCM_PUSH_INTENT_KEY, FCMVo);
@@ -193,9 +184,6 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(IntroActivity.class);
         stackBuilder.addNextIntent(intent);
-
-//        PendingIntent contentIntent = null;
-//        contentIntent = PendingIntent.getActivity(this, 9999, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(contentIntent);
 
