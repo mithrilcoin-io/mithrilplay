@@ -33,7 +33,6 @@ public class WelcomeActivity extends ActivityBase {
     private LinearLayout dotsLayout;
     private TextView[] dots;
     private int[] layouts;
-    private Button btnStart;
     private int mCurrentPage = 0;
 
     @Override
@@ -51,7 +50,6 @@ public class WelcomeActivity extends ActivityBase {
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
-        btnStart = (Button) findViewById(R.id.btn_start);
 
         // layouts of all welcome sliders
         // add few more layouts if you want
@@ -70,17 +68,16 @@ public class WelcomeActivity extends ActivityBase {
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCurrentPage == layouts.length - 1) {
-                    // Checking for first time launch
-                    MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_INTRO_SLIDE, true);
-                    finish();
-                } else {
-                    viewPager.setCurrentItem(++mCurrentPage);
-                }
+        findViewById(R.id.btn_start).setOnClickListener(v -> {
+
+            if (mCurrentPage == layouts.length - 1) {
+                // Checking for first time launch
+                MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_INTRO_SLIDE, true);
+                finish();
+            } else {
+                viewPager.setCurrentItem(++mCurrentPage);
             }
+
         });
     }
 
@@ -118,10 +115,10 @@ public class WelcomeActivity extends ActivityBase {
 
             if (position == layouts.length - 1) {
                 // last page. make button text to GOT IT
-                btnStart.setText(getString(R.string.start));
+                ((Button)findViewById(R.id.btn_start)).setText(getString(R.string.start));
             } else {
                 // still pages are left
-                btnStart.setText(getString(R.string.next));
+                ((Button)findViewById(R.id.btn_start)).setText(getString(R.string.next));
             }
 
         }

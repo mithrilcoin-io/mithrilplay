@@ -17,8 +17,10 @@ import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
+import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.network.RequestLogin;
+import io.mithrilcoin.mithrilplay.network.eosobj.DeviceInfo;
 import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
@@ -26,13 +28,12 @@ import io.mithrilcoin.mithrilplay.view.ActivityBase;
 /**
  * login
  */
-public class LoginActivity extends ActivityBase implements View.OnClickListener {
+public class LoginActivity extends ActivityBase {
 
     private Activity mActivity = null;
 
     private TextInputLayout layout_user_id, layout_pw_id;
     private EditText et_user_id, et_user_pw;
-    private Button btnSignin, btnSignup;
     private String mId, mPasswd;
 
     private Animation shake;
@@ -66,63 +67,50 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
         et_user_id = (EditText) findViewById(R.id.et_user_id);
         et_user_pw = (EditText) findViewById(R.id.et_user_pw);
 
-        btnSignin = (Button) findViewById(R.id.btn_signin);
-        btnSignup = (Button) findViewById(R.id.btn_signup);
+        findViewById(R.id.btn_signin).setOnClickListener(v -> {
 
-        btnSignin.setOnClickListener(this);
-        btnSignup.setOnClickListener(this);
+            hideKeyboard();
 
-    }
+            layout_user_id.setErrorEnabled(true);
+            layout_pw_id.setErrorEnabled(true);
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+            mId = et_user_id.getText().toString();
+            mPasswd = et_user_pw.getText().toString();
 
-            case R.id.btn_signin:
+            if (TextUtils.isEmpty(mId) && TextUtils.isEmpty(mPasswd)) {
+                layout_user_id.setError(getString(R.string.email_null));
+                layout_user_id.startAnimation(shake);
+                layout_pw_id.setError(getString(R.string.password_null));
+                layout_pw_id.startAnimation(shake);
+            } else if (TextUtils.isEmpty(mId) && !TextUtils.isEmpty(mPasswd)) {
+                layout_user_id.setError(getString(R.string.email_null));
+                layout_user_id.startAnimation(shake);
+                layout_pw_id.setErrorEnabled(false);
+            } else if (!TextUtils.isEmpty(mId) && TextUtils.isEmpty(mPasswd)) {
+                layout_user_id.setErrorEnabled(false);
+                layout_pw_id.setError(getString(R.string.password_null));
+                layout_pw_id.startAnimation(shake);
+            }else{
+                layout_user_id.setErrorEnabled(false);
+                layout_pw_id.setErrorEnabled(false);
+                loginCall();
+            }
 
-                hideKeyboard();
+        });
 
-                layout_user_id.setErrorEnabled(true);
-                layout_pw_id.setErrorEnabled(true);
+        findViewById(R.id.btn_signup).setOnClickListener(v ->
 
-                mId = et_user_id.getText().toString();
-                mPasswd = et_user_pw.getText().toString();
+                launchSignupScreen()
 
-                if (TextUtils.isEmpty(mId) && TextUtils.isEmpty(mPasswd)) {
-                    layout_user_id.setError(getString(R.string.email_null));
-                    layout_user_id.startAnimation(shake);
-                    layout_pw_id.setError(getString(R.string.password_null));
-                    layout_pw_id.startAnimation(shake);
-                } else if (TextUtils.isEmpty(mId) && !TextUtils.isEmpty(mPasswd)) {
-                    layout_user_id.setError(getString(R.string.email_null));
-                    layout_user_id.startAnimation(shake);
-                    layout_pw_id.setErrorEnabled(false);
-                } else if (!TextUtils.isEmpty(mId) && TextUtils.isEmpty(mPasswd)) {
-                    layout_user_id.setErrorEnabled(false);
-                    layout_pw_id.setError(getString(R.string.password_null));
-                    layout_pw_id.startAnimation(shake);
-                }else{
-                    layout_user_id.setErrorEnabled(false);
-                    layout_pw_id.setErrorEnabled(false);
-                    loginCall();
-                }
-
-                break;
-
-            case R.id.btn_signup:
-
-                launchSignupScreen();
-
-                break;
-
-        }
+        );
 
     }
 
     private void loginCall(){
 
         String mDeviceId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_ANDROD_ID);
-        LoginRequest loginRequest = new LoginRequest(mId, mPasswd, mDeviceId);
+        String mPushId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_PUSH_ID);
+        LoginRequest loginRequest = new LoginRequest(mId, mPasswd, mDeviceId, mPushId, Build.VERSION.RELEASE);
 
         RequestLogin requestLogin = new RequestLogin(mActivity,loginRequest);
         requestLogin.post(new RequestLogin.ApiLoginResultListener() {
@@ -134,29 +122,19 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
                     return;
                 }
 
-                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){
-                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
-                    MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, false);
-                    launchVerifyScreen(item.getUserInfo().getId());
-
-                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){
-                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
-                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
-                    MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
-                    launchHomeScreen();
-
-                }else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){
-                    Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
-                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
-                    MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
-                    launchHomeScreen();
-                }
-
+                MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                 MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_EMAIL, mId);
+                MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
 
-                if(item.getUserInfo().getAuthdate() != null){
-                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
-                }
+                DeviceInfo deviceInfo = new DeviceInfo();
+                deviceInfo.setEmail(mId);
+                deviceInfo.setModel(MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_MODEL));
+                deviceInfo.setBrand(MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_BRAND));
+                deviceInfo.setOsversion(MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_OS_VERSION));
+                // TODO: EOS SmartContract _ (3.deviceinfo) When you sign up
+                setEosDeviceInfo(deviceInfo, item.getUserInfo().getState());
+
+
 
             }
 
@@ -166,6 +144,32 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
             }
         });
 
+    }
+
+    private void setEosDeviceInfo(DeviceInfo deviceInfo, String userStatus){
+        // TODO: Function "loginAfterMove(userStatus)" call when smartcontract completes
+
+
+
+
+
+
+        loginAfterMove(userStatus);
+    }
+
+    private void loginAfterMove(String userStatus){
+        if(userStatus.equals(Constant.USER_STATUS_NOT_AUTH)){
+            MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, false);
+            launchVerifyScreen( MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID));
+
+        }else if(userStatus.equals(Constant.USER_STATUS_AUTH_ON)){
+            MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
+            launchHomeScreen();
+
+        }else if(userStatus.equals(Constant.USER_AUTH_PLUS_PROFILE)){
+            MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
+            launchHomeScreen();
+        }
     }
 
     private void changeStatusBarColor() {

@@ -20,11 +20,15 @@ public class MithrilPreferences {
 	public static final String TAG_AUTH_ID = "auth_id"; 		// string, ID that you give to the server at the time of registration or login (check login with or without)
 	public static final String TAG_EMAIL_AUTH = "email_auth"; 	// boolean, Whether email is verified
 	public static final String TAG_AUTH_DATE = "auth_date"; 	// string, Save when email is verified
+	public static final String TAG_REGIST_DATE = "regist_date"; 	// string, Save when sign up
 
 	public static final String TAG_EMAIL = "email"; 			// string, Save Email Temporary
 	public static final String TAG_ANDROD_ID = "android_id"; 		// string, android ID
 	public static final String TAG_MODEL = "model"; 		// string, Mobile phone model
 	public static final String TAG_BRAND = "brand"; 		// string, Mobile phone brand
+	public static final String TAG_OS_VERSION = "os_version"; 		// string, Mobile os_version
+	public static final String TAG_APP_VERSION = "app_version"; 		// string, Mobile app_version
+
 	public static final String TAG_PUSH_ID = "push_id"; 		// string, push_id
 
     public static synchronized MithrilPreferenceManager getInstance(Context context) {

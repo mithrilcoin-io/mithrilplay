@@ -25,13 +25,12 @@ import io.mithrilcoin.mithrilplay.view.ActivityBase;
 /**
  *  Sign Up
  */
-public class SignupActivity extends ActivityBase implements View.OnClickListener {
+public class SignupActivity extends ActivityBase {
 
     private Activity mActivity = null;
 
     private TextInputLayout layout_signup_id, layout_signup_pw;
     private EditText et_signup_id, et_signup_pw;
-    private Button btnDoSignup;
 
     private Animation shake;
 
@@ -65,8 +64,57 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
         et_signup_id = (EditText) findViewById(R.id.et_signup_id);
         et_signup_pw = (EditText) findViewById(R.id.et_signup_pw);
 
-        btnDoSignup = (Button) findViewById(R.id.btn_do_signup);
-        btnDoSignup.setOnClickListener(this);
+        findViewById(R.id.btn_do_signup).setOnClickListener( v -> {
+
+            // Id rules       : email type
+            // Password rules : 8 to 20 characters, one or more uppercase letters, one or more special symbols (! @ # $), Including numbers
+
+            hideKeyboard();
+
+            layout_signup_id.setErrorEnabled(true);
+            layout_signup_pw.setErrorEnabled(true);
+
+            mId = et_signup_id.getText().toString();
+            mPasswd = et_signup_pw.getText().toString();
+
+            boolean isIdvaile = false;
+            boolean isPdvaile = false;
+
+            if (TextUtils.isEmpty(mId)) {
+                isIdvaile = false;
+                layout_signup_id.setError(getString(R.string.email_null));
+                layout_signup_id.startAnimation(shake);
+            }else{
+                if(HashingUtil.checkEmail(mId)){
+                    isIdvaile = true;
+                    layout_signup_id.setErrorEnabled(false);
+                }else{
+                    isIdvaile = false;
+                    layout_signup_id.setError(getString(R.string.email_not_valid));
+                    layout_signup_id.startAnimation(shake);
+                }
+            }
+
+            if (TextUtils.isEmpty(mPasswd)) {
+                isPdvaile = false;
+                layout_signup_pw.setError(getString(R.string.password_null));
+                layout_signup_pw.startAnimation(shake);
+            }else{
+                if(HashingUtil.checkPassword(mPasswd)){
+                    isPdvaile = true;
+                    layout_signup_pw.setErrorEnabled(false);
+                }else{
+                    isPdvaile = false;
+                    layout_signup_pw.setError(getString(R.string.password_check));
+                    layout_signup_pw.startAnimation(shake);
+                }
+            }
+
+            if(isIdvaile && isPdvaile){
+                memberJoinCall();
+            }
+
+        });
 
     }
 
@@ -75,66 +123,6 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
         onBackPressed();
         return true;
     }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.btn_do_signup:
-
-                // Id rules       : email type
-                // Password rules : 8 to 20 characters, one or more uppercase letters, one or more special symbols (! @ # $), Including numbers
-
-                hideKeyboard();
-
-                layout_signup_id.setErrorEnabled(true);
-                layout_signup_pw.setErrorEnabled(true);
-
-                mId = et_signup_id.getText().toString();
-                mPasswd = et_signup_pw.getText().toString();
-
-                boolean isIdvaile = false;
-                boolean isPdvaile = false;
-
-                if (TextUtils.isEmpty(mId)) {
-                    isIdvaile = false;
-                    layout_signup_id.setError(getString(R.string.email_null));
-                    layout_signup_id.startAnimation(shake);
-                }else{
-                    if(HashingUtil.checkEmail(mId)){
-                        isIdvaile = true;
-                        layout_signup_id.setErrorEnabled(false);
-                    }else{
-                        isIdvaile = false;
-                        layout_signup_id.setError(getString(R.string.email_not_valid));
-                        layout_signup_id.startAnimation(shake);
-                    }
-                }
-
-                if (TextUtils.isEmpty(mPasswd)) {
-                    isPdvaile = false;
-                    layout_signup_pw.setError(getString(R.string.password_null));
-                    layout_signup_pw.startAnimation(shake);
-                }else{
-                    if(HashingUtil.checkPassword(mPasswd)){
-                        isPdvaile = true;
-                        layout_signup_pw.setErrorEnabled(false);
-                    }else{
-                        isPdvaile = false;
-                        layout_signup_pw.setError(getString(R.string.password_check));
-                        layout_signup_pw.startAnimation(shake);
-                    }
-                }
-
-                if(isIdvaile && isPdvaile){
-                    memberJoinCall();
-                }
-
-                break;
-        }
-
-    }
-
 
     private void memberJoinCall(){
 
@@ -170,8 +158,8 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
+                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_REGIST_DATE, item.getUserInfo().getRegistdate());
                     launchSignupOkScreen();
-
                 }else{
 
 

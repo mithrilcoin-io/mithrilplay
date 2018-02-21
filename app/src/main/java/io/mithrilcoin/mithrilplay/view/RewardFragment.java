@@ -35,11 +35,14 @@ import java.util.Map;
 
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
+import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.common.TimeUtil;
 import io.mithrilcoin.mithrilplay.data.AppUsageStatManager;
 import io.mithrilcoin.mithrilplay.network.RequestGameRewardOrder;
 import io.mithrilcoin.mithrilplay.network.RequestTodayGameList;
+import io.mithrilcoin.mithrilplay.network.eosobj.GamePlayData;
+import io.mithrilcoin.mithrilplay.network.eosobj.GameReward;
 import io.mithrilcoin.mithrilplay.network.vo.AppGameBody;
 import io.mithrilcoin.mithrilplay.network.vo.AppGameListResponse;
 import io.mithrilcoin.mithrilplay.network.vo.AppGamedataRewardResponse;
@@ -254,6 +257,7 @@ public class RewardFragment extends Fragment {
                     mEmptyTodayReward.setVisibility(View.GONE);
                     List<AppGameBody> installGames = item.getBody();
                     gameAppFilltering(installGames);
+
                 }
             }
 
@@ -316,6 +320,8 @@ public class RewardFragment extends Fragment {
     // list adapter data setting
     private void gameAppFilltering(List<AppGameBody> gameList){
 
+        List<GamePlayData> gamePlayData = new ArrayList<GamePlayData>();
+
         isGetRewardCnt = 0;
         for(AppGameBody appGameBody : gameList){
             String gPackagename =  appGameBody.getPackagename();
@@ -325,6 +331,15 @@ public class RewardFragment extends Fragment {
 
             if(!appGameBody.getPlaytime().equals("0")){
                 mGameList.put(gPackagename, appGameBody);
+
+                GamePlayData playData = new GamePlayData();
+                playData.setEmail(MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_EMAIL));
+                playData.setPackageName(gPackagename);
+                playData.setPlayTime(appGameBody.getPlaytime());
+                playData.setAppVersion(MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_APP_VERSION));
+                playData.setRegistdate(TimeUtil.getTodayString());
+                gamePlayData.add(playData);
+
             }
         }
 
@@ -336,12 +351,25 @@ public class RewardFragment extends Fragment {
             mAdapter.setItemData(mGameList);
             mAdapter.setValidTime(Long.parseLong(mGameValidTime));
             mAdapter.notifyDataSetChanged();
+
+            // TODO: EOS SmartContract _ (4. Game Play DATA) GamePlayData
+            setEosGamePlayData(gamePlayData);
+
+
+
         }else{
             mRecyclerView.setVisibility(View.GONE);
             mEmptyTodayReward.setVisibility(View.VISIBLE);
         }
 
         setRewardcnt(isGetRewardCnt);
+
+    }
+
+    private void setEosGamePlayData(List<GamePlayData> gamePlayData){
+
+
+
 
     }
 
@@ -352,12 +380,22 @@ public class RewardFragment extends Fragment {
 
         RequestGameRewardOrder requestGameRewardOrder = new RequestGameRewardOrder(mActivity, mId, appGameBody);
         requestGameRewardOrder.post(new RequestGameRewardOrder.ApiGameRewardOrderListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onSuccess(AppGamedataRewardResponse item) {
 
                 if(item.getBody() != null){
                     getTodayGameAppList();
+
+                    GameReward gameReward = new GameReward();
+                    gameReward.setEmail(MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_EMAIL));
+                    gameReward.setMtp(item.getBody().getReward());
+                    gameReward.setPackageName(item.getBody().getPackagename());
+                    gameReward.setRegistdate(item.getBody().getPlaydate());
+                    gameReward.setPlaytime(item.getBody().getPlaytime());
+
+                    // TODO: EOS SmartContract _ (5. Game Reward order) When you receive compensation after game
+                    setEosGameReward(gameReward);
+
                 }
 
             }
@@ -367,6 +405,12 @@ public class RewardFragment extends Fragment {
 
             }
         });
+
+    }
+
+    private void setEosGameReward(GameReward gameReward){
+
+
 
     }
 

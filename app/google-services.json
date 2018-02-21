@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "664671683606",
+    "firebase_url": "https://mithrilplay.firebaseio.com",
+    "project_id": "mithrilplay",
+    "storage_bucket": "mithrilplay.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664671683606:android:ed2d64f8d3149e3d",
+        "android_client_info": {
+          "package_name": "io.mithrilcoin.mithrilplay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664671683606-lbmv8q1qc23bpa2ll7ibhd4c50ldiqj5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvTdWNPpbi-J3EcYfLtuUIg0lUReVz8Hg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

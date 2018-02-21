@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -63,6 +65,13 @@ public class IntroActivity extends ActivityBase {
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_ANDROD_ID, getAndroidID());
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_MODEL, Build.MODEL);
 		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_BRAND, Build.BRAND);
+		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_OS_VERSION, Build.VERSION.RELEASE);
+		String version = "";
+		try {
+			PackageInfo i = mActivity.getPackageManager().getPackageInfo(mActivity.getPackageName(), 0);
+			version = i.versionName;
+		} catch(PackageManager.NameNotFoundException e) { }
+		MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_APP_VERSION, version);
 
 		// routing check
 		boolean isRootingFlag = false;

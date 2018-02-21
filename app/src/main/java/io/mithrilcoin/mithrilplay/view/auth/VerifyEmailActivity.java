@@ -27,10 +27,7 @@ public class VerifyEmailActivity extends ActivityBase {
 
     private Activity mActivity = null;
 
-    private Button btnCheckVerify, btnResend;
-
     private String mAuthId = "";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,31 +44,24 @@ public class VerifyEmailActivity extends ActivityBase {
             sendEmailCall(mAuthId);
         }
 
-        btnCheckVerify = (Button) findViewById(R.id.btn_verify_email);
-        btnResend = (Button) findViewById(R.id.btn_resend_email);
+        findViewById(R.id.btn_verify_email).setOnClickListener(v -> {
 
-        btnCheckVerify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(TextUtils.isEmpty(mAuthId)){
-                    String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
-                    mAuthId = mId;
-                }
-                getUserinfo(mAuthId);
-
+            if(TextUtils.isEmpty(mAuthId)){
+                String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
+                mAuthId = mId;
             }
+            getUserinfo(mAuthId);
+
         });
 
-        btnResend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(TextUtils.isEmpty(mAuthId)){
-                    String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
-                    mAuthId = mId;
-                }
-                sendEmailCall(mAuthId);
+        findViewById(R.id.btn_resend_email).setOnClickListener(v -> {
+
+            if(TextUtils.isEmpty(mAuthId)){
+                String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
+                mAuthId = mId;
             }
+            sendEmailCall(mAuthId);
+
         });
 
     }
@@ -116,18 +106,16 @@ public class VerifyEmailActivity extends ActivityBase {
                 }
 
                 if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){
-
                     Toast.makeText(mActivity, getString(R.string.verify_fail), Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                }else if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){
+                if(item.getUserInfo().getState().equals(Constant.USER_STATUS_AUTH_ON)){
 
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
                     launchSignupOkScreen();
-
-                }else{
-
 
                 }
 
@@ -142,9 +130,14 @@ public class VerifyEmailActivity extends ActivityBase {
             public void onFail() {
 
             }
+
         });
 
     }
+
+
+
+
 
 
 

@@ -11,6 +11,9 @@ public class UserInfo {
     @SerializedName("deviceid")
     @Expose
     private String deviceid;
+    @SerializedName("fcmid")
+    @Expose
+    private String fcmid;
     @SerializedName("state")
     @Expose
     private String state;
@@ -29,6 +32,9 @@ public class UserInfo {
     @SerializedName("authdate")
     @Expose
     private String authdate;
+    @SerializedName("registdate")
+    @Expose
+    private String registdate;
 
     public String getId() {
         return id;
@@ -44,6 +50,14 @@ public class UserInfo {
 
     public void setDeviceid(String deviceid) {
         this.deviceid = deviceid;
+    }
+
+    public String getFcmid() {
+        return fcmid;
+    }
+
+    public void setFcmid(String fcmid) {
+        this.fcmid = fcmid;
     }
 
     public String getState() {
@@ -92,5 +106,13 @@ public class UserInfo {
 
     public void setAuthdate(String authdate) {
         this.authdate = authdate;
+    }
+
+    public String getRegistdate() {
+        return registdate;
+    }
+
+    public void setRegistdate(String registdate) {
+        this.registdate = registdate;
     }
 }

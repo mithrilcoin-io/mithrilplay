@@ -30,6 +30,7 @@ import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
 import io.mithrilcoin.mithrilplay.network.RequestMemberDetailUpdate;
 import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
+import io.mithrilcoin.mithrilplay.network.eosobj.UserMoreInfo;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateResponse;
@@ -38,13 +39,11 @@ import io.mithrilcoin.mithrilplay.view.ActivityBase;
 /**
  * Enter additional information
  */
-public class MoreInfoActivity extends ActivityBase implements View.OnClickListener {
+public class MoreInfoActivity extends ActivityBase {
 
     private Activity mActivity;
 
-    private Button btn_toggle_male, btn_toggle_female;
     private AppCompatSpinner sp_birth_year, sp_birth_month, sp_nation;
-    private Button btnGetBonusReward;
 
     private String mGender = "";
     private String mBirthYear = "";
@@ -71,10 +70,21 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
     private void viewInit(){
 
-        btn_toggle_male = (Button) findViewById(R.id.btn_toggle_male);
-        btn_toggle_female = (Button) findViewById(R.id.btn_toggle_female);
-        btn_toggle_male.setOnClickListener(this);
-        btn_toggle_female.setOnClickListener(this);
+        findViewById(R.id.btn_toggle_male).setOnClickListener(v -> {
+
+            findViewById(R.id.btn_toggle_male).setSelected(true);
+            findViewById(R.id.btn_toggle_female).setSelected(false);
+            mGender = Constant.GENDER_MALE;
+
+        });
+
+        findViewById(R.id.btn_toggle_female).setOnClickListener(v -> {
+
+            findViewById(R.id.btn_toggle_male).setSelected(false);
+            findViewById(R.id.btn_toggle_female).setSelected(true);
+            mGender = Constant.GENDER_FEMALE;
+
+        });
 
         sp_birth_year = (AppCompatSpinner) findViewById(R.id.sp_birth_year);
         sp_birth_month = (AppCompatSpinner) findViewById(R.id.sp_birth_month);
@@ -178,44 +188,16 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
             }
         });
 
+        findViewById(R.id.btn_get_bonus).setOnClickListener(v -> {
 
-        btnGetBonusReward = (Button) findViewById(R.id.btn_get_bonus);
-        btnGetBonusReward.setOnClickListener(this);
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.btn_toggle_male:
-
-                btn_toggle_male.setSelected(true);
-                btn_toggle_female.setSelected(false);
-                mGender = Constant.GENDER_MALE;
-
-                break;
-
-            case R.id.btn_toggle_female:
-
-                btn_toggle_male.setSelected(false);
-                btn_toggle_female.setSelected(true);
-                mGender = Constant.GENDER_FEMALE;
-
-                break;
-
-            case R.id.btn_get_bonus:
-
-                if(TextUtils.isEmpty(mGender) || TextUtils.isEmpty(mBirthYear) || TextUtils.isEmpty(mBirthMonth) || TextUtils.isEmpty(mNation)) {
-                    showNotInputValueDialog();
-                    break;
-                }
-
+            if(TextUtils.isEmpty(mGender) || TextUtils.isEmpty(mBirthYear) || TextUtils.isEmpty(mBirthMonth) || TextUtils.isEmpty(mNation)) {
+                showNotInputValueDialog();
+            }else{
                 setMemberDetailUpdate();
+            }
 
-                break;
+        });
 
-        }
     }
 
     private void showNotInputValueDialog(){
@@ -261,10 +243,12 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
         }
     }
 
-
+    /**
+     * Send additional information
+     */
     private void setMemberDetailUpdate(){
 
-        //TODO No city information
+        //TODO City information should be added later
         String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
         MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(mGender, mBirthYear, mBirthMonth, mNation, "");
 
@@ -273,7 +257,23 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
             @Override
             public void onSuccess(MemberUpdateResponse item) {
                 if(item.getBody().getCode().equals(Constant.SUCCESS)){
-                    showRewardDoneDialog();
+
+                    if(item.getUserInfo() != null){
+
+                        UserMoreInfo userMoreInfo = new UserMoreInfo();
+                        userMoreInfo.setEmail(MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_EMAIL));
+                        userMoreInfo.setModifydate(item.getUserInfo().getMemberDetail().getModifydate());
+                        userMoreInfo.setGender(mGender);
+                        userMoreInfo.setBirthYear(mBirthYear);
+                        userMoreInfo.setBirthMonth(mBirthMonth);
+                        userMoreInfo.setCountry(mNation);
+                        userMoreInfo.setCity("");
+
+                        // TODO: EOS SmartContract _ (2.account more info) When you have completed the addition of member information
+                        setEosMemberMoreInfo(userMoreInfo);
+
+//                      showRewardDoneDialog();
+                    }
                 }
             }
 
@@ -285,6 +285,14 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
 
     }
 
+    private void setEosMemberMoreInfo(UserMoreInfo userMoreInfo){
+        // TODO: Function "showRewardDoneDialog()" call when smartcontract completes
+
+
+
+        showRewardDoneDialog();
+
+    }
 
 
 }

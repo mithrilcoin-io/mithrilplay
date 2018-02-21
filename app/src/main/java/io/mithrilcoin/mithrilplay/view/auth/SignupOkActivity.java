@@ -8,6 +8,9 @@ import android.widget.Button;
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
+import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.network.eosobj.DeviceInfo;
+import io.mithrilcoin.mithrilplay.network.eosobj.UserAccount;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
 /**
@@ -15,35 +18,54 @@ import io.mithrilcoin.mithrilplay.view.ActivityBase;
  */
 public class SignupOkActivity extends ActivityBase {
 
-    private Button btnMoreInfo, btnSkip;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup_ok);
 
-        btnMoreInfo = (Button) findViewById(R.id.btn_more_info);
-        btnSkip = (Button) findViewById(R.id.btn_skip);
+        findViewById(R.id.btn_more_info).setOnClickListener(v -> {
 
-        btnMoreInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            // Go to more info
+            Intent intent = new Intent(SignupOkActivity.this, MoreInfoActivity.class);
+            startActivityForResult(intent, Constant.REQUEST_JOIN_MOREINFO);
 
-                // Go to more info
-                Intent intent = new Intent(SignupOkActivity.this, MoreInfoActivity.class);
-                startActivityForResult(intent, Constant.REQUEST_JOIN_MOREINFO);
-            }
         });
 
-        btnSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                for (int i = 0; i < activityList.size(); i++) {
-                    activityList.get(i).finish();
-                }
-                launchHomeScreen();
+        findViewById(R.id.btn_skip).setOnClickListener(v -> {
+
+            for (int i = 0; i < activityList.size(); i++) {
+                activityList.get(i).finish();
             }
+            launchHomeScreen();
+
         });
+
+        UserAccount userAccount = new UserAccount();
+        userAccount.setEmail(MithrilPreferences.getString(this, MithrilPreferences.TAG_EMAIL));
+        userAccount.setRegistdate(MithrilPreferences.getString(this, MithrilPreferences.TAG_REGIST_DATE));
+        userAccount.setAuthdate(MithrilPreferences.getString(this, MithrilPreferences.TAG_AUTH_DATE));
+        // TODO: EOS SmartContract _ (1. account info) When you sign up and verify your email
+        setEosAccount(userAccount);
+
+        DeviceInfo deviceInfo = new DeviceInfo();
+        deviceInfo.setEmail(MithrilPreferences.getString(this, MithrilPreferences.TAG_EMAIL));
+        deviceInfo.setModel(MithrilPreferences.getString(this, MithrilPreferences.TAG_MODEL));
+        deviceInfo.setBrand(MithrilPreferences.getString(this, MithrilPreferences.TAG_BRAND));
+        deviceInfo.setOsversion(MithrilPreferences.getString(this, MithrilPreferences.TAG_OS_VERSION));
+        // TODO: EOS SmartContract _ (3. device info) When you sign up and verify your email
+        setEosDeviceInfo(deviceInfo);
+    }
+
+    private void setEosAccount(UserAccount userAccount){
+
+
+
+    }
+
+    private void setEosDeviceInfo(DeviceInfo deviceInfo){
+
+
+
     }
 
     @Override
