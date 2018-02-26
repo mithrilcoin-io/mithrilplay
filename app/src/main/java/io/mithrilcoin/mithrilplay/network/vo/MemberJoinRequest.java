@@ -20,13 +20,21 @@ public class MemberJoinRequest {
     @SerializedName("brand")
     @Expose
     private String brand;
+    @SerializedName("fcmid")
+    @Expose
+    private String fcmid;
+    @SerializedName("osversion")
+    @Expose
+    private String osversion;
 
-    public MemberJoinRequest(String email, String password, String deviceid, String model, String brand) {
+    public MemberJoinRequest(String email, String password, String deviceid, String model, String brand, String fcmid, String osversion) {
         this.email = email;
         this.password = password;
         this.deviceid = deviceid;
         this.model = model;
         this.brand = brand;
+        this.fcmid = fcmid;
+        this.osversion = osversion;
     }
 
     public String getEmail() {
@@ -67,6 +75,22 @@ public class MemberJoinRequest {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public String getFcmid() {
+        return fcmid;
+    }
+
+    public void setFcmid(String fcmid) {
+        this.fcmid = fcmid;
+    }
+
+    public String getOsversion() {
+        return osversion;
+    }
+
+    public void setOsversion(String osversion) {
+        this.osversion = osversion;
     }
 
 }

@@ -15,7 +15,7 @@ import retrofit2.Response;
 
 
 /**
- *  APP filtering (game APP) _ test
+ *  APP filtering (game APP)
  */
 public class RequestGamePackageList extends RequestCommon {
 

@@ -5,10 +5,16 @@ import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -73,6 +79,8 @@ public class ActivityBase extends AppCompatActivity {
         MithrilPreferences.putBoolean(this, MithrilPreferences.TAG_EMAIL_AUTH, false);
         MithrilPreferences.putString(this, MithrilPreferences.TAG_EMAIL, "");
         MithrilPreferences.putString(this, MithrilPreferences.TAG_AUTH_DATE, "");
+
+        FirebaseAuth.getInstance().signOut();
     }
 
     // move login

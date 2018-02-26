@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import io.mithrilcoin.mithrilplay.view.RewardFragment;
 import io.mithrilcoin.mithrilplay.view.RewardHistoryFragment;
+import io.mithrilcoin.mithrilplay.view.RewardTodayFragment;
 
 
 /**
@@ -26,12 +27,16 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
 
         // Returning the current tabs
         switch (position) {
+//            case 0:
+//                RewardFragment rewardFragment = new RewardFragment();
+//                return rewardFragment;
             case 0:
-                RewardFragment rewardFragment = new RewardFragment();
-                return rewardFragment;
+                RewardTodayFragment rewardTodayFragment = new RewardTodayFragment();
+                return rewardTodayFragment;
             case 1:
-                RewardHistoryFragment rewardHistoryFragment = new RewardHistoryFragment();
-                return rewardHistoryFragment;
+            RewardHistoryFragment rewardHistoryFragment = new RewardHistoryFragment();
+            return rewardHistoryFragment;
+
             default:
                 return null;
         }

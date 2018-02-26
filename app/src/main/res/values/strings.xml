@@ -50,7 +50,7 @@
     <string name="reward_detail">Reward details</string>
     <string name="reward_detail_comment_game">%s\n%s MTP Payment Completion  \n Total %s play</string>
     <string name="reward_detail_comment_info">%s\n%s MTP Payment Completion </string>
-    <string name="get_reward_ready">Play more than 1 minute!</string>
+    <string name="get_reward_ready">Play more than %s!</string>
     <string name="get_reward_ok">%s Received MTP.</string>
     <string name="get_reward">100 Get MTP</string>
     <string name="not_install_game">No games installed.</string>

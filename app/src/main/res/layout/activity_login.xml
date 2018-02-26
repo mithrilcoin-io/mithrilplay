@@ -95,5 +95,16 @@
             android:textColor="@color/colorWhite"
             android:textSize="14sp"
             android:text="@string/new_account_desc" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_google_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_signup"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="16dp"/>
+
     </RelativeLayout>
+
 </RelativeLayout>

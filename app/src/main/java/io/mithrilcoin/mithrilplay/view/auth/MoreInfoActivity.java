@@ -27,6 +27,7 @@ import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.db.DBdataAccess;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
 import io.mithrilcoin.mithrilplay.network.RequestMemberDetailUpdate;
 import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
@@ -275,6 +276,12 @@ public class MoreInfoActivity extends ActivityBase implements View.OnClickListen
                 if(item.getBody().getCode().equals(Constant.SUCCESS)){
                     showRewardDoneDialog();
                 }
+
+                if(item.getUserInfo() != null){
+                    String mEmail = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_EMAIL);
+                    DBdataAccess.memberDataDBaccess(item.getUserInfo(), mEmail);
+                }
+
             }
 
             @Override

@@ -8,6 +8,7 @@ import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,33 +35,42 @@ import java.util.List;
 import java.util.Map;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.CommonApplication;
 import io.mithrilcoin.mithrilplay.common.Constant;
+import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.common.TimeUtil;
 import io.mithrilcoin.mithrilplay.data.AppUsageStatManager;
+import io.mithrilcoin.mithrilplay.db.entity.PlayData;
+import io.mithrilcoin.mithrilplay.network.RequestGamePackageList;
 import io.mithrilcoin.mithrilplay.network.RequestGameRewardOrder;
+import io.mithrilcoin.mithrilplay.network.RequestTodayDBGameList;
 import io.mithrilcoin.mithrilplay.network.RequestTodayGameList;
+import io.mithrilcoin.mithrilplay.network.vo.AppBody;
 import io.mithrilcoin.mithrilplay.network.vo.AppGameBody;
 import io.mithrilcoin.mithrilplay.network.vo.AppGameListResponse;
+import io.mithrilcoin.mithrilplay.network.vo.AppGamePackageBody;
+import io.mithrilcoin.mithrilplay.network.vo.AppGamePackageListResponse;
 import io.mithrilcoin.mithrilplay.network.vo.AppGamedataRewardResponse;
 import io.mithrilcoin.mithrilplay.network.vo.AppRequest;
+import io.mithrilcoin.mithrilplay.network.vo.GamePlayDataRequest;
 import io.mithrilcoin.mithrilplay.view.adapter.EventVO;
 import io.mithrilcoin.mithrilplay.view.adapter.RewardAdapter;
 import io.mithrilcoin.mithrilplay.view.auth.DataAccessInfoPermissionActivity;
 import io.mithrilcoin.mithrilplay.view.listner.GameRewardCallListener;
 
 /**
- *  Today Game list
+ *  Today Game list _ Local Database store
  */
-public class RewardFragment extends Fragment {
+public class RewardTodayFragment extends Fragment {
 
-    public RewardFragment() {
+    public RewardTodayFragment() {
     }
 
     public static final String TAG = "mithril";
 
     private HomeActivity mActivity = null;
-    public static RewardFragment instance = null;
+    public static RewardTodayFragment instance = null;
     private RewardAdapter mAdapter = null;
     private LinearLayoutManager mLayoutManager = null;
 
@@ -83,7 +93,7 @@ public class RewardFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_reward, container, false);
 
         mActivity = (HomeActivity) getActivity();
-        instance = RewardFragment.this;
+        instance = RewardTodayFragment.this;
         pm = mActivity.getPackageManager();
 
         setLayout(rootView);
@@ -118,7 +128,7 @@ public class RewardFragment extends Fragment {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             mActivity.startActivityForResult(intent, Constant.REQUEST_CODE_HOME_USE_INFO);
         }else{
-//            getTodayGameAppList();
+            getAppGamePackage();
         }
     }
 
@@ -156,16 +166,7 @@ public class RewardFragment extends Fragment {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("WrongConstant")
-    public void getTodayGameAppList(){
-
-        mTodaytime = TimeUtil.getTodayUtcTime();
-
-        // Email authentication completion time
-        String mAuthDate = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_DATE);
-        long emailAuthTime = 0;
-        if(!TextUtils.isEmpty(mAuthDate)){
-            emailAuthTime = Long.parseLong(mAuthDate);
-        }
+    public void getAppGamePackage(){
 
         // user id
         String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
@@ -174,64 +175,129 @@ public class RewardFragment extends Fragment {
         List<ApplicationInfo> mAppList = new ArrayList<ApplicationInfo>();
         mAppList = pm.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES | PackageManager.GET_DISABLED_COMPONENTS);
 
-        // List of apps launched today (all apps)
-        Map<String, UsageStats> todayAppUsage = AppUsageStatManager.getTodayUsageStatList(mActivity);
+        List<AppBody> appBodyList = new ArrayList<AppBody>();
+        for(ApplicationInfo app : mAppList) {
+            AppBody appBody = new AppBody();
+            appBody.setPackagename(app.packageName);
+            appBodyList.add(appBody);
+        }
 
+        // game Package get
+        RequestGamePackageList requestGamePackageList = new RequestGamePackageList(mActivity, mId, appBodyList);
+        requestGamePackageList.post(new RequestGamePackageList.ApiGamePackageListListener() {
+            @Override
+            public void onSuccess(AppGamePackageListResponse item) {
+
+                if(item.getBody() != null || item.getBody().size() > 0){
+                    List<String> appGamePackage = new ArrayList<String>();
+                    for(AppGamePackageBody app : item.getBody()){
+                        appGamePackage.add(app.getPackagename());
+                    }
+                    gameSort(appGamePackage);
+                }
+            }
+
+            @Override
+            public void onFail() {
+
+            }
+        });
+
+        // push query example
+//        String qData = AppUsageStatManager.getQueryResults("select * from playdata where idx < 10");
+//        Log.d(TAG, "qData =" +qData);
+
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void gameSort(List<String> appGamePackage){
+
+        // Games played today
         ArrayList<EventVO> list = new ArrayList<EventVO>();
-        HashMap<String, Long> eventTime = new HashMap<String, Long>();
 
         // Get events by app
         UsageStatsManager usm = (UsageStatsManager) mActivity.getSystemService(Context.USAGE_STATS_SERVICE);
-        UsageEvents uEvents = usm.queryEvents(AppUsageStatManager.getStartTime(), System.currentTimeMillis());
+        UsageEvents uEvents = usm.queryEvents(AppUsageStatManager.getTodayOrLastGameStartTime(), System.currentTimeMillis());
         while (uEvents.hasNextEvent()){
             UsageEvents.Event event = new UsageEvents.Event();
             uEvents.getNextEvent(event);
             if (event != null){
-//                Log.d(TAG, "Event: " + event.getPackageName() + "__" +  event.getTimeStamp() + "__" +  event.getEventType() );
                 EventVO eventVO = new EventVO();
                 eventVO.setPackagename(event.getPackageName());
                 eventVO.setState(event.getEventType() + "");
                 eventVO.setUtcTime(event.getTimeStamp() + "");
-                if(event.getEventType() == 7){
-                    continue;
+                if(event.getEventType() == 1 || event.getEventType() == 2){
+                    list.add(eventVO);
                 }
-                list.add(eventVO);
             }
         }
-        eventTime = sortList(list);
 
-        // Setting the app list value to be sent to the server
-        List<AppRequest> appRequestList = new ArrayList<AppRequest>();
-        for(ApplicationInfo app : mAppList){
-            AppRequest appRequest = new AppRequest();
-            appRequest.setPackagename(app.packageName);
-            appRequest.setPlaydate(mTodaytime);
+        // Data to put in Local DB
+        List<PlayData> playDataList = new ArrayList<PlayData>();
 
-            // App usage time setting
-            if(todayAppUsage.containsKey(app.packageName)){
-                if(eventTime.containsKey(app.packageName)){
-                    appRequest.setPlaytime(eventTime.get(app.packageName).toString());
-                }else{
-                    appRequest.setPlaytime(todayAppUsage.get(app.packageName).getTotalTimeInForeground()+"");
-                }
-            }else{
-                appRequest.setPlaytime("0");
+        String mEmail = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_EMAIL);
+        String mAppversion = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_APP_VERSION);
+
+        HashMap<String, ArrayList<EventVO>> maplist = new HashMap<>();
+        for(EventVO pack : list){
+
+            if(pack.getPackagename().equals(mActivity.getPackageName())){
+                continue;
+            }
+            if(!appGamePackage.contains(pack.getPackagename())){
+                continue;
             }
 
-            if(todayAppUsage.containsKey(app.packageName)){
-                if((long)todayAppUsage.get(app.packageName).getLastTimeUsed() > emailAuthTime){
-                    if((long)todayAppUsage.get(app.packageName).getLastTimeUsed() > AppUsageStatManager.getStartTime()) {
-                        appRequestList.add(appRequest);
-                    }
-                }
+            if(maplist.containsKey(pack.getPackagename())){
+                maplist.get(pack.getPackagename()).add(pack);
             }else{
-                appRequestList.add(appRequest);
+                ArrayList<EventVO> tempList = new ArrayList<>();
+                tempList.add(pack);
+                maplist.put(pack.getPackagename(), tempList);
             }
-
         }
 
-        RequestTodayGameList requestTodayGameList = new RequestTodayGameList(mActivity, mId, appRequestList);
-        requestTodayGameList.post(new RequestTodayGameList.ApiTodayGameListListener() {
+        // sort
+        Ascending ascending = new Ascending();
+        Iterator<String> keys = maplist.keySet().iterator();
+        while(keys.hasNext()){
+            String key = keys.next();
+            ArrayList<EventVO> tempList =  maplist.get(key);
+            Collections.sort(tempList,ascending);
+            int length = tempList.size() / 2;
+            int idx = 0;
+            for( int i = 0; i < length; i++){
+                long diff = Long.parseLong(tempList.get(idx + 1).getUtcTime()) -  Long.parseLong(tempList.get(idx).getUtcTime());
+                PlayData data = new PlayData(mEmail,tempList.get(idx).getPackagename(), tempList.get(idx).getUtcTime(), tempList.get(idx + 1).getUtcTime(), diff+"", mAppversion);
+                idx += 2;
+                playDataList.add(data);
+            }
+        }
+
+        // Store in LocalDB
+        CommonApplication.getApplication().getDB().playDataDao().insertAll(playDataList);
+
+
+        // today game list
+        List<GamePlayDataRequest> todayGameDataList = new ArrayList<GamePlayDataRequest>();
+        todayGameDataList = AppUsageStatManager.getTodayPlayData();
+        Log.d("mithril", "todayGameDataList.size() =" + todayGameDataList.size());
+
+        // alttitle setting
+        for(GamePlayDataRequest app : todayGameDataList){
+            try {
+                app.setAlttitle((String) pm.getApplicationLabel(pm.getApplicationInfo(app.getPackagename(), PackageManager.GET_UNINSTALLED_PACKAGES)));
+            } catch (PackageManager.NameNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        // user id
+        String mId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_AUTH_ID);
+
+        RequestTodayDBGameList requestTodayDBGameList = new RequestTodayDBGameList(mActivity, mId, todayGameDataList);
+        requestTodayDBGameList.post(new RequestTodayDBGameList.ApiTodayGameListListener() {
             @Override
             public void onSuccess(AppGameListResponse item) {
 
@@ -256,6 +322,7 @@ public class RewardFragment extends Fragment {
                     List<AppGameBody> installGames = item.getBody();
                     gameAppFilltering(installGames);
                 }
+
             }
 
             @Override
@@ -264,52 +331,14 @@ public class RewardFragment extends Fragment {
             }
         });
 
+
     }
 
-    private  HashMap<String, Long> sortList(ArrayList<EventVO> list){
-        HashMap<String, ArrayList<EventVO>> maplist = new HashMap<>();
-        HashMap<String, Long> maplist2 = new HashMap<>();
-        AscendingObj abd = new AscendingObj();
-        for(EventVO pack : list){
-            if(pack.getPackagename().equals(mActivity.getPackageName())){
-                continue;
-            }
-
-            if( maplist.containsKey(pack.getPackagename())){
-                maplist.get(pack.getPackagename()).add(pack);
-            }else{
-                ArrayList<EventVO> tempList = new ArrayList<>();
-                tempList.add(pack);
-                maplist.put(pack.getPackagename(),  tempList);
-            }
-        }
-
-        Iterator<String> keys = maplist.keySet().iterator();
-        while(keys.hasNext()){
-            String key = keys.next();
-            ArrayList<EventVO> tempList =  maplist.get(key);
-
-            Collections.sort(tempList,abd);
-
-            long sum = 0;
-            int length = tempList.size() / 2;
-            int idx = 0;
-            for( int i = 0; i < length; i++){
-                long diff = Long.parseLong(tempList.get(idx).getUtcTime()) -  Long.parseLong(tempList.get(idx + 1).getUtcTime());
-                sum += diff;
-                idx += 2;
-            }
-            maplist2.put(key, sum);
-        }
-
-        return maplist2;
-    }
-
-    public class AscendingObj implements Comparator<EventVO> {
+    public class Ascending implements Comparator<EventVO> {
 
         @Override
         public int compare(EventVO o1, EventVO o2) {
-            return o2.getUtcTime().compareTo(o1.getUtcTime());
+            return o1.getUtcTime().compareTo(o2.getUtcTime());
         }
 
     }
@@ -353,12 +382,11 @@ public class RewardFragment extends Fragment {
 
         RequestGameRewardOrder requestGameRewardOrder = new RequestGameRewardOrder(mActivity, mId, appGameBody);
         requestGameRewardOrder.post(new RequestGameRewardOrder.ApiGameRewardOrderListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onSuccess(AppGamedataRewardResponse item) {
 
                 if(item.getBody() != null){
-                    getTodayGameAppList();
+                    getAppGamePackage();
                 }
 
             }

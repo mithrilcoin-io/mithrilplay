@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.TimeUtil;
 import io.mithrilcoin.mithrilplay.network.vo.AppGameBody;
-import io.mithrilcoin.mithrilplay.view.RewardFragment.GameRewardCallListener;
+import io.mithrilcoin.mithrilplay.view.listner.GameRewardCallListener;
 
 /**
  * Today's Rewards Adapter

@@ -10,6 +10,7 @@ import android.arch.persistence.room.Update;
 import java.util.List;
 
 import io.mithrilcoin.mithrilplay.db.entity.PlayData;
+import io.mithrilcoin.mithrilplay.network.vo.GamePlayDataRequest;
 
 /**
  * GameData DB access DAO
@@ -27,8 +28,8 @@ public interface PlayDataDao {
     @Query("SELECT max(endtime) FROM playdata")
     String getLastEndtime();
 
-    @Query("SELECT * FROM playdata WHERE startTime >= :time ORDER BY packageName desc")
-    List<PlayData> getTodayGameList(long time);
+    @Query("SELECT packagename, starttime, endtime, version FROM playdata WHERE endtime >= :time and email = :email ORDER BY packageName desc")
+    List<GamePlayDataRequest> getTodayGameList(long time, String email);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<PlayData> data);

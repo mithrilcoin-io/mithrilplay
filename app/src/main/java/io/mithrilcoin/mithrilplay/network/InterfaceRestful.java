@@ -9,6 +9,7 @@ import io.mithrilcoin.mithrilplay.network.vo.AppGameListResponse;
 import io.mithrilcoin.mithrilplay.network.vo.AppGamePackageListResponse;
 import io.mithrilcoin.mithrilplay.network.vo.AppGamedataRewardResponse;
 import io.mithrilcoin.mithrilplay.network.vo.AppRequest;
+import io.mithrilcoin.mithrilplay.network.vo.GamePlayDataRequest;
 import io.mithrilcoin.mithrilplay.network.vo.GameRewardTotalListResponse;
 import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
@@ -59,7 +60,12 @@ public interface InterfaceRestful {
     @POST(ServerConstant.APP_GAMEDATA_INSERT)
     Call<AppGameListResponse> getGameApp(@Path("id") String id, @Body List<AppRequest> appRequests);
 
-    // APP filtering (game APP) _ test
+    // Transfer game data (send installed app list to server and download game information only)_LocalDB
+    @Headers("Content-Type:application/json")
+    @POST(ServerConstant.APP_GAMEDATA_INSERT)
+    Call<AppGameListResponse> getDBGameApp(@Path("id") String id, @Body List<GamePlayDataRequest> appRequests);
+
+    // APP filtering (game APP)
     @Headers("Content-Type:application/json")
     @POST(ServerConstant.APP_GAMEDATA_PACKAGE)
     Call<AppGamePackageListResponse> getGameAppPackage(@Path("id") String id, @Body List<AppBody> appRequests);

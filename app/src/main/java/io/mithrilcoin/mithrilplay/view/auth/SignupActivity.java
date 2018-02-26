@@ -1,6 +1,7 @@
 package io.mithrilcoin.mithrilplay.view.auth;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
@@ -13,9 +14,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.CommonApplication;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.HashingUtil;
+import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.db.DBdataAccess;
+import io.mithrilcoin.mithrilplay.db.entity.Device;
+import io.mithrilcoin.mithrilplay.db.entity.UserData;
 import io.mithrilcoin.mithrilplay.dialog.CommonDialog;
 import io.mithrilcoin.mithrilplay.network.RequestMemberJoin;
 import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
@@ -35,7 +41,7 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
 
     private Animation shake;
 
-    private String mId, mPasswd, mDeviceId, mModel, mBrand;
+    private String mId, mPasswd, mDeviceId, mModel, mBrand, mPushId, mOsVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,8 +149,10 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
         mDeviceId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_ANDROD_ID);
         mModel = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_MODEL);
         mBrand = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_BRAND);
+        mPushId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_PUSH_ID);
+        mOsVersion = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_OS_VERSION);
 
-        MemberJoinRequest memberJoinRequest = new MemberJoinRequest(mId, mPasswd, mDeviceId, mModel, mBrand);
+        MemberJoinRequest memberJoinRequest = new MemberJoinRequest(mId, mPasswd, mDeviceId, mModel, mBrand, mPushId, mOsVersion);
 
         RequestMemberJoin requestMemberJoin = new RequestMemberJoin(mActivity,memberJoinRequest);
         requestMemberJoin.post(new RequestMemberJoin.ApiMemberJoinResultListener() {
@@ -179,6 +187,11 @@ public class SignupActivity extends ActivityBase implements View.OnClickListener
 
                 // email save
                 MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_EMAIL, mId);
+
+                // DB access
+                if(item.getUserInfo() != null){
+                    DBdataAccess.memberDataDBaccess(item.getUserInfo(), mId);
+                }
 
             }
 

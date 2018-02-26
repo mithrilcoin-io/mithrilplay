@@ -13,6 +13,7 @@ import io.mithrilcoin.mithrilplay.common.CommonApplication;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.db.DBdataAccess;
 import io.mithrilcoin.mithrilplay.network.RequestCommon;
 import io.mithrilcoin.mithrilplay.network.RequestSendEmailAuth;
 import io.mithrilcoin.mithrilplay.network.RequestUserInfo;
@@ -134,6 +135,12 @@ public class VerifyEmailActivity extends ActivityBase {
                 // Save email verification time
                 if(item.getUserInfo().getAuthdate() != null){
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
+                }
+
+                // DB access
+                if(item.getUserInfo() != null){
+                    String mEmail = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_EMAIL);
+                    DBdataAccess.memberDataDBaccess(item.getUserInfo(), mEmail);
                 }
 
             }

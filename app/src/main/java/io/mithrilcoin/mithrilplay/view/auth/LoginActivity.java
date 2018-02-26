@@ -1,11 +1,14 @@
 package io.mithrilcoin.mithrilplay.view.auth;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,15 +21,28 @@ import android.widget.Toast;
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.db.DBdataAccess;
 import io.mithrilcoin.mithrilplay.network.RequestLogin;
 import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+
+
 /**
  * login
  */
-public class LoginActivity extends ActivityBase implements View.OnClickListener {
+public class LoginActivity extends ActivityBase implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
     private Activity mActivity = null;
 
@@ -36,6 +52,20 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
     private String mId, mPasswd;
 
     private Animation shake;
+
+    // google login
+    FirebaseAuth mFirebaseAuth;
+    FirebaseUser mFirebaseUser;
+
+    FirebaseAuth.AuthStateListener mFirebaseAuthListener;
+
+    SignInButton mSigninGoogleButton;
+    GoogleApiClient mGoogleApiClient;
+
+    static final int RC_GOOGLE_SIGN_IN = 9001;
+
+    String mUsername;
+    String mPhotoUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +87,58 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
         shake = AnimationUtils.loadAnimation(this, R.anim.shake);
 
         viewInit();
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
+/*
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        if ( mFirebaseUser == null ) {
+            Toast.makeText(this, "로그인이 필요합니다", Toast.LENGTH_SHORT).show();
+        } else {
+            mUsername = mFirebaseUser.getDisplayName();
+            if ( mFirebaseUser.getPhotoUrl() != null ) {
+                mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
+            }
+        }
+*/
+
+        mFirebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if ( user != null ) {
+                    Log.d(TAG, "sign in");
+
+                }
+                else {
+                    Log.d(TAG, "sign out");
+                }
+
+            }
+        };
+
+        /*
+         *  Google Login
+         */
+        mSigninGoogleButton = (SignInButton) findViewById(R.id.sign_in_google_button);
+        mSigninGoogleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
+            }
+        });
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
     }
 
     private void viewInit(){
@@ -122,7 +204,8 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
     private void loginCall(){
 
         String mDeviceId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_ANDROD_ID);
-        LoginRequest loginRequest = new LoginRequest(mId, mPasswd, mDeviceId);
+        String mPushId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_PUSH_ID);
+        LoginRequest loginRequest = new LoginRequest(mId, mPasswd, mDeviceId, mPushId, Build.VERSION.RELEASE);
 
         RequestLogin requestLogin = new RequestLogin(mActivity,loginRequest);
         requestLogin.post(new RequestLogin.ApiLoginResultListener() {
@@ -134,6 +217,10 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
                     return;
                 }
 
+                MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_EMAIL, mId);
+
+                Log.d("mithril", "item.getUserInfo().getAuthdate() = " + item.getUserInfo().getAuthdate());
+
                 if(item.getUserInfo().getState().equals(Constant.USER_STATUS_NOT_AUTH)){
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, false);
@@ -143,19 +230,20 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
+                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
                     launchHomeScreen();
 
                 }else if(item.getUserInfo().getState().equals(Constant.USER_AUTH_PLUS_PROFILE)){
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
                     MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_ID, item.getUserInfo().getId());
                     MithrilPreferences.putBoolean(mActivity, MithrilPreferences.TAG_EMAIL_AUTH, true);
+                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
                     launchHomeScreen();
                 }
 
-                MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_EMAIL, mId);
-
-                if(item.getUserInfo().getAuthdate() != null){
-                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_AUTH_DATE, item.getUserInfo().getAuthdate());
+                // DB access
+                if(item.getUserInfo() != null){
+                    DBdataAccess.memberDataDBaccess(item.getUserInfo(), mId);
                 }
 
             }
@@ -173,6 +261,61 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener 
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mFirebaseAuth.addAuthStateListener(mFirebaseAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if ( mFirebaseAuthListener != null )
+            mFirebaseAuth.removeAuthStateListener(mFirebaseAuthListener);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if ( requestCode == RC_GOOGLE_SIGN_IN ) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if ( result.isSuccess() ) {
+                String token = result.getSignInAccount().getIdToken();
+                AuthCredential credential = GoogleAuthProvider.getCredential(token, null);
+                mFirebaseAuth.signInWithCredential(credential);
+
+                String getId = result.getSignInAccount().getId();
+                String getDisplayName = result.getSignInAccount().getDisplayName();
+                String getEmail = result.getSignInAccount().getEmail();
+                String getFamilyName = result.getSignInAccount().getFamilyName();
+                String getGivenName = result.getSignInAccount().getGivenName();
+                String getServerAuthCode = result.getSignInAccount().getServerAuthCode();
+                String getPhotoUrl = result.getSignInAccount().getPhotoUrl().toString();
+                String getAccount = result.getSignInAccount().getAccount().toString();
+
+                Log.d(TAG, "token =" + token);
+                Log.d(TAG, "getId =" + getId);
+                Log.d(TAG, "getDisplayName =" + getDisplayName);
+                Log.d(TAG, "getEmail =" + getEmail);
+                Log.d(TAG, "getFamilyName =" + getFamilyName);
+                Log.d(TAG, "getGivenName =" + getGivenName);
+                Log.d(TAG, "getServerAuthCode =" + getServerAuthCode);
+                Log.d(TAG, "getPhotoUrl =" + getPhotoUrl);
+                Log.d(TAG, "getAccount =" + getAccount);
+
+            }
+            else {
+                Log.d(TAG, "Google Login Failed." + result.getStatus());
+            }
         }
     }
 

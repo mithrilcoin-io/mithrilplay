@@ -35,6 +35,9 @@ public class AppGameBody {
     @SerializedName("idx")
     @Expose
     private String idx;
+    @SerializedName("version")
+    @Expose
+    private String version;
 
     public String getPackagename() {
         return packagename;
@@ -114,6 +117,14 @@ public class AppGameBody {
 
     public void setIdx(String idx) {
         this.idx = idx;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
 }
