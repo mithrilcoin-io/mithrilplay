@@ -11,8 +11,14 @@ public class Constant {
 	public static final String USER_STATUS_AUTH_ON		= "M001002";	// Email verification completed
 	public static final String USER_AUTH_PLUS_PROFILE	= "M001003";	// Complete more info
 
+	public static final String LOGIN_GOOGLE_TYPE	= "M003001";	// Google Login type
+
 	public static final String REWARD_TYPE_INFO_ADD	= "T003002";	// Additional information input reward
 	public static final String REWARD_TYPE_GAME		= "T003003";	// game working reward
+
+	public static final String PUSH_RECEIVE_TYPE_GAME		= "T001002";	// push_game data query
+
+	public static final String PUSH_SEND_TYPE_GAME		= "D001001";	// push send type (game)
 
 	public static final String GENDER_MALE = "male"; 		// User gender _ male
 	public static final String GENDER_FEMALE = "female"; 	// User gender _ female
@@ -25,5 +31,7 @@ public class Constant {
 	public static final int REQUEST_SETTING_MOREINFO = 1003;		// Setting => MoreInfo
 	public static final int REQUEST_INTRO_EMAILAUTH = 1004;			// Intro => VerifyEmail
 	public static final int REQUEST_CODE_HOME_USE_INFO = 1005;		// When the Home requests permission to access usage information
+	public static final int REQUEST_SIGN_UP_GOOGLE_SIGN_IN = 1006;			// google sign in => SignUp
+	public static final int REQUEST_LOGIN_GOOGLE_SIGN_IN = 1007;			// google sign in => Login
 
 }

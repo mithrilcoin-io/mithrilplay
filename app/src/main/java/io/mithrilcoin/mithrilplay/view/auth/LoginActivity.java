@@ -18,15 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import io.mithrilcoin.mithrilplay.R;
-import io.mithrilcoin.mithrilplay.common.Constant;
-import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
-import io.mithrilcoin.mithrilplay.db.DBdataAccess;
-import io.mithrilcoin.mithrilplay.network.RequestLogin;
-import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
-import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
-import io.mithrilcoin.mithrilplay.view.ActivityBase;
-
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -37,6 +28,16 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import io.mithrilcoin.mithrilplay.R;
+import io.mithrilcoin.mithrilplay.common.Constant;
+import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
+import io.mithrilcoin.mithrilplay.db.DBdataAccess;
+import io.mithrilcoin.mithrilplay.network.RequestLogin;
+import io.mithrilcoin.mithrilplay.network.vo.LoginRequest;
+import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
+import io.mithrilcoin.mithrilplay.network.vo.Membersocial;
+import io.mithrilcoin.mithrilplay.view.ActivityBase;
 
 
 /**
@@ -49,23 +50,18 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener,
     private TextInputLayout layout_user_id, layout_pw_id;
     private EditText et_user_id, et_user_pw;
     private Button btnSignin, btnSignup;
-    private String mId, mPasswd;
+    private String mId, mPasswd, mGoogleTokenId;
+    SignInButton mSigninGoogleButton;
 
     private Animation shake;
 
     // google login
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
-
     FirebaseAuth.AuthStateListener mFirebaseAuthListener;
-
-    SignInButton mSigninGoogleButton;
     GoogleApiClient mGoogleApiClient;
 
-    static final int RC_GOOGLE_SIGN_IN = 9001;
-
-    String mUsername;
-    String mPhotoUrl;
+    private boolean isGoogleLogin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,28 +85,21 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener,
         viewInit();
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-
-/*
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        if ( mFirebaseUser == null ) {
-            Toast.makeText(this, "로그인이 필요합니다", Toast.LENGTH_SHORT).show();
-        } else {
-            mUsername = mFirebaseUser.getDisplayName();
-            if ( mFirebaseUser.getPhotoUrl() != null ) {
-                mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
-            }
-        }
-*/
-
         mFirebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if ( user != null ) {
+                if(user != null){
                     Log.d(TAG, "sign in");
 
-                }
-                else {
+//                    Log.d(TAG, "user.getEmail() =" + user.getEmail());
+//                    Log.d(TAG, "user.getDisplayName() =" + user.getDisplayName());
+//                    Log.d(TAG, "user.getPhoneNumber() =" + user.getPhoneNumber());
+//                    Log.d(TAG, "user.getProviderId() =" + user.getProviderId());
+//                    Log.d(TAG, "user.getMetadata() =" + user.getMetadata());
+//                    Log.d(TAG, "user.getUid() =" + user.getUid());
+
+                }else{
                     Log.d(TAG, "sign out");
                 }
 
@@ -121,12 +110,9 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener,
          *  Google Login
          */
         mSigninGoogleButton = (SignInButton) findViewById(R.id.sign_in_google_button);
-        mSigninGoogleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-                startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
-            }
+        mSigninGoogleButton.setOnClickListener(v -> {
+            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+            startActivityForResult(signInIntent, Constant.REQUEST_LOGIN_GOOGLE_SIGN_IN);
         });
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -137,7 +123,6 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener,
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
 
     }
 
@@ -203,14 +188,34 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener,
 
     private void loginCall(){
 
+        Membersocial membersocial = null;
+
+        if(!isGoogleLogin){
+            mId = et_user_id.getText().toString();
+        }else{
+            membersocial = new Membersocial();
+            membersocial.setSnscode(Constant.LOGIN_GOOGLE_TYPE);
+            membersocial.setTokenid(mGoogleTokenId);
+            mPasswd = "";
+        }
+
         String mDeviceId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_ANDROD_ID);
         String mPushId = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_PUSH_ID);
-        LoginRequest loginRequest = new LoginRequest(mId, mPasswd, mDeviceId, mPushId, Build.VERSION.RELEASE);
+        String mModel = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_MODEL);
+        String mBrand = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_BRAND);
+        String mOsVersion = MithrilPreferences.getString(mActivity, MithrilPreferences.TAG_OS_VERSION);
+
+        LoginRequest loginRequest = new LoginRequest(mId, mPasswd, mDeviceId, mModel, mBrand, mPushId, mOsVersion);
+        if(isGoogleLogin){
+            loginRequest.setMembersocial(membersocial);
+        }
 
         RequestLogin requestLogin = new RequestLogin(mActivity,loginRequest);
         requestLogin.post(new RequestLogin.ApiLoginResultListener() {
             @Override
             public void onSuccess(MemberResponse item) {
+
+                isGoogleLogin = false;
 
                 if(item == null || item.getUserInfo() == null){
                     Toast.makeText(mActivity, item.getBody().getCode(), Toast.LENGTH_SHORT).show();
@@ -218,6 +223,12 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener,
                 }
 
                 MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_EMAIL, mId);
+
+                // google account save
+                if(isGoogleLogin){
+                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_GOOGLE_EMAIL, mId);
+                    MithrilPreferences.putString(mActivity, MithrilPreferences.TAG_GOOGLE_ID, mGoogleTokenId);
+                }
 
                 Log.d("mithril", "item.getUserInfo().getAuthdate() = " + item.getUserInfo().getAuthdate());
 
@@ -275,6 +286,8 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener,
         super.onStop();
         if ( mFirebaseAuthListener != null )
             mFirebaseAuth.removeAuthStateListener(mFirebaseAuthListener);
+
+        FirebaseAuth.getInstance().signOut();
     }
 
     @Override
@@ -286,7 +299,7 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener,
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ( requestCode == RC_GOOGLE_SIGN_IN ) {
+        if ( requestCode == Constant.REQUEST_LOGIN_GOOGLE_SIGN_IN ) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if ( result.isSuccess() ) {
                 String token = result.getSignInAccount().getIdToken();
@@ -311,6 +324,13 @@ public class LoginActivity extends ActivityBase implements View.OnClickListener,
                 Log.d(TAG, "getServerAuthCode =" + getServerAuthCode);
                 Log.d(TAG, "getPhotoUrl =" + getPhotoUrl);
                 Log.d(TAG, "getAccount =" + getAccount);
+
+                // google login succeed
+                isGoogleLogin = true;
+                mId = getEmail;
+                mGoogleTokenId = getId;
+
+                loginCall();
 
             }
             else {

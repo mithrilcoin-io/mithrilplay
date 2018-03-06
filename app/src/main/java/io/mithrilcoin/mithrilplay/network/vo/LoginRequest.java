@@ -14,17 +14,28 @@ public class LoginRequest {
     @SerializedName("deviceid")
     @Expose
     private String deviceid;
+    @SerializedName("model")
+    @Expose
+    private String model;
+    @SerializedName("brand")
+    @Expose
+    private String brand;
     @SerializedName("fcmid")
     @Expose
     private String fcmid;
     @SerializedName("osversion")
     @Expose
     private String osversion;
+    @SerializedName("membersocial")
+    @Expose
+    private Membersocial membersocial;
 
-    public LoginRequest(String email, String password, String deviceid, String fcmid, String osversion) {
+    public LoginRequest(String email, String password, String deviceid, String model, String brand, String fcmid, String osversion) {
         this.email = email;
         this.password = password;
         this.deviceid = deviceid;
+        this.model = model;
+        this.brand = brand;
         this.fcmid = fcmid;
         this.osversion = osversion;
     }
@@ -53,6 +64,22 @@ public class LoginRequest {
         this.deviceid = deviceid;
     }
 
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
     public String getFcmid() {
         return fcmid;
     }
@@ -67,6 +94,14 @@ public class LoginRequest {
 
     public void setOsversion(String osversion) {
         this.osversion = osversion;
+    }
+
+    public Membersocial getMembersocial() {
+        return membersocial;
+    }
+
+    public void setMembersocial(Membersocial membersocial) {
+        this.membersocial = membersocial;
     }
 
 }

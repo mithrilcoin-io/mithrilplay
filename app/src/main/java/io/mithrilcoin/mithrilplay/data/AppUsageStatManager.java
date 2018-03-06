@@ -17,10 +17,15 @@ import java.util.List;
 import java.util.Map;
 
 import io.mithrilcoin.mithrilplay.common.CommonApplication;
+import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
 import io.mithrilcoin.mithrilplay.common.MithrilPreferences;
 import io.mithrilcoin.mithrilplay.db.entity.PlayData;
+import io.mithrilcoin.mithrilplay.fcm.FCMVo;
+import io.mithrilcoin.mithrilplay.network.RequestSendQueryData;
 import io.mithrilcoin.mithrilplay.network.vo.GamePlayDataRequest;
+import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
+import io.mithrilcoin.mithrilplay.network.vo.QueryDataRequest;
 
 
 /**
@@ -125,7 +130,7 @@ public class AppUsageStatManager {
     }
 
     /**
-     * push get query
+     * LocalDB get query
      * @return String
      */
     public static String getQueryResults(String query) {
@@ -158,6 +163,41 @@ public class AppUsageStatManager {
         cursor.close();
         Log.d(TAG, resultSet.toString());
         return resultSet.toString();
+    }
+
+    /**
+     * push get query
+     * @param fcmVo
+     */
+    public static void sendQueryData(FCMVo fcmVo){
+
+        String qSData = "";
+        if(!TextUtils.isEmpty(fcmVo.getFcmPushQuery())){
+            Log.d(TAG,"fcmVo.getFcmPushQuery() =" + fcmVo.getFcmPushQuery());
+            qSData = getQueryResults(fcmVo.getFcmPushQuery());
+            Log.d(TAG,"qSData =" + qSData);
+        }
+
+        QueryDataRequest queryDataRequest = new QueryDataRequest();
+        queryDataRequest.setIdx(fcmVo.getFcmPushIdx());
+        queryDataRequest.setTypecode(Constant.PUSH_SEND_TYPE_GAME);
+        queryDataRequest.setBody(qSData);
+
+        String mId = MithrilPreferences.getString(CommonApplication.getApplication(), MithrilPreferences.TAG_AUTH_ID);
+        RequestSendQueryData requestSendQueryData = new RequestSendQueryData(CommonApplication.getApplication(), mId, queryDataRequest);
+
+        requestSendQueryData.post(new RequestSendQueryData.ApiQueryDataListener() {
+            @Override
+            public void onSuccess(MemberResponse item) {
+                Log.d(TAG,"requestSendQueryData.getCode() =" + item.getBody().getCode());
+            }
+
+            @Override
+            public void onFail() {
+
+            }
+        });
+
     }
 
 

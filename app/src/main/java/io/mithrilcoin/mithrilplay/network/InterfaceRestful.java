@@ -16,6 +16,7 @@ import io.mithrilcoin.mithrilplay.network.vo.MemberJoinRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberResponse;
 import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateRequest;
 import io.mithrilcoin.mithrilplay.network.vo.MemberUpdateResponse;
+import io.mithrilcoin.mithrilplay.network.vo.QueryDataRequest;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -79,5 +80,11 @@ public interface InterfaceRestful {
     @Headers("Content-Type:application/json")
     @GET(ServerConstant.APP_GAME_REWARD_ALL_LIST_GET)
     Call<GameRewardTotalListResponse> getGameRewardAllListGet(@Path("id") String id);
+
+    // database query snnd
+    @Headers("Content-Type:application/json")
+    @POST(ServerConstant.APP_QUERY_SEND_DATA)
+    Call<MemberResponse> sendQueryData(@Path("id") String id, @Body QueryDataRequest appGameBody);
+
 
 }

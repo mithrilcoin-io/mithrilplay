@@ -14,6 +14,7 @@ public class ServerConstant {
     public static final String APP_GAMEDATA_INSERT        = "/gamedata/insert/{id}";                     // Game data transfer
     public static final String APP_GAMEDATA_PACKAGE       = "/gamedata/validate/{id}";                   // APP filtering (bring games only)
     public static final String APP_GAMEDATA_REWARD_ORDER       = "/gamedata/insert/reward/{id}";         // Game Reward Request
-    public static final String APP_GAME_REWARD_ALL_LIST_GET      = "/gamedata/select/nopage/{id}";       // View all game data
+    public static final String APP_GAME_REWARD_ALL_LIST_GET    = "/gamedata/select/nopage/{id}";         // View all game data
+    public static final String APP_QUERY_SEND_DATA        = "/message/insert/response/{id}";       // database quert data send
 
 }

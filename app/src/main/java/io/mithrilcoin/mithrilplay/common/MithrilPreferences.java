@@ -30,6 +30,9 @@ public class MithrilPreferences {
 
 	public static final String TAG_PUSH_ID = "push_id"; 		// string, push_id
 
+	public static final String TAG_GOOGLE_ID = "google_id"; 		// string, google_id
+	public static final String TAG_GOOGLE_EMAIL = "google_email"; 		// string, google_email
+
     public static synchronized MithrilPreferenceManager getInstance(Context context) {
         if (null == prefManager) {
             prefManager = new MithrilPreferenceManager(context);

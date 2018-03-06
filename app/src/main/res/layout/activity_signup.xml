@@ -80,4 +80,14 @@
         android:textColor="@color/colorPrimary"
         android:text="@string/sign_up" />
 
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_google_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_do_signup"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="25dp"/>
+
 </LinearLayout>

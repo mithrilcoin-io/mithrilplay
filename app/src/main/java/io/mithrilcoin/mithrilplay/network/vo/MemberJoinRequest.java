@@ -26,6 +26,9 @@ public class MemberJoinRequest {
     @SerializedName("osversion")
     @Expose
     private String osversion;
+    @SerializedName("membersocial")
+    @Expose
+    private Membersocial membersocial;
 
     public MemberJoinRequest(String email, String password, String deviceid, String model, String brand, String fcmid, String osversion) {
         this.email = email;
@@ -91,6 +94,14 @@ public class MemberJoinRequest {
 
     public void setOsversion(String osversion) {
         this.osversion = osversion;
+    }
+
+    public Membersocial getMembersocial() {
+        return membersocial;
+    }
+
+    public void setMembersocial(Membersocial membersocial) {
+        this.membersocial = membersocial;
     }
 
 }

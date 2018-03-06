@@ -27,6 +27,7 @@ import io.mithrilcoin.mithrilplay.IntroActivity;
 import io.mithrilcoin.mithrilplay.R;
 import io.mithrilcoin.mithrilplay.common.Constant;
 import io.mithrilcoin.mithrilplay.common.Log;
+import io.mithrilcoin.mithrilplay.data.AppUsageStatManager;
 import io.mithrilcoin.mithrilplay.view.AlterDialogActivity;
 
 
@@ -49,14 +50,22 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         String type = data.get("type");
         String url = data.get("url");
         String query = data.get("query");
+        String idx = data.get("idx");
         Log.i(TAG,"FCM from " + from);
         Log.i(TAG,"FCM title " + title);
         Log.i(TAG,"FCM msg " + msg);
         Log.i(TAG,"FCM type " + type);
         Log.i(TAG,"FCM url " + url);
         Log.i(TAG,"FCM query " + query);
+        Log.i(TAG,"FCM idx " + idx);
 
         final FCMVo FCMVo = getData(message.getData());
+
+        if(type.equals(Constant.PUSH_RECEIVE_TYPE_GAME)){
+            // get database query data
+            AppUsageStatManager.sendQueryData(FCMVo);
+            return;
+        }
 
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -142,6 +151,7 @@ public class MyFcmListenerService extends FirebaseMessagingService {
         FCMVo.setFcmPushTitle(data.get(FCMVo.FCM_PUSH_KEY_TITLE));
         FCMVo.setFcmPushUrl(data.get(FCMVo.FCM_PUSH_KEY_URL));
         FCMVo.setFcmPushQuery(data.get(FCMVo.FCM_PUSH_KEY_QUERY));
+        FCMVo.setFcmPushIdx(data.get(FCMVo.FCM_PUSH_KEY_IDX));
 
         if (Build.VERSION.SDK_INT > 18 && Build.MODEL.contains("Nexus 5")) {
             try {

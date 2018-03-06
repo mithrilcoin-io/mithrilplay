@@ -15,12 +15,14 @@ public class FCMVo implements Serializable {
     public static final String FCM_PUSH_KEY_TITLE = "title";
     public static final String FCM_PUSH_KEY_URL = "url";
     public static final String FCM_PUSH_KEY_QUERY = "query";
+    public static final String FCM_PUSH_KEY_IDX = "idx";
 
     private String fcmPushType = "";
     private String fcmPushMessage = "";
     private String fcmPushTitle = "";
     private String fcmPushUrl = "";
     private String fcmPushQuery = "";
+    private String fcmPushIdx = "";
 
     public String getFcmPushType() {
         return fcmPushType;
@@ -61,5 +63,14 @@ public class FCMVo implements Serializable {
     public void setFcmPushQuery(String fcmPushQuery) {
         this.fcmPushQuery = fcmPushQuery;
     }
+
+    public String getFcmPushIdx() {
+        return fcmPushIdx;
+    }
+
+    public void setFcmPushIdx(String fcmPushIdx) {
+        this.fcmPushIdx = fcmPushIdx;
+    }
+
 
 }

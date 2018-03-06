@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
  * Gamedata info DB
  */
 
-@Entity(tableName = "playdata", indices = {@Index(value = {"packageName", "startTime", "endtime"}, unique = true)})
+@Entity(tableName = "playdata", indices = {@Index(value = {"packagename", "starttime", "endtime"}, unique = true)})
 public class PlayData {
 
     @PrimaryKey(autoGenerate = true)
@@ -20,11 +20,11 @@ public class PlayData {
     @ColumnInfo(name = "email")
     public String email;
 
-    @ColumnInfo(name = "packageName")
-    public String packageName;
+    @ColumnInfo(name = "packagename")
+    public String packagename;
 
-    @ColumnInfo(name = "startTime")
-    public String startTime;
+    @ColumnInfo(name = "starttime")
+    public String starttime;
 
     @ColumnInfo(name = "endtime")
     public String endtime;
@@ -32,16 +32,16 @@ public class PlayData {
     @ColumnInfo(name = "playTime")
     public String playTime;
 
-    @ColumnInfo(name = "appVersion")
-    public String appVersion;
+    @ColumnInfo(name = "version")
+    public String version;
 
-    public PlayData(String email, String packageName, String startTime, String endtime, String playTime, String appVersion) {
+    public PlayData(String email, String packagename, String starttime, String endtime, String playTime, String version) {
         this.email = email;
-        this.packageName = packageName;
-        this.startTime = startTime;
+        this.packagename = packagename;
+        this.starttime = starttime;
         this.endtime = endtime;
         this.playTime = playTime;
-        this.appVersion = appVersion;
+        this.version = version;
     }
 
 }
